@@ -21,21 +21,15 @@ Keep these layers distinct:
 3. **Row template:** reusable DOM for one item kind. A renderer fills its slots and clears item-specific listeners and content before reuse.
 4. **Feature content:** icon, primary label, description, count, decoration, inline actions, or an inline editor.
 
-A practical row skeleton is:
+A reusable row template has this semantic anatomy, in order:
 
-```html
-<div class="collection-row" data-focused="false" data-selected="false">
-  <span class="collection-disclosure"></span>
-  <span class="collection-icon"></span>
-  <span class="collection-label">
-    <span class="collection-name"></span>
-    <span class="collection-suffix"></span>
-    <span class="collection-description"></span>
-  </span>
-  <span class="collection-decoration"></span>
-  <span class="collection-actions"></span>
-</div>
-```
+1. optional disclosure control;
+2. optional leading icon;
+3. a flexible label region with a primary name and optional suffix or description;
+4. optional trailing decoration;
+5. optional trailing actions.
+
+Focus and selection belong to collection state; render them onto the row instead of storing them in the template.
 
 Omit slots that the family or item kind does not use. Keep the row a single line in compact file, result, editor, and symbol collections. Settings are a verified exception: their descriptions and controls form a variable-height body beneath the title.
 
@@ -43,7 +37,7 @@ Organizational rows are their own item kind. A section header or separator is no
 
 ## Compact metrics
 
-The `22px` row is a scoped compact workbench pattern, not a global list height. It is used by Explorer items, Open Editors groups and items, Search result headings/folders/files/matches, and Outline groups and symbols.
+The `22px` row is a scoped compact workbench pattern, not a global list height. It is used by Explorer items, Open Editors groups and items, Search result headings, folders, files, and matches, and the built-in document-symbol Outline groups and symbols.
 
 ```css
 .collection--compact {
@@ -119,7 +113,7 @@ Keep outlines inside the row so they are not clipped by adjacent virtual rows. D
 
 Keep row actions at the trailing edge and reveal optional actions on row hover, focus, or selection. Preserve actions for persistent states that need them: Open Editors keeps the close or unpin affordance available for dirty and sticky items, while Settings keeps its toolbar available when the toolbar itself is active. Using `visibility` for the quiet state preserves the row's label/action geometry.
 
-At narrow widths, keep the primary label shrinkable and the action container fixed. Search results verify a useful priority rule: hide a count badge while hover or focus reveals actions, rather than letting the actions cover the result name. Descriptions and nonessential decorations may disappear before the primary label or active actions.
+At narrow widths, keep the primary label shrinkable and the action container fixed. Search results hide a count badge while hover or focus reveals actions, preventing those actions from covering the result name.
 
 Inline rename is an explicit collection state, not an input inserted opportunistically by the row renderer. Explorer verifies this sequence:
 
@@ -133,7 +127,7 @@ Because virtual rows are reusable, the collection must retain the edit target an
 
 ## Trees
 
-A tree row composes, in order, an indent layer, disclosure control, and overflow-clipped content. Indent guides are `1px` strokes and may be hidden, shown only for the active ancestry, or always shown. Use `--vscode-tree-indentGuidesStroke` for active guides and `--vscode-tree-inactiveIndentGuidesStroke` for inactive guides.
+A tree row composes, in order, an indent layer, disclosure control, and overflow-clipped content. Indent guides are `1px` strokes with three modes: `none`, `onHover`, and `always`. In `onHover`, active ancestry guides remain visible and hovering the tree reveals all inactive guides; `always` keeps all guides visible. Use `--vscode-tree-indentGuidesStroke` for active guides and `--vscode-tree-inactiveIndentGuidesStroke` for inactive guides.
 
 Filtering and type navigation are separate behaviors:
 

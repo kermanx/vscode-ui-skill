@@ -6,7 +6,7 @@ Read this reference only when the user explicitly requests improved, audited, or
 
 - Every pointer action must have a keyboard path. Keep the tab order logical and keep composite-widget navigation scoped to the active widget.
 - Use `Tab` and `Shift+Tab` to enter, leave, and move between controls. Within lists, trees, tab lists, menus, and toolbars, use the widget's arrow-key model instead of adding every item to the page tab order.
-- Custom buttons and toggles must respond to both `Enter` and `Space`. Disabled custom controls expose their disabled state and leave the tab order.
+- Custom buttons and toggles must respond to both `Enter` and `Space` and expose `aria-disabled` when disabled. Tab-order behavior is component-specific: a base button may remain tabbable while a toggle is removed from the tab order. Match the chosen component instead of imposing one rule on every custom control.
 - Lists support arrow and page navigation; `Enter` selects the focused item. Trees add `Left` and `Right` for collapse, parent, expand, and child navigation.
 - Do not reserve an action for hover. Make context actions, expansion, selection, and dismissal reachable from the keyboard.
 
@@ -22,7 +22,7 @@ Read this reference only when the user explicitly requests improved, audited, or
 
 - Give the focusable collection an accessible name and the correct composite role. Keep DOM focus on the collection and point `aria-activedescendant` only to the currently rendered focused item; remove it when that item is not rendered.
 - Give every rendered item an ID, an item role, and an accessible label. Reflect selection, checked state, hierarchy level, and expansion on the item that owns that state.
-- Set `aria-setsize` to the logical peer count and `aria-posinset` to the item's one-based position among those peers. Exclude separators and non-item chrome, and recompute both values after filtering.
+- Derive `aria-setsize` and `aria-posinset` from the collection model. The standard list defaults to the list length and the item's one-based model index; an accessibility provider may supply a different peer count and position. Recompute both when that model changes.
 - For trees, expose `aria-level`; expose `aria-expanded` only on collapsible nodes. Position and set size are based on visible siblings, not the number of recycled DOM rows.
 
 ## Announcements

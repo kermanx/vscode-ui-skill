@@ -12,7 +12,7 @@ These are representative assembly recipes for developer-tool surfaces. They assu
 
 - **Composition.** Stack search and replace controls above a disclosure for include/exclude scope, then an inline message region, then a folder/file/match tree that consumes the remaining height. Match rows combine line context, the highlighted match or replacement preview, and a trailing action bar.
 - **Priority and actions.** Query text and match context are primary. Scope details, line numbers, result counts, and provider messages are secondary. Keep replace hidden until requested, row actions hidden until hover, selection, or focus, and destructive replace-all behind confirmation with visible progress.
-- **Constraint and states.** Ellipsize snippets and labels. When a narrow row needs its toolbar, remove count badges before match text. Put malformed-query feedback on the search input. Put canceled, no-result, and no-folder explanations in the message region with a specific recovery such as search again, broaden scope, clear filters, or open a folder.
+- **Constraint and states.** Ellipsize snippets and labels. When a narrow row needs its toolbar, remove count badges before match text. Put malformed-query feedback on the search input. Put canceled, no-result, and no-folder explanations in the message region. Offer the recovery the state actually supports, such as searching again, searching all files, opening Search settings, or opening a folder.
 
 ## Source Control
 
@@ -24,7 +24,7 @@ These are representative assembly recipes for developer-tool surfaces. They assu
 
 - **Composition.** Place the run configuration and start control at the top, then arrange Variables, Watch, Call Stack, and Breakpoints as independently collapsible views. Give Variables and Call Stack more initial space than Watch and Breakpoints; keep loaded scripts collapsed until the active debugger supports them.
 - **Priority and actions.** During a session, execution controls and the selected stack frame's data are primary. The control strip changes with state: running offers pause, stopped offers continue and stepping, and attach sessions substitute disconnect behavior for ordinary termination. Keep row actions contextual and errors attached to the failing variable, expression, thread, or frame when that row exists.
-- **Constraint and states.** Preserve the start button and configuration affordance while allowing the configuration label to ellipsize. On crowded debug rows, let actions take space from state badges or line metadata before the main label. Show progress while the debugger initializes. When idle, replace runtime data with a start-oriented welcome that can offer open-file, open-folder, create-configuration, enable, or install actions according to the missing prerequisite.
+- **Constraint and states.** Preserve the start button and configuration affordance while allowing the configuration label to ellipsize. On crowded debug rows, let actions take space from state badges or line metadata before the main label. Show progress while the debugger initializes. When idle, replace runtime data with context-driven welcome content: offer Run and Debug when a debugger is available, open a debuggable file when the active editor is unsuitable, and link to creating a launch configuration or opening a folder when setup requires it. If all debug extensions are disabled, show the explanatory message without inventing enable or install controls.
 
 ## Problems
 
@@ -47,7 +47,7 @@ These are representative assembly recipes for developer-tool surfaces. They assu
 ## Extensions
 
 - **Composition.** Put a search field and search actions in the view header, then show context-appropriate result panes such as installed, recommended, or marketplace results. Each pane owns its count, message, and extension list. An extension row combines artwork, name, short description, publisher, status or metrics, and install/manage actions.
-- **Priority and actions.** The extension name, concise purpose, and applicable install or manage command are primary. Publisher, ratings, install count, runtime location, and update state are supporting information. Keep global marketplace or account notices in a dismissible banner above the panes; keep query-specific messages inside the pane they affect.
+- **Priority and actions.** The extension name, concise purpose, and applicable install or manage command are primary. Publisher, ratings, install count, runtime location, and update state are supporting information. Keep extension-wide status such as disabled or incompatible extensions, restart requirements, and private-marketplace state in the dismissible header notification; keep query-specific messages inside the pane they affect.
 - **Constraint and states.** As width tightens, reduce or remove artwork, ratings, and secondary badges before name, description, and actions. Use row-shaped placeholders while results load. Replace an empty list with a pane-local no-results message. Keep recoverable offline or query problems in that pane; use notifications for action failures or service errors that are not owned by one result pane.
 
 ## Terminal
@@ -70,6 +70,6 @@ These are representative assembly recipes for developer-tool surfaces. They assu
 
 ## Welcome and getting started
 
-- **Composition.** On the index, separate immediate Start commands, Recent workspaces, and Walkthrough cards under a restrained product header, with low-priority startup preferences in the footer. Limit each list and use a More entry rather than allowing onboarding to become an unbounded dashboard.
+- **Composition.** On the index, separate immediate Start commands, Recent workspaces, and Walkthrough cards under a restrained product header, with low-priority startup preferences in the footer. Keep the groups bounded: Start shows up to ten entries without a More link, while Recent and Walkthroughs show up to five entries and can expose More.
 - **Priority and actions.** Start actions are primary; recent workspaces resume context; walkthroughs are optional guided work. A walkthrough detail view pairs a step list with explanatory media, exposes progress on its card, and puts the step's action inside the expanded step.
 - **Constraint and states.** Stack the index columns and remove the oversized header when space is constrained. In walkthrough details, remove media before the step list. When there are no walkthroughs, give the Recent list the freed column and allow it to show more entries. When there are no recent workspaces, explain the state inline and offer open folder.

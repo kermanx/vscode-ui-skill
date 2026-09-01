@@ -8,12 +8,16 @@ welcome states belong to their host surface; do not elevate them merely because
 they report status.
 
 Use semantic theme roles for foregrounds, fills, strokes, links, selection, and
-severity. The shared modern overlay silhouette is an `8px` outer radius. Use a
-`1px` semantic border when the component defines one, large shadow
-`0 0 12px rgba(0, 0, 0, .14)` for hovers, menus, and notification regions, and
-extra-large shadow `0 0 20px rgba(0, 0, 0, .15)` for quick input and modal
-dialogs. These shadows remain on floating surfaces even when structural shell
-shadows are disabled.
+severity. Do not assign one radius to every floating surface. The Classic
+baseline uses `5px` for workbench hovers, `8px` for editor hovers and menus,
+`12px` for quick input and dialogs, and `4px` for notification toasts and the
+notification center. The optional Modern rounded-corners treatment converges
+these surfaces on `8px`, including quick input, hovers, menus, dialogs, and
+notifications. Use a `1px` semantic border when the component defines one,
+large shadow `0 0 12px rgba(0, 0, 0, .14)` for hovers, menus, and notification
+regions, and extra-large shadow `0 0 20px rgba(0, 0, 0, .15)` for quick input
+and dialogs. These shadows remain on floating surfaces even when structural
+shell shadows are disabled.
 
 ## Tooltip and simple hover
 
@@ -24,8 +28,9 @@ and may close as soon as the pointer leaves its target or enters the hover.
 - **Anatomy:** one selectable text content area. Use `13px / 19px` text and
   `4px 8px` padding. A compact variant uses `12px` text and `2px 8px` padding.
 - **Surface:** use the editor-hover foreground, background, and border roles,
-  a `1px` border, `8px` radius, and the large overlay shadow. Cap the outer
-  surface at `700px`; wrap long text.
+  a `1px` border, and the large overlay shadow. A standard workbench hover uses
+  a `5px` Classic radius and `8px` with the Modern rounded-corners treatment.
+  Cap the outer surface at `700px`; wrap long text.
 - **Placement and overflow:** anchor to the target and prefer above. Flip to
   another side when the preferred side lacks room. Unless the caller forces a
   side, the placement may choose above, below, left, or right from available
@@ -47,9 +52,11 @@ an inline confirmation or dialog when completion depends on the user deciding.
   `8px` vertical spacing between paragraphs, lists, headings, and code blocks.
   The bottom row uses `12px / 22px` text, `0 8px` item padding, and `16px`
   between actions.
-- **Surface and colors:** use the same `1px` editor-hover border, `8px` radius,
-  and large shadow as a simple hover. Use the text-link foreground for links,
-  its active role on hover, the text-code-block background for code, and the
+- **Surface and colors:** use the same editor-hover roles, `1px` border, and
+  large shadow as a simple hover. An editor-hosted hover uses an `8px` radius;
+  a workbench-hosted rich hover follows the `5px` Classic or `8px` Modern
+  workbench-hover radius. Use the text-link foreground for links, its active
+  role on hover, the text-code-block background for code, and the
   hover-status-bar background for the action row.
 - **Placement and overflow:** use the same side selection and half-viewport
   default height limit as a simple hover. Keep the content scrollable and the
@@ -99,9 +106,10 @@ are merely local commands for one target.
   focused item.
 - **Surface:** use quick-input foreground/background, title background, picker
   group foreground/border, and quick-input-list focus foreground/background,
-  icon foreground, and match-highlight roles. Use an `8px` outer radius and the
-  extra-large shadow. The header uses `6px 6px 4px` padding; the filter field has
-  a `6px` radius.
+  icon foreground, and match-highlight roles. Use the extra-large shadow and a
+  `12px` Classic outer radius; the optional Modern rounded-corners treatment
+  changes the outer radius to `8px`. The header uses `6px 6px 4px` padding; the
+  filter field has a `6px` radius.
 - **Geometry:** the centered surface is
   `width: min(62% of the host, 600px)`. Rows are `22px` high and the list caps at
   `20` rows (`440px`). Give the list `6px` inline padding and `7px` bottom
@@ -121,9 +129,8 @@ are merely local commands for one target.
 ## Dialog
 
 Use a dialog for a blocking decision, confirmation, or input that suspends the
-underlying work. It is the only modal family in this reference. Use a toast or
-notification for passive status and an inline confirmation when the surrounding
-workflow must remain available.
+underlying work. Use a toast or notification for passive status and an inline
+confirmation when the surrounding workflow must remain available.
 
 - **Anatomy:** full-viewport blocker; dialog shell; message row with optional
   severity icon, heading, detail, and body; optional input and checkbox; optional
@@ -131,14 +138,16 @@ workflow must remain available.
   a default confirmation action.
 - **Surface:** dim the blocker with `rgba(0, 0, 0, .5)`. Use editor-widget
   foreground/background, border, and shadow roles, a `1px` border when present,
-  `8px` radius, and the extra-large shadow. The modern shell uses `4px` padding,
-  a `440px` minimum width, and `90vw` / `90vh` maximum bounds.
+  and the extra-large shadow. The Classic shell uses a `12px` radius, `8px`
+  padding, and a `480px` minimum width. The optional Modern treatment uses an
+  `8px` radius, `4px` padding, and a `440px` minimum width. Both use `90vw` /
+  `90vh` maximum bounds.
 - **Content geometry:** use `13px / 1.4` text and a `13px`, `600`-weight heading.
-  Give the message row `16px 8px 0`; inset message content `8px` from the icon
-  side and `20px` from the opposite side. Use `12px` below the heading and
-  `16px` before the button row. Put a dialog toolbar `8px` from the top and
-  trailing edge. Scroll vertically when content exceeds the height cap and wrap
-  long words.
+  With Modern UI, give the message row `16px 8px 0`; inset message content `8px`
+  from the icon side and `20px` from the opposite side. Use `12px` below the
+  heading and `16px` before the button row. Put a dialog toolbar `8px` from the
+  top and trailing edge. Scroll vertically when content exceeds the height cap
+  and wrap long words.
 - **Narrow adaptation:** below the horizontal layout's needs, allow a `350px`
   minimum vertical layout. Stack the icon, message, and actions; make each
   button fill the row. Horizontal button rows size actions to content and
@@ -160,17 +169,23 @@ turn silent notifications into toasts.
   close action; optional details, buttons, and bottom-edge progress. The
   collapsed message is one `22px` line with ellipsis. Expanded messages wrap;
   source and action buttons appear in the expanded detail row.
-- **Surface:** use notification foreground/background, toast border, link, and
-  notification severity roles. Use a `1px` border when present, `8px` radius,
-  and the large shadow. The modern row uses `6px 2px` padding, a `16px` severity
-  icon, `6px` leading icon margin, `8px` trailing icon margin, and source text
-  indented `24px` from the row start.
+- **Classic surface and spacing:** use notification foreground/background,
+  toast border, link, and notification severity roles. Use a `1px` border when
+  present, a `4px` radius, and the large shadow. The item uses `10px 5px`
+  padding; its `16px` severity slot carries an `18px` glyph with `4px` margins
+  on both inline sides. The expanded details row has `5px` leading padding.
+- **Modern override:** use an `8px` radius and `6px 2px` item padding. Use a
+  `16px` severity icon with `6px` leading and `8px` trailing margin, and indent
+  source text `24px` from the row start. Keep the same semantic colors, border,
+  and large shadow.
 - **Placement and limits:** choose bottom-trailing, bottom-leading, or
-  top-trailing. Align the visible surface `8px` from the inline edge and `32px`
-  from the bottom in bottom placement; use an `8px` inline inset and `36px` top
-  inset in top-trailing placement. Cap width at `450px` and at viewport width
-  minus `16px`. Show at most `3` toasts, newest first, and hide older items that
-  cannot fit the available height.
+  top-trailing. In Classic, the visible toast surface sits `7px` from the inline
+  edge and usable top edge; bottom placement is `29px` above the window edge
+  with the `22px` status bar or `7px` without it. Modern aligns the visible
+  surface `8px` from the inline edge, `32px` from the bottom, or `36px` from the
+  top. Cap width at `450px` and at viewport width minus `16px`. Show at most `3`
+  toasts, newest first, and hide older items that cannot fit the available
+  height.
 - **State and dismissal:** non-sticky information, warning, and error toasts
   auto-close after `10s`, `12s`, and `15s` respectively. While the window is
   unfocused, the toast is hovered, or the toast contains focus, restart rather
@@ -185,19 +200,22 @@ region for notifications. It remains until explicitly hidden, and it replaces
 the toast stack while open.
 
 - **Anatomy:** `35px` header with title and actions for clear/configure/hide,
-  followed by a notification list. The header title is uppercase `11px`. A
-  collapsed notification row is `34px` high in the compact modern layout;
-  expansion adds a wrapped message region and one more `34px` row for source and
-  actions.
+  followed by a notification list. In Classic, the title is uppercase `11px`
+  and a collapsed row is `42px` high. Modern changes the title to capitalized
+  `12px` semibold and the collapsed row to `34px`. Expansion adds a wrapped
+  message region and, when source or actions exist, one more row at the active
+  profile's row height.
 - **Surface:** use notification foreground/background, notification-center
   border, center-header foreground/background, link, separator, and
-  notification severity roles. Use a `1px` border, `8px` radius, and the large
-  shadow. Separate adjacent notifications with the semantic notification border.
+  notification severity roles. Use a `1px` border and the large shadow. The
+  Classic radius is `4px`; Modern uses `8px`. Separate adjacent notifications
+  with the semantic notification border.
 - **Placement and narrow adaptation:** cap the region at `450px × 400px`, then
   reduce width to the host width minus `16px` and height to the space remaining
-  after visible workbench bars. In the modern inset layout, use an `8px` inline
-  inset; bottom placements use a `32px` bottom inset and top-trailing uses a
-  `36px` top inset.
+  after visible workbench bars. Classic uses a `7px` inline inset, a `29px`
+  bottom inset with the status bar (`11px` without it), and a `7px` inset below
+  the usable top/title bar. Modern uses an `8px` inline inset, a `32px` bottom
+  inset, and a `36px` top inset.
 - **State and dismissal:** showing the center focuses its first item. Hide
   restores the editor focus. Hide the center automatically when no notifications
   remain. Clear-all skips notifications with active progress. A notification

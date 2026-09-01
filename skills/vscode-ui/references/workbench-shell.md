@@ -27,7 +27,7 @@ Represent editor groups as another nested split grid. Keep every flexible grid o
 
 ## Geometry profile
 
-Classic and Modern UI are distinct profiles. Do not mix Modern framing with Classic spacing.
+Classic is the baseline profile. Modern UI is an optional profile; when it is enabled, use its framing and density rules together instead of mixing them with Classic spacing.
 
 | Metric | Classic | Modern UI | Modern compact density |
 | --- | ---: | ---: | ---: |
@@ -37,7 +37,7 @@ Classic and Modern UI are distinct profiles. Do not mix Modern framing with Clas
 | Collapsible view header | 22px | 28px | 28px |
 | Status bar | 22px | 28px | 26px |
 | Default scrollbar | 10px | 8px | 8px |
-| Top-level inter-region gap | Flat/separator-led | 4px | 0 |
+| Top-level inter-region gap | 0px | 4px | 0px |
 | Window perimeter | Profile-owned | 4px | 4px |
 | Structural frame | Profile-owned | 1px / 8px radius | 1px / outer cluster corners only |
 
@@ -51,7 +51,7 @@ Split the title bar into leading, center, and trailing zones:
 - Center: command center or ellipsized window/workspace title. It must be allowed to shrink.
 - Trailing: global actions, layout controls, and platform window controls.
 
-The command center is 22px high, `38vw` wide up to 600px, with a 1px stroke, 6px radius, and 6px inline margin. Truncate its label rather than expanding the title bar. In Modern UI it is visually transparent at rest; hover and focus reveal the interactive surface and border.
+The command center is 22px high, `38vw` wide up to 600px, with a 1px stroke, 6px radius, and 6px inline margin. Truncate its label rather than expanding the title bar. In the Modern treatment it is visually transparent at rest; hover and active interaction reveal the interactive surface and border.
 
 The banner is a fixed 26px single line. Its icon and actions do not shrink; the message does and uses ellipsis. Keep dismissal at the far end.
 
@@ -112,8 +112,7 @@ Automatic container resize follows priority **within each split**: High children
 
 User sash dragging is constraint-led:
 
-- The primary sidebar is snap-enabled. After reaching its 170px minimum, another 85px of drag hides it; reversing through the same half-minimum threshold restores it.
-- The auxiliary sidebar and panel clamp rather than snap.
+- The primary sidebar, auxiliary sidebar, and panel can snap closed. After a visible region reaches its minimum, another half-minimum of drag hides it; reversing through the same threshold restores it. The primary sidebar always accepts snapping; a hidden auxiliary sidebar or panel can snap open when it contains a visible view container.
 - The editor is snap-enabled only when panel alignment is Center.
 - A hidden region retains its last visible extent and restores that extent when shown.
 

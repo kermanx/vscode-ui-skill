@@ -29,10 +29,13 @@ corners; do not independently round the title strip and canvas. The frame
 replaces a leading-edge separator shadow rather than stacking another separator
 beside the border.
 
-Keep the canvas positioned and clipped. Its foreground and background are the
-base layer; line, selection, diagnostic, hover, find, inline-completion, and
-diff decoration roles sit above it. Keep overlays and content widgets inside
-the canvas bounds unless a surface is explicitly documented as embedded.
+Keep the scrollable editor layers positioned and clipped inside the canvas.
+Their foreground and background are the base layer; line, selection,
+diagnostic, find, inline-completion, and diff decoration roles sit above it.
+Keep the editor root able to host content and overlay widgets that explicitly
+allow editor overflow. Suggest, parameter-hint, rename, and hover widgets may
+extend beyond the canvas while remaining constrained by the surrounding
+window or workbench surface.
 
 ### Gutter and line state
 
@@ -44,14 +47,16 @@ roles; do not signal the current line by changing alignment or weight.
 
 The gutter has its own background role. The current-line treatment defaults to
 the code line, but may instead cover the gutter or both. Keep separate roles for
-active and inactive current-line fills and for an optional current-line border.
-The highlight remains a line-wide layer rather than a selected row component.
+the focused current-line fill, the inactive current-line fill, and an optional
+current-line border. The highlight remains a line-wide layer rather than a
+selected row component.
 
 Use the active-selection background while the editor owns focus and the
 inactive-selection background otherwise. Keep related selection highlights,
 word highlights, and symbol highlights visually weaker than the primary
-selection. Rounded multi-line selection joins are the normal treatment; high
-contrast removes those rounded joins and relies on outlines.
+selection. Rounded multi-line selection joins are the normal treatment. High
+contrast removes those rounded joins but keeps a solid semantic selection fill;
+do not reduce the primary selection to an outline-only treatment.
 
 Diagnostic marks stay attached to the text range:
 
@@ -63,8 +68,9 @@ Diagnostic marks stay attached to the text range:
 | Hint | `2px` dotted underline/border |
 | Unnecessary | `2px` dashed underline/border |
 
-Do not replace those range treatments with a row fill. A glyph, overview mark,
-or gutter marker may repeat the severity as a secondary locator.
+Do not replace those range treatments with a row fill. Overview-ruler and
+minimap markers repeat information, warning, and error severities as secondary
+locators.
 
 ### Minimap, overview ruler, and scrolling
 
@@ -132,9 +138,9 @@ error foreground without recoloring the whole widget.
 
 ## Suggest widget
 
-Anchor suggestions to the insertion point. Prefer below when it fits; otherwise
-use the side with usable space. Keep the surface within the viewport and make
-the list scroll rather than letting the popup cross the canvas or window edge.
+Anchor suggestions to the insertion point. Place the list below when it fits;
+otherwise place it above. Keep the surface within the available window bounds
+and make the list scroll when space is constrained.
 
 The normal suggest surface is `430px` wide, has an Outer radius, `1px` border,
 and `0 2px 8px` shadow. Its list starts at twelve editor-line rows and never
@@ -154,8 +160,8 @@ Documentation may open as a second surface. Start it at `330px` wide, never
 below `220px`, and try the inline end side, inline start side, then below or
 above. Use the first placement that fits; otherwise choose the placement with
 the most usable area and scroll the documentation. Keep its border, background,
-foreground, and shadow in the suggest family rather than restyling it as a
-general dialog.
+and foreground in the suggest family. The documentation surface does not add
+an independent shadow; the shadow belongs to the main suggest widget.
 
 ## Parameter hints
 
@@ -238,8 +244,7 @@ replaced uses an underline.
 
 Keep the inline-completion toolbar hidden until pointer intent by default. When
 shown as a bordered hint, use hover roles, `4px` padding, and a `1px` border.
-Keep next/previous, count, and accept actions together; do not turn the hint into
-a general editor toolbar.
+Keep next/previous, count, and accept actions together in one compact toolbar.
 
 For edits, choose the least expansive presentation that expresses the change:
 inline insertion, inline deletion, word replacement, line replacement, then
@@ -323,12 +328,13 @@ An editor-themed surface should expose at least these independent role groups:
 
 | Group | Roles that must not collapse |
 |---|---|
-| Canvas | Foreground, background, gutter background, line numbers, active line number, current line, inactive current line |
+| Canvas | Foreground, background, gutter background, line numbers, active line number, focused current-line fill, inactive current-line fill |
 | Selection and find | Active selection, inactive selection, current find match, other find matches, find scope |
 | Widgets | Widget foreground/background/border/resize border/shadow; suggest selected and match roles; hover status role |
 | Inline and diff | Ghost text; inserted/removed line and character fills; gutter and overview markers; moved-block border |
 | Terminal | Foreground/background, active/inactive selection, cursor/cursor accent, split border, sixteen ANSI roles |
 
-Use high-contrast borders and outlines in addition to fills. Do not derive
-critical state from opacity alone, and do not merge editor, widget, hover,
-suggest, diff, and terminal backgrounds into one generic dark rectangle.
+In high contrast, use solid theme roles, add explicit contrast borders where
+the component defines them, and remove widget shadows. Do not merge editor,
+widget, hover, suggest, diff, and terminal backgrounds into one generic dark
+rectangle.

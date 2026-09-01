@@ -2,7 +2,7 @@
 
 Treat state as component semantics, not as a stack of color overlays. A row can be selected without being focused; a tab can be active inside an inactive group; a window can be inactive while the underlying document state remains current. Keep those facts in the DOM, then let the component choose the matching semantic theme roles.
 
-There is no universal precedence ladder. Use only the component-specific precedence documented below.
+Resolve overlapping states per component. For these surfaces, use the verified behavior below instead of assuming one shared precedence order.
 
 ## Portable state markers
 
@@ -26,7 +26,7 @@ There is no universal precedence ladder. Use only the component-specific precede
 Tabs have their own state model:
 
 - Active means the editor currently shown; selected can also include additional tabs in a multi-selection. An active tab keeps the active fill, while an active tab that is also part of a multi-selection adds the selection stroke.
-- Neutral-tab hover applies only when the tab is neither active nor selected. Active-tab hover uses its own active-hover role.
+- In the Classic tab style, the focused or unfocused hover palette applies to any tab that is not selected, including the active tab. In the optional Modern tab style, neutral hover is limited to tabs that are neither active nor selected, and active tabs use a separate active-hover background.
 - An active editor in an inactive group uses the unfocused-active foreground, background, and border roles; other tabs in that group use unfocused-inactive roles.
 - A configured modified-tab strip takes the top-border slot, so the ordinary active/selected top border is not added. The modified strip is `2px` and yields while the tab itself shows focus.
 

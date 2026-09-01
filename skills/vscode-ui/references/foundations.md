@@ -3,6 +3,11 @@
 Choose a named role, tier, or semantic token before choosing a literal. Raw CSS
 values are acceptable when they faithfully express the shared scales below.
 
+Classic workbench geometry is the baseline because the experimental Modern UI
+profile is disabled by default. Use Modern UI when the target calls for its
+floating-card layout and refreshed component styling; keep its geometry and
+density rules together instead of mixing isolated Modern values into Classic UI.
+
 ## Design values
 
 Reason from **Values → Principles → Moves**.
@@ -35,14 +40,19 @@ Choose radius by surface role, not taste.
 | Role | Radius | Use |
 |---|---:|---|
 | Compact | `2px` | Very compact elements |
-| Control | `4px` | Buttons, inputs, tabs, and interactive rows |
+| Control | `4px` | Buttons, inputs, tabs, and list or tree rows that use the shared control treatment |
 | Inner | `6px` | Non-control containers inside another surface |
-| Outer | `8px` | Menus, hovers, dialogs, toasts, and other overlays |
-| Extra-prominent | `12px` | Rare, deliberately prominent surfaces |
+| Outer | `8px` | Menus, editor hovers, Modern overlays, and floating workbench cards |
+| Extra-prominent (xLarge) | `12px` | Very prominent surfaces; Classic dialogs and quick input use this tier |
 | Circle | `9999px` or `50%` | Pills, dots, and circular controls |
 
-Control, Inner, and Outer are the normal elevation tiers. Use `0` at a joined
-edge or seam. A pill uses Circle rather than the nearest fixed-radius tier.
+Use `0` at a joined edge or seam. A pill uses Circle rather than the nearest
+fixed-radius tier. Do not force every component into the general tier table. In
+Classic UI, platform hovers use `5px`, editor hovers and menus use `8px`, dialogs
+and quick input use `12px`, and notification toasts use `4px`. Modern UI brings
+these overlay surfaces, including dialogs, quick input, and toasts, to `8px`.
+Row radius is component-specific; confirm a specialized row before applying the
+shared `4px` list or tree treatment.
 
 ## Strokes and shadows
 
@@ -60,10 +70,11 @@ Treat the shared shadows as CSS custom-property primitives:
 | Extra-large | `0 0 20px rgba(0, 0, 0, 0.15)` | Dialogs, quick input, and modal editor surfaces |
 
 Classic workbench structure may also use dedicated active-tab and directional
-depth shadows. Modern UI is intentionally flatter: remove part, active-tab, and
-panel-depth shadows, while retaining Large and Extra-large shadows for floating
-overlays. When the host is already using a high-contrast theme, follow its solid
-backgrounds and explicit contrast borders instead of adding decorative shadows.
+depth shadows. The optional Modern UI profile is intentionally flatter: it
+removes part, active-tab, and panel-depth shadows while retaining Large and
+Extra-large shadows for floating overlays. When the host is already using a
+high-contrast theme, follow its solid backgrounds and explicit contrast borders
+instead of adding decorative shadows.
 
 ## Typography
 
@@ -170,11 +181,11 @@ enabled. Use them only in standalone theme definitions.
 | Added | `#2EA043` | `#2EA043` |
 | Modified | `#0078D4` | `#005FB8` |
 
-## Modern UI density and global metrics
+## Optional Modern UI density and global metrics
 
-Modern UI defaults to Default density. Compact density joins the workbench cards
-and tightens selected internal spacing; it is distinct from the independent
-compact Activity Bar setting.
+When Modern UI is enabled, its layout density defaults to Default. Compact layout
+density joins the workbench cards and tightens selected internal spacing; it is
+distinct from the independent compact Activity Bar and editor-tab-height settings.
 
 | Metric | Default density | Compact density | Scope |
 |---|---:|---:|---|
@@ -182,8 +193,11 @@ compact Activity Bar setting.
 | Non-chat pane list-row side inset | `4px` | `2px` | Scrollbar remains at the pane edge |
 | Default-size Activity Bar item gap | `8px` | `4px` | The independent compact Activity Bar uses `0` |
 | Activity Bar inner lane | `8px` | `4px` | Excludes the shared outer perimeter |
-| Editor tab fill / total title height | `24px / 32px` | `20px / 28px` | Multi-tab Modern UI |
 | Status bar content / total height | `22px / 28px` | `22px / 26px` | Main window with floating layout |
+
+Editor tab height does not follow Modern layout density. Its independent Default
+and Compact setting produces a `24px / 32px` and `20px / 28px` tab fill / total
+title height respectively in the multi-tab Modern UI.
 
 These global changes apply in both Modern UI densities unless a component sets
 an explicit local measurement:

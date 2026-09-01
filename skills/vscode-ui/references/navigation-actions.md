@@ -22,9 +22,11 @@ Choose the surface by scope:
 Build a toolbar as a container with an ordered action list. Each item contains
 one button or menu trigger; separators are non-interactive list items. A
 horizontal bar uses Left/Right, Home, and End; a vertical bar uses Up/Down,
-Home, and End. Enter or Space invokes the focused action. Keep one enabled item
-in the tab order and move that tab stop with focus. Skip separators and disabled
-items during arrow navigation.
+Home, and End. Enter or Space invokes the focused action. Keep one action item
+in the tab order and move that tab stop with focus. Always skip separators during
+arrow navigation. Skip disabled items only when the toolbar is configured to
+focus enabled items exclusively; otherwise disabled items remain arrow-focusable
+but cannot invoke.
 
 - Product-action glyphs occupy a `16px × 16px` icon box. The generic text or
   keybinding label is `11px`, with `3px` padding and the control radius.
@@ -58,13 +60,13 @@ less frequent groups belong in More. Mutually exclusive, state-dependent
 commands may share one ordered slot—for example, cancel in place of refresh, or
 expand in place of collapse—so the row does not jump as the state changes.
 
-The anatomy is `header → shrinkable title → toolbar`. Keep the title at
-`min-width: 0`, truncate it, and keep the toolbar from shrinking. In the classic
-pane header, the title is `11px`, bold, uppercase, and the header is `22px` high.
-Its action area has `8px` trailing space; items have `4px` trailing space and
-labels have `2px` padding. Modern UI raises the pane header to `28px`; use the
-Modern pane surface and separator roles rather than carrying over the classic
-header fill.
+The anatomy is `header → title → toolbar`. Truncate the classic pane title
+and give it `min-width: 3ch`; place the toolbar after it with automatic leading
+space. In the classic pane header, the title is `11px`, bold, uppercase, and the
+header is `22px` high. Its action area has `8px` trailing space; items have `4px`
+trailing space and labels have `2px` padding. Modern UI raises the pane header to
+`28px`; use the Modern pane surface and separator roles rather than carrying over
+the classic header fill.
 
 Actions may be quiet at rest, but reveal them when an expanded pane is hovered,
 when the header or a descendant has focus, or when the user requests always-
@@ -79,10 +81,10 @@ a large inline set fit.
 ## Editor tabs
 
 Use editor tabs for open editors inside one editor group. The structure is a
-scrollable tab list followed by a non-shrinking editor-actions toolbar. Each tab
-contains a label, an optional file icon, a reserved action or status column, and
-an inset visual fill. Keep the tab hit targets contiguous even though the fills
-look separated.
+scrollable tab list followed by an editor-actions toolbar. The toolbar uses
+`flex: 0 1 auto`: it does not grow, but it may shrink. Each tab contains a label,
+an optional file icon, a reserved action or status column, and an inset visual
+fill. Keep the tab hit targets contiguous even though the fills look separated.
 
 ### Modern UI direction
 
@@ -126,10 +128,9 @@ add an adjacent action column. Keep the action bar focusable only on the active
 editor tab.
 
 When tabs do not fit, either scroll the single row horizontally or enable wrapped
-rows. Keep the trailing editor-actions toolbar fixed; in wrapped mode it follows
-the final row. A separate pinned row may sit above the normal row, divided by a
-single `1px` semantic separator. Do not combine a hidden scrollbar, wrapped
-labels, and shrinking icons as an ad hoc third mode.
+rows. Keep the editor-actions toolbar after the tab list; in wrapped mode position
+it at the end of the final row. A separate pinned row may sit above the normal
+row, divided by a single `1px` semantic separator.
 
 ### Classic scope
 
@@ -157,8 +158,11 @@ overflow for pane tabs that cannot fit rather than shrinking icon boxes.
 
 A settings scope switcher is a narrower, explicitly scoped variant: a tablist of
 available scopes with `13px` semibold labels, `2px 8px` padding, control radius,
-active fill, and hover fill. Hide unavailable scopes. Do not promote this
-settings-specific pill treatment into a rule for ordinary command toolbars.
+active fill, and hover fill. Keep User, Remote, Workspace, and Folder in the
+switcher's action model. Disable Remote when no configured remote target is
+available, Workspace in an empty workbench, and Folder outside a folder
+workspace; the base presentation may suppress disabled items. Do not promote
+this settings-specific pill treatment into a rule for ordinary command toolbars.
 
 ## Breadcrumbs
 
@@ -196,7 +200,7 @@ grouping.
 ### Menu bar
 
 The top-level list is a single-line flex row clipped by its container. Each title
-uses `0 8px` padding and the control radius, with a `1px` inset focus outline.
+uses `0 8px` padding and a `5px` radius, with a `1px` inset focus outline.
 The More control is `22px × 22px` with `0 8px` padding; in overflow-only mode its
 occupied width is `38px`.
 
@@ -231,13 +235,18 @@ open menu; keybindings and submenu indicators already occupy the trailing lane.
 ### Split and connected controls
 
 Use a split dropdown only when the primary click has a stable default and the
-adjacent chevron opens alternatives from the same action family. Keep the
-primary and dropdown as separate focusable controls in one flex row. Use a
-`16px` primary icon and a `12px` chevron on a `16px` line box. Round only the
-outer corners; adjoining edges use radius `0`, with a `1px` seam where a visual
-separator is needed. The combined control uses the control radius. This seam
-rule is for connected controls; it is not a license to square unrelated adjacent
-buttons.
+adjacent chevron opens alternatives from the same action family. Two verified
+variants use different geometry:
+
+- In an action-bar split dropdown, keep the primary action and dropdown in one
+  flex row with a `5px` group radius. Use a `16px` primary icon and a `12px`
+  chevron on a `16px` line box.
+- In a connected text-button dropdown, keep the controls separately focusable.
+  Use `4px 0 0 4px` on the primary button and `0 4px 4px 0` on the dropdown
+  button, remove the adjoining border widths, and draw the separator as a `1px`
+  rule when needed.
+
+Do not transfer either variant's geometry to unrelated adjacent buttons.
 
 ## Activity items
 
@@ -273,17 +282,18 @@ geometry back to the vertical rail.
 ## Command center
 
 Use the command center as one global search or command trigger in the title
-area. Its structure is a centered toolbar region containing a button with a
-search icon, a shrinkable label, and optional navigation actions around it. The
-main trigger is `22px` high, `38vw` wide up to `600px`, with `0 6px` outer
-margin, a `1px` border, Inner radius, and clipped contents. Use `0 12px`
-padding for grouped content and ellipsize the search label.
+area. Its structure is a centered toolbar region with optional leading
+navigation actions followed by a button containing a search icon and a
+shrinkable label. The main trigger is `22px` high, `38vw` wide up to `600px`,
+with `0 6px` outer margin, a `1px` border, Inner radius, and clipped contents.
+Use `0 12px` padding for grouped content and ellipsize the search label.
 
 Hover switches the trigger to its active foreground, background, and border
-roles. When the whole title bar is inactive, the command-center foreground and
-border follow the inactive title-bar roles and the control uses `opacity: .6`.
-Disabled back or forward actions remain legible with the command-center
-foreground even though they cannot invoke.
+roles. When the whole title bar is inactive, the command-center foreground
+follows the inactive title-bar foreground, its border uses the dedicated
+command-center inactive-border role, and the title-bar contents use
+`opacity: .6`. Disabled back or forward actions use the shared disabled-action
+treatment and cannot invoke.
 
 In compact mode, hide the search icon, left-align the label, use `8px` start
 padding, and let the trigger consume the available width. When a top-aligned

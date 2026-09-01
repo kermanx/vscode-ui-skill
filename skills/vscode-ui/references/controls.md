@@ -1,6 +1,6 @@
 # Controls
 
-Use the native semantic control whenever it already expresses the interaction: `button` for an action, `input` or `textarea` for text entry, `select` for an ordinary option list, and radio or checkbox inputs for choices. Add custom presentation only for the compact workbench behaviors described here. Theme every control through semantic roles; do not freeze theme-derived foregrounds, fills, strokes, or focus colors.
+Use the native semantic control whenever it already expresses the interaction: a button or equivalent button semantics for an action, `input` or `textarea` for text entry, `select` for an ordinary option list, and radio or checkbox semantics for choices. Add custom presentation only for the compact workbench behaviors described here. Theme every control through semantic roles; do not freeze theme-derived foregrounds, fills, strokes, or focus colors.
 
 ## Buttons and action controls
 
@@ -21,13 +21,13 @@ Use a primary button for the leading action in a local action group. Render late
 - Hover changes the fill. Keyboard focus uses the focus border outside the button with a 2 px offset; focused text buttons also retain the hover fill. Pressed state may use the toolbar active fill when the button is presented as a toolbar action.
 - Disabled text buttons keep their geometry, block activation, use the default cursor, and reduce the whole control to 40% opacity.
 - A busy action replaces its leading icon with a spinner in the same slot. Reserve that slot before work starts so the label and button width do not jump.
-- In horizontal dialog rows, buttons size to their content and long labels truncate with an ellipsis. In a vertical dialog stack, buttons fill the row. Keep the full label available as the control title when it truncates.
+- In horizontal dialog rows, buttons size to their content and long labels truncate with an ellipsis. In a vertical dialog stack, buttons fill the row.
 
 ### Icon buttons
 
 Use an icon-only button for a familiar, repeatable action in a toolbar or compact trailing-action strip. Use a labeled button when the action is uncommon, consequential, or cannot be recognized from the glyph and its visible context.
 
-- Use a native `button` containing one 16 px icon. The compact action label has 3 px padding, producing a 22 × 22 px visual footprint before any surface-specific row sizing.
+- Use a button or equivalent button semantics containing one 16 px icon. The compact action label has 3 px padding, producing a 22 × 22 px visual footprint before any surface-specific row sizing.
 - Use `--vscode-icon-foreground` at rest, `--vscode-toolbar-hoverBackground` on hover, and `--vscode-toolbar-activeBackground` while pressed. A high-contrast hover state may add a 1 px dashed inset outline.
 - Use the standard 1 px focus border inset by 1 px. Do not remove the visible focus state just because the action is icon-only.
 - Disabled toolbar actions remain in place and render at 60% opacity. This is intentionally less faded than a disabled text button.
@@ -35,11 +35,11 @@ Use an icon-only button for a familiar, repeatable action in a toolbar or compac
 
 ### Button groups and split buttons
 
-A button bar is an ordered action group. A split button is one primary action plus a menu containing related alternatives.
+A button bar is an ordered action group. A split button is one primary action plus a menu containing related alternatives. The following geometry describes the verified base/dialog button treatment; do not transfer it to toolbar or menu-driven split actions unchanged.
 
 - A split button is one flex row: the primary segment, a 1 px separator, and a dropdown segment. The primary segment loses its right border and right radii. The dropdown segment loses its left border and left radii, and uses 0 4 px padding. The separator itself has 4 px vertical inset and uses `--vscode-button-separator`.
 - Use one outer 4 px silhouette. In dialogs, `focus-within` outlines the whole split group with a 1 px focus border at a 2 px offset; the segments still expose their individual focus targets.
-- Use a 12 px chevron for the menu affordance. The menu segment exposes expanded/collapsed state and opens the alternatives; the main segment immediately runs the current default action.
+- Use the standard 16 px control icon for the menu affordance. The menu segment exposes expanded/collapsed state and opens the alternatives; the main segment immediately runs the current default action.
 - Include the current primary action in the menu by default. If a submenu provides several primary candidates, promote its first item to the main segment and keep the remainder in the dropdown.
 - Let the main segment grow and set its label container to `min-width: 0`, no wrapping, and ellipsis overflow. The menu segment and separator never shrink away.
 - Arrow keys may move focus through a button bar, wrapping at either end. Horizontal bars use Left/Right; vertical bars use Up/Down.
@@ -110,7 +110,7 @@ Use a native checkbox for a durable Boolean or mixed state with a visible label.
 **Compact option toggle**
 
 - Use a 20 × 20 px box with 1 px transparent border, 1 px padding, 3 px radius, a 16 px icon, and 2 px leading margin. Allocate 22 px per toggle in a row.
-- Rest uses the icon foreground. Hover uses `--vscode-inputOption-hoverBackground`. Checked state uses the active option background, foreground, and border roles.
+- Unchecked state inherits the local foreground. Hover uses `--vscode-inputOption-hoverBackground`. Checked state uses the active option background, foreground, and border roles.
 - Disabled compact toggles use 40% opacity, the default cursor, and no pointer activation. Checked state remains visually legible under the disabled treatment.
 - This pattern is a checked option, not an on/off switch. Do not introduce a sliding switch visual into settings rows that otherwise use checkboxes.
 
@@ -120,8 +120,8 @@ Use a segmented text choice for a small, stable set of mutually exclusive option
 
 - Join the option labels into one horizontal row. Interior segments have square corners; the first and last segments receive 3 px outer radii.
 - Use 0.9 em text, 1 em line height, and 0.5 em horizontal padding for the compact base treatment.
-- Active and inactive segments use separate foreground, background, and border roles. Inactive hover has its own fill and border. A high-contrast hover state may add a 1 px dashed outline.
-- Remove duplicate interior seams: the segment before the active item drops its right border, and the active item drops its left border. Do not allow the selected segment to appear double-width at either edge.
+- Active and inactive segments use separate foreground, background, and border roles. Inactive hover changes the fill. A high-contrast hover state may add a 1 px dashed outline.
+- Remove duplicate interior seams: each inactive segment except the last drops its right border, and the segment immediately after the active item drops its left border. The active segment keeps both borders.
 - Default to the explicitly selected item; if none is provided, activate the first item. Ignore activation of the already-selected segment and of disabled segments.
 
 ### Segmented icon action rail
@@ -142,7 +142,6 @@ Render a shortcut as a sequence of keycaps, using `kbd` elements when the label 
 - Each keycap is an inline-flex box with a 1 px border, 3 px radius, at least 12 px width, 11 px text, and 3 px 5 px padding. Adjacent keycaps have 2 px horizontal margins; remove the outer margin from the first and last keycap.
 - Render modifiers and the terminal key as separate keycaps using platform-appropriate labels. A chord separator consumes 6 px; separate multi-chord sequences with a space.
 - Use the keybinding-label foreground, background, border, and bottom-border roles. The optional bottom edge may use an inset widget-shadow treatment to give the keycap its pressed-key silhouette.
-- Keep the complete shortcut together where possible. If a surrounding table must clip it, let the table own overflow; do not ellipsize individual key names into ambiguous fragments.
 
 ### Count badge
 

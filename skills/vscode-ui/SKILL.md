@@ -14,6 +14,7 @@ Preserve the project's framework, behavior, data model, and component boundaries
 - Apply only the verified rules in the references. Do not extrapolate a missing design rule from taste, a nearby component, or a generic design-system convention.
 - Inspect the product's hierarchy, actions, data, constraints, and existing patterns before choosing a composition.
 - Respect each rule's stated scope. A component-specific value overrides a shared default only for that component.
+- Treat the Classic workbench as the baseline. Modern UI is optional and experimental; apply its values only when that profile is intended. In either profile, a verified component rule overrides shared guidance.
 - When the references do not settle a detail, preserve the project's existing choice or omit the unsupported detail.
 - Do not load every reference by default. Read only the files needed for the current surface.
 
@@ -24,11 +25,11 @@ Reason from **Values → Principles → Moves**.
 | Value | Principle | Move |
 |---|---|---|
 | Calm | Quiet at rest; present on intent | Let secondary chrome recede until hover, focus, or interaction. |
-| Calm | Leave room to breathe | Group with spacing and soft edges before adding another line or fill. |
-| Calm | Explain the interface plainly | Prefer a familiar word to an unfamiliar glyph. |
+| Calm | Room to breathe | Group with spacing and soft edges before adding another line or fill. |
+| Calm | The interface explains itself, plainly and kindly | Prefer a familiar word to an unfamiliar glyph. |
 | Focused | One thing leads; the rest supports | Demote supporting content with quieter type, icons, or surfaces. |
-| Focused + Consistent | Elevation is encoded | Choose roundness and shadow from the surface's place in the stack. |
-| Consistent | Sameness signals sameness | Give equivalent elements the same named scales and states. |
+| Focused + Consistent | Elevation is encoded | Choose roundness from the surface's place in the stack. |
+| Consistent | Sameness signals sameness | Give equivalent elements the same named scales. |
 | Delightful | Delight earns its keep | Use motion or polish only to guide, confirm, orient, or smooth a jump. |
 
 Name the value and principle before choosing a concrete move.
