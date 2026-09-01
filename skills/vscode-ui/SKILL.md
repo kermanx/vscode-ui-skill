@@ -33,6 +33,7 @@ Preserve the project's framework, behavior, data model, and component boundaries
 
 - Read [foundations.md](references/foundations.md) before selecting spacing, radius, type, icons, strokes, shadows, colors, motion, or code rendering.
 - Read [interaction-states.md](references/interaction-states.md) when implementing or reviewing hover, focus, selection, disabled, checked, expanded, busy, drag, dirty, read-only, or reveal behavior.
+- Read [layout.md](references/layout.md) when deciding whether content belongs in an editor tab, sidebar, panel, or status bar, or when planning the information architecture of a complete workbench surface.
 - Read [workbench-shell.md](references/workbench-shell.md) for the application frame, title and status bars, activity rail, sidebars, editor region, panels, separators, resizing, and layout state.
 - Read [controls.md](references/controls.md) for buttons, action controls, text entry, search, validation, selects, checkboxes, compact toggles, segmented choices, keybinding labels, and badges.
 - Read [collections.md](references/collections.md) for lists, trees, tables, rows, filtering, inline editing, empty results, and virtualization.
