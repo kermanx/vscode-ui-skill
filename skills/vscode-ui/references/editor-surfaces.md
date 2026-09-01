@@ -31,9 +31,11 @@ needed, but constrain them to the surrounding window.
 ### Gutter and line state
 
 Lay gutter lanes out as glyph margin, line numbers, line decorations, then
-code. Use a `10px` line-decoration lane. Reserve at least five character cells
-for line numbers, right-align them, and use tabular numerals. Give ordinary,
-active, and dimmed line numbers separate foreground roles.
+code. The base line-decoration lane is `10px`; the default folding controls add
+another `16px`, making that lane `26px` while folding controls are available.
+Reserve at least five character cells for line numbers, right-align them, and
+use tabular numerals. Give ordinary, active, and dimmed line numbers separate
+foreground roles.
 
 The gutter has its own background role. Keep separate roles for the focused
 current-line fill, inactive current-line fill, and optional current-line
@@ -48,11 +50,11 @@ Attach diagnostics to text ranges rather than filling the row:
 
 | Severity | Range treatment |
 |---|---|
-| Error | `4px` double underline in the error role |
-| Warning | `4px` double underline in the warning role |
-| Information | `4px` double underline in the information role |
-| Hint | `2px` dotted underline in the hint role |
-| Unnecessary | `2px` dashed underline in the unnecessary-code role |
+| Error | Error-foreground squiggle; add a `4px` double underline only when the theme defines the error-border role |
+| Warning | Warning-foreground squiggle; add a `4px` double underline only when the theme defines the warning-border role |
+| Information | Information-foreground squiggle; add a `4px` double underline only when the theme defines the information-border role |
+| Hint | Hint-foreground dot pattern; add a `2px` dotted underline only when the theme defines the hint-border role |
+| Unnecessary | Deemphasize with the unnecessary-code opacity; add a `2px` dashed underline only when its border role is defined |
 
 Repeat error, warning, and information locations in the minimap or overview
 ruler only as secondary locators.
@@ -80,9 +82,6 @@ Follow [navigation and actions](./navigation-actions.md) for tab geometry and
 states. Tabs and breadcrumbs sit directly above the canvas without an enclosing
 card. Use the focused and unfocused editor-tab roles for the active document in
 each group. Do not dim an inactive group's canvas as a whole.
-
-When a close or status action is revealed over a tab label, give its action
-area the matching tab background so label text cannot show through it.
 
 ## Find widget
 
@@ -138,9 +137,9 @@ outline, and match roles.
 
 Documentation may open as an attached second surface. Start it at `330px` wide
 and never below `220px`. Try inline end, inline start, then below or above. Use
-the first placement that fits; otherwise choose the placement with the most
-usable area and scroll its contents. Give it the same `8px` radius and suggest
-roles, but no independent shadow.
+the first placement that fits; otherwise choose the candidate with the smallest
+shortfall on its placement axis and scroll its contents. Give it the same `8px`
+radius and suggest roles, but no independent shadow.
 
 ## Parameter hints
 
@@ -233,13 +232,14 @@ hint for a long-distance edit instead of filling every intervening line.
 ## Diff surface
 
 Use side-by-side diff by default with a resizable `50%` split. When the surface
-is `900px` wide or narrower, switch to inline diff by default. Keep the original
-side read-only unless editing it is an explicit feature.
+is `900px` wide or narrower, switch to inline diff by default. The base diff
+widget treats the original side as read-only; the workbench makes it editable
+when its underlying resource is writable.
 
 Separate inserted and removed line fills from inserted and removed character
 fills. Keep gutter marks, overview marks, and moved-block borders independent.
-Inline deletions use strikethrough; an empty character change uses a `3px`
-vertical marker.
+The default inline view uses deletion fills rather than strikethrough. An empty
+character change uses a `3px` vertical marker.
 
 Separate side-by-side editors with a `1px` diff border and directional edge
 shadows. Use an `8px × 8px` diagonal pattern for alignment gaps so blank space
@@ -287,8 +287,8 @@ beneath a block cursor remains legible.
 Map ordinary and bright black, red, green, yellow, blue, magenta, cyan, and
 white to sixteen terminal roles. Keep command success, command error, current
 find, other find matches, hover highlight, overview cursor, and overview find
-markers outside that ANSI palette. Find backgrounds remain translucent so text
-stays legible.
+markers outside that ANSI palette. Other-match and hover backgrounds are
+translucent; the current-match background may be opaque.
 
 ## Theme-role minimum
 
@@ -296,7 +296,7 @@ Keep these role groups independent:
 
 | Group | Roles that must not collapse |
 |---|---|
-| Canvas | Foreground, background, gutter, line numbers, active line number, focused current line, inactive current line |
+| Canvas | Foreground, background, gutter, line numbers, active line number, current-line fill, inactive-current-line fill |
 | Selection and find | Active selection, inactive selection, current find match, other matches, find scope |
 | Widgets | Widget foreground, background, border, resize border, shadow; suggest selection and match; hover status |
 | Inline and diff | Ghost text; inserted and removed line and character fills; gutter and overview markers; moved-block border |

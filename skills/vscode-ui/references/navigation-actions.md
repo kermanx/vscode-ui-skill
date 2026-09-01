@@ -33,14 +33,14 @@ arrow-focusable but cannot invoke.
 - Expose a toggle as pressed. In a tablist, expose the same checked state as
   selected.
 
-Keep primary actions inline and put secondary actions under More. In workbench
-title toolbars, the `navigation` group is primary; do not infer that every group
-belongs inline. Responsive toolbars may shrink all actions or only the last
-action. Measure a default minimum of `20px` plus `4px` action padding, or `24px`
-per action, when deciding whether to overflow. Move trailing actions into More,
-retain the configured minimum visible count, reserve the same `24px` for More,
-and remove More when it is empty. Join overflowed and pre-existing secondary
-actions with one separator.
+Keep primary actions inline and put secondary actions under More. Menu-driven
+action bars normally treat the `navigation` group as primary; specialized title
+areas may define a different primary set. Responsive toolbars may shrink all
+actions or only the last action. Measure a default minimum of `20px` plus `4px`
+action padding, or `24px` per action, when deciding whether to overflow. Move
+trailing actions into More, retain the configured minimum visible count, reserve
+the same `24px` for More, and remove More when it is empty. Join overflowed and
+pre-existing secondary actions with one separator.
 
 A select inside an action bar may flex between `60px` and `170px`; clip its
 container and leave `10px` after it. These bounds do not apply to ordinary text
@@ -58,9 +58,10 @@ when the header or a descendant has focus, or when always-visible actions are
 enabled. Never hide the action that owns focus. Row-local toolbars use the same
 visibility conditions: row hover, row focus, toolbar hover, or an active action.
 
-On narrow headers, truncate the title and apply responsive overflow to the
-actions. Do not shrink product icons or separators to preserve a large inline
-set.
+On narrow pane headers, truncate the title and keep actions at fixed size. The
+header clips an over-wide action set; its existing More menu contains configured
+secondary actions and is not a responsive overflow mechanism. Do not shrink
+product icons or separators.
 
 ## Editor tabs
 
@@ -118,21 +119,20 @@ rounded inset fills.
 - For a top header, draw the active line at the bottom. For a footer, mirror it
   at the top. Use More when peer destinations do not fit.
 
-The Settings scope switcher is a specific flat tablist. Its container is `32px`
-high with a `1px` bottom border. Labels are `13px`, regular case, with
-`7px 8px 6.5px`; they have `0` radius and no fill. Checked and hovered labels
-use a `1px` bottom line; focus uses the focus-border role. Hide unavailable
-targets: Remote without a remote authority, Workspace in an empty workbench,
-and Folder outside a multi-folder workspace.
+The Settings scope switcher is a specific flat tablist with a `1px` bottom
+border. Labels are `13px`, regular case, with `7px 8px 6.5px`; they have `0`
+radius and no fill. Checked and hovered labels use a `1px` bottom line; focus
+uses the focus-border role. Hide unavailable targets: Remote without a remote
+authority, Workspace in an empty workbench, and Folder unless the workbench is
+in workspace state with at least one folder.
 
 ## Breadcrumbs
 
-Use breadcrumbs as a horizontal `list` of `listitem` buttons containing a label
-or icon and a registered chevron separator. Hide the separator after the final
-item. Do not add unrelated actions to the list.
+Use breadcrumbs as a horizontal `list` of interactive `listitem` elements
+containing a label or icon. Separate items with the registered `16px` chevron
+and omit it after the final item. Do not add unrelated actions to the list.
 
-The row is `22px` high. Each leading separator slot is `16px × 22px`; leave
-`8px` after the final item and `6px` after a symbol icon. A segment may use at
+The row is `22px` high. Leave `8px` after the final item. A segment may use at
 most `80%` of the row width. Keep one line and let items shrink. Focused and
 selected labels are underlined. Resolve combined focus-and-selection before
 either state alone, then hover.
@@ -179,8 +179,8 @@ disabled-foreground role.
 
 Use `1px` separators with `5px 0` margins. Remove leading, trailing, and
 consecutive separators. A checked item adds the check glyph without replacing
-its label. Focused rows use the menu-selection foreground, background, and
-optional `1px` inset border. Disabled rows cannot invoke.
+its label. Focused rows use the list-hover foreground and background plus the
+optional menu-selection `1px` inset border. Disabled rows cannot invoke.
 
 Open a hovered submenu after `250ms`. Flip it horizontally or vertically when
 needed to remain in the viewport. Cap scrolling to the available viewport, keep

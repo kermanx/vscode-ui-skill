@@ -40,7 +40,7 @@ These recipes mirror the current Classic workbench. Assemble them from the exist
 
 ## Settings
 
-- **Composition.** Keep search persistent at the top, place scope selectors immediately below it, and split the body into a settings table of contents and a settings list. A setting row reads as category and label, indicators, description, then its control; deprecation and validation stay with that row.
+- **Composition.** Keep search persistent at the top, place scope selectors immediately below it, and split the body into a settings table of contents and a settings list. A typical setting row reads as category and label with indicators, then description and control; Boolean and some list settings may lead the description row with their control. Deprecation and validation stay with that row.
 - **Priority and actions.** Search and the settings list are primary. The table of contents, result count, sync note, and per-setting indicators are secondary. Reveal the per-setting overflow action from the title area on hover or focus instead of reserving a permanently busy action column.
 - **Constraint and states.** Remove the table of contents at narrow widths while preserving search, scope, and the same settings list. Let controls use the full row or a key/value split as their data requires. During search, use delayed progress. If filters produce no settings, replace both navigation and results with a no-results message and a clear-filters action.
 
@@ -60,7 +60,7 @@ These recipes mirror the current Classic workbench. Assemble them from the exist
 
 - **Choose the smallest scope that owns the problem.** Input validation belongs beside its input; empty, filtered, loading, and query errors belong in the affected surface or pane; row-scoped failures belong on the row. Escalate to a notification when an operation has no durable local owner, fails after leaving the surface, or needs a workbench-level recovery action.
 - **Compose a notification in two levels.** The collapsed row is severity, message, and contextual toolbar. Expansion reveals wrapped detail, source, and primary action buttons; progress spans the item. Do not offer close while progress is running. Keep secondary configuration, expansion, and dismissal controls out of the resting row until hover, focus, or expansion.
-- **Separate interruption from history.** Transient toasts announce recent work without replacing the focused surface; a notification center retains the list, unread state, in-progress indication, filtering, and clear-all controls. When available height cannot fit every toast, queue the overflow while retaining it in the center.
+- **Separate interruption from history.** Transient toasts announce recent work without replacing the focused surface; the notification center retains the list, in-progress indication, filtering, and clear-all controls, while the Status Bar indicator carries the unread count. Hide toasts that exceed the visible limit or available height while retaining every notification in the center; burst-suppressed items may remain center-only.
 
 ## Empty workspace
 

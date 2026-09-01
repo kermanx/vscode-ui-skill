@@ -16,7 +16,7 @@ In a workbench button bar, render the first primary action as primary and later 
 | Radius | 4 px | 4 px |
 | Natural height | 26 px | 22 px |
 
-- Center the label in a flex row. Keep a leading icon in the same row and use a 4 px gap before the label.
+- Center the label in a flex row. Keep a leading Codicon in the same row with `0 0.2em` horizontal margins.
 - Primary buttons use `--vscode-button-background`, `--vscode-button-foreground`, `--vscode-button-hoverBackground`, and the optional `--vscode-button-border`. Secondary buttons use `--vscode-button-secondaryBackground`, `--vscode-button-secondaryForeground`, `--vscode-button-secondaryHoverBackground`, and the optional `--vscode-button-secondaryBorder`.
 - Hover changes the fill. Keyboard focus uses a 1 px focus outline with a 2 px outer offset; focused text buttons retain the hover fill.
 - Disabled buttons keep their geometry, block activation, use the default cursor, and render at 40% opacity.
@@ -60,7 +60,7 @@ Use a single-line input for a short value and a textarea for wrapping or multi-l
 - Inherit the local typeface, size, and line height. Single-line text ellipsizes; textarea content wraps.
 - Use `--vscode-input-background`, `--vscode-input-foreground`, `--vscode-input-border`, and `--vscode-input-placeholderForeground`. Keep the editable element borderless inside the 1 px outer control.
 - A flexible textarea mirrors its wrapping content to calculate height. Hide its native scrollbar below the configured cap; after the cap, let the containing scrollable element handle vertical scrolling. Disable manual resize when automatic sizing owns the height.
-- Put input actions on the trailing edge. Use 2 px between actions and subtract the measured action strip from the editable width so text never sits beneath the icons.
+- Put input actions on the trailing edge with 2 px between actions. The containing composite must measure that strip and set the input's trailing reservation so text never sits beneath the icons.
 - Disabled input uses the native disabled state and dismisses any open validation message.
 
 ### Search and find controls
@@ -91,7 +91,7 @@ Use a native `select` for an ordinary labeled list. Use the custom popup when op
 
 - The closed select uses a 4 px radius. In an action row it has a 100 px minimum width, 18 px minimum height, and `2px 23px 2px 8px` padding. On macOS, the compact action-row select uses 11 px text and a 24 px minimum height.
 - Theme the closed field with `--vscode-dropdown-background`, `--vscode-dropdown-foreground`, and `--vscode-dropdown-border`. The custom popup uses the dropdown-list background, an 8 px radius, and `0 0 12px rgba(0, 0, 0, 0.14)` shadow.
-- Popup rows are 22 px high. Keep primary text, detail, and trailing decorators on one line and ellipsize them. Use 6 px leading text inset and keep a right decorator 10 px from the edge. Render detail at 70% opacity.
+- Popup rows are 22 px high. Keep primary text, detail, and trailing decorators on one line and ellipsize them. Use 2 px row padding plus 6 px text padding for an 8 px visual leading inset; keep a right decorator 10 px from the edge. Render detail at 70% opacity.
 - Make the popup at least as wide as the closed field and wide enough for the longest option that fits the available viewport. Open below by default. If the list cannot fit there, fewer than three complete rows fit below, and more fit above, open above. Clip to complete 22 px rows.
 - Opening focuses the selected option. Arrow, Page, Home, End, and first-character navigation skip disabled options; pointer hover also ignores them. Enter or Tab commits. Escape cancels and restores the value held when the popup opened.
 - A disabled placeholder may remain selected in the closed field while being omitted from the popup. Escape restores that placeholder even if opening temporarily focused the first visible option.
@@ -110,7 +110,7 @@ Use a checkbox for a durable Boolean or mixed state with a visible label. Use th
 
 - Use a 20 × 20 px box with a 1 px transparent border, 1 px padding, 3 px radius, a 16 px icon, and 2 px leading margin. Allocate 22 px per toggle.
 - Unchecked state inherits the local foreground. Hover uses `--vscode-inputOption-hoverBackground`. Checked state uses the active-option background, foreground, and border roles.
-- Disabled toggles use 40% opacity, the default cursor, and no pointer activation. Preserve checked-state visibility under the disabled treatment.
+- The base disabled toggle uses 40% opacity, the default cursor, and no pointer activation. Feature hosts may override this treatment: Search and Notebook Find use 30% opacity, and Search clears the checked fill while disabled.
 - This is a checked option, not a sliding switch.
 
 ### Segmented text choice
@@ -127,8 +127,8 @@ Use a segmented text choice for a small, stable, mutually exclusive set. Use an 
 
 Use this control only for adjacent related icon actions whose availability can change. Use segmented radios for mutually exclusive choices.
 
-- The housing is 56 × 24 px with a 1 px input/widget border and an 8 px radius. Each of two cells is 27 px wide, fills the height, and uses one icon with `--vscode-icon-foreground`.
-- Hover fills the complete cell with `--vscode-toolbar-hoverBackground` and a 7 px radius. Visible focus uses a 1 px focus outline inset by 1 px.
+- The base housing is 56 × 24 px with a 1 px input/widget border and an 8 px radius. Each of two cells is 27 px wide, fills the height, and uses one icon with `--vscode-icon-foreground`. The current Chat voice control overrides the housing to 56 × 22 px and a circular radius.
+- Hover fills the complete cell with `--vscode-toolbar-hoverBackground`; use the base 7 px radius or the host's matching circular radius. Visible focus uses a 1 px focus outline inset by 1 px.
 - When one cell is present, expand it to 54 px and make the housing border transparent.
 - Collapse an absent cell to zero width and zero opacity, disable pointer events, then hide visibility after the transition. Use a 300 ms width transition and a 220 ms opacity transition; remove transitions for reduced motion.
 
@@ -149,7 +149,7 @@ Use a count badge as compact supporting metadata beside a label.
 | Variant | Padding | Radius | Text | Minimum |
 | --- | ---: | ---: | ---: | ---: |
 | Numeric | 3 px 5 px | 11 px | 11 px / 11 px | 18 × 18 px |
-| Long text | 2 px 3 px | 2 px | Inherit | Content-sized |
+| Long text | 2 px 3 px | 2 px | 11 px / normal | 18 px wide; content-height |
 
 - Center numeric content and use regular weight.
 - Use `--vscode-badge-background` and `--vscode-badge-foreground`. Add `--vscode-contrastBorder` only when it resolves to a visible border.

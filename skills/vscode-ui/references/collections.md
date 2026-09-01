@@ -146,7 +146,7 @@ Headers and cells do not wrap: they shrink within their assigned width and ellip
 
 Printable type navigation prioritizes a prefix match, then a constrained fuzzy match, starting after the current focus for a new query. Its input buffer clears after `800ms`. It changes focus and scroll reveal only; use a visible filter/search control when the user expects the data set to narrow.
 
-A tree find control may switch between highlight and filter modes. When it reports no match, show a local “No results found” state in the find surface. Feature-level empty results are different: Explorer, Search, Outline, and Settings use a sibling message or welcome surface and hide or resize the collection. Do not manufacture a selectable empty row.
+A tree find control may switch between highlight and filter modes. When it reports no match, show a local “No results found” state in the find surface. Feature-level empty results are different: Explorer, Search, Outline, and Settings use a sibling message or welcome surface rather than a selectable empty row. Each feature decides whether its collection is hidden, retained, or resized.
 
 ## Virtualization and variable height
 
@@ -163,7 +163,7 @@ Do not combine variable-height measurement with horizontal scrolling. The verifi
 
 Use these as scoped composition checks, not as a catalog of new primitives:
 
-- **Explorer:** compact tree row, disclosure, resource icon-label, compressed path segments, optional result count, and inline rename.
+- **Explorer:** compact tree row, disclosure, resource icon-label, compressed path segments, inline rename, and a directory result count only while built-in highlight filtering is active.
 - **Open Editors:** one flat list mixing organizational group rows with editor rows; a description carries path context and trailing actions express close, unpin, save-all, or close-group.
 - **Search:** one tree mixing section headings, folders, files, and line matches; each item kind has its own renderer while count badges and action reveal adapt at narrow widths.
 - **Outline:** compact groups and symbol rows; the symbol row combines kind icon, matched name, detail description, and a trailing error/warning aggregate.

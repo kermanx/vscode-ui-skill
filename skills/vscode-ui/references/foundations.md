@@ -9,9 +9,10 @@ names below are color themes; they do not imply Modern UI geometry.
 ## Classic visual structure
 
 Build the shell as connected regions. The title bar, Activity Bar, Side Bar,
-editor groups, Panel, Auxiliary Bar, and Status Bar meet edge to edge. Separate
-them with component-owned `1px` borders, and use sashes for resize hit areas,
-rather than adding outer gaps, rounded cards, or a global frame.
+editor groups, Panel, Auxiliary Bar, and Status Bar meet edge to edge. Use a
+component-owned `1px` border where that boundary role resolves visibly;
+otherwise let adjacent region backgrounds form the seam. Use sashes for resize
+hit areas rather than adding outer gaps, rounded cards, or a global frame.
 
 There is no universal Classic spacing or radius scale. Use the exact geometry
 of the component being implemented; do not snap arbitrary values to a ramp or

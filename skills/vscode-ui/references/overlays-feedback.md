@@ -20,13 +20,15 @@ required instructions or a required decision in it.
   form uses `12px` text and `2px 8px` padding.
 - An editor hover uses the same editor-hover foreground, background, border,
   and shadow roles with an `8px` radius.
-- Formatted hover content caps at `500px`, wraps long words, and gives
-  paragraphs, lists, headings, and code blocks `8px` vertical margins. An
-  optional status/action row uses `12px / 22px` text, `0 8px` padding, and
-  `16px` between actions.
-- Prefer placement above the target, then fit or flip to the available side.
-  Unless a caller provides another limit, cap height at half the viewport and
-  scroll the content.
+- Formatted workbench hover content defaults to a `500px` maximum when the host
+  does not override it; editor hovers may use more of the available editor
+  width. Wrap long words and give paragraphs, lists, headings, and code blocks
+  `8px` vertical margins. An optional status/action row uses `12px / 22px` text,
+  `0 8px` padding, and `16px` between actions.
+- Editor hovers prefer placement above the target. Hosted workbench tooltips
+  commonly prefer below. In either case, fit or flip to available space. Unless
+  a caller provides another limit, cap height at half the viewport and scroll
+  the content.
 - Plain text and link-free Markdown normally close when the pointer leaves the
   target. Links or actions keep the hover reachable by pointer. A sticky hover
   remains open until explicitly dismissed.
@@ -47,9 +49,10 @@ menu, action list, or picker inside it owns the visible shell.
   width, `4px` padding, a `1px` editor-hover border, `8px` radius, and
   `0 0 12px rgba(0, 0, 0, .14)` shadow.
 - Action rows use `0 12px 0 6px` padding, a `6px` radius, and a `6px` gap from
-  icon to label. Keep the row on one line and ellipsize title and detail.
-  Separators use a `1px` rule with `4px 6px` margin. Divide an optional footer
-  with a `1px` top border.
+  icon to label. Keep ordinary rows on one line and ellipsize the title. A row
+  with detail wraps that ellipsized detail onto a second line. Separators use a
+  `1px` rule with `4px 6px` margin. Divide an optional footer with a `1px` top
+  border.
 - Use menu foreground/background for the shell, disabled foreground for
   unavailable rows, list-hover roles for the focused row, description
   foreground for detail, and the optional menu-selection border.
@@ -108,8 +111,9 @@ status, for unprompted messages, or to confirm several steps.
   `14px`, weight `600`, with a `22px` minimum line. Detail text uses `20px`
   line height. Input and checkbox rows add `15px` top padding. The button row
   adds `20px` top padding.
-- At the narrower vertical layout, use `350px` minimum width, stack the message
-  and icon, enlarge the icon to `64px`, and make buttons fill the row.
+- When the caller explicitly selects vertical alignment, use `350px` minimum
+  width, stack the message and icon, enlarge the icon to `64px`, and make
+  buttons fill the row. This is not an automatic narrow-width breakpoint.
   Horizontal buttons size to content and ellipsize long labels.
 - Keep focus inside the dialog and restore prior focus on close. Focus and
   select the first input when present; otherwise focus the primary action.
@@ -125,8 +129,8 @@ center is open or for silent notifications.
 
 - Compose a severity icon, message, optional source, trailing actions and close
   action, optional expanded details and buttons, and optional bottom-edge
-  progress. The collapsed message is one `22px` line with ellipsis; expanded
-  messages wrap.
+  progress. Collapsed text uses `22px` line height inside the fixed collapsed
+  row and clips overflow; expanded messages wrap.
 - Use notification foreground/background, toast border, link, and notification
   severity roles. The surface uses an optional `1px` border, `4px` radius, and
   `0 0 12px rgba(0, 0, 0, .14)` shadow.

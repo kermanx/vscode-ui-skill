@@ -25,7 +25,7 @@ For a horizontal panel, make its span an explicit layout state:
 
 Represent editor groups as another nested split grid. Keep every flexible grid or flex descendant shrinkable with `min-width: 0` and `min-height: 0`; let the region constraints below supply the real minima.
 
-Keep top-level parts flush with no inter-region gap or outer padding. Use region borders as separators; retain the title-bar shadow and the activity-bar shadow when the sidebar is hidden or the activity bar is on the right. Structural regions remain rectangular; component-level controls such as the command center use their own geometry.
+Keep top-level parts flush with no inter-region gap or outer padding. Use a region border where its role is visible; otherwise separate adjacent parts by their backgrounds. Retain the title-bar shadow and the activity-bar shadow when the sidebar is hidden or the activity bar is on the right. Structural regions remain rectangular; component-level controls such as the command center use their own geometry.
 
 ## Geometry
 
@@ -83,7 +83,8 @@ Use semantic theme roles rather than literal colors:
 
 - title-bar active and inactive surfaces and foregrounds;
 - activity-bar background, foreground, active border, badge, and region border;
-- sidebar title, sidebar body, auxiliary sidebar, panel, editor, and status-bar roles;
+- sidebar title and body roles, reused by the Auxiliary Bar, plus panel, editor,
+  and status-bar roles;
 - semantic hover, active, focus, sash, and contrast-border roles.
 
 ## Resize, collapse, and maximize
