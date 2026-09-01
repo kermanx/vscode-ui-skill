@@ -1,301 +1,252 @@
 # Navigation and actions
 
-Use the shared spacing, radius, typography, icon, stroke, and semantic-color
-roles. This file adds component contracts; it does not redefine shell geometry
-or the general interaction-state system.
-
-Choose the surface by scope:
+Use navigation and action surfaces according to their scope:
 
 | Surface | Use | Avoid |
 |---|---|---|
-| Action bar or toolbar | A short row or column of commands for the current surface | Mixing navigation destinations into an undifferentiated command row |
-| View-title actions | Commands whose target is the whole view | Persistent row-item commands or a second view switcher |
-| Editor or pane tabs | Switching among peer documents or peer workbench panes | One-shot commands that do not change the current peer |
+| Action bar or toolbar | Commands for the current surface | Mixing navigation destinations into a command row |
+| View-title actions | Commands whose target is the whole view | Persistent row-item commands |
+| Editor tabs | Open editors within one editor group | One-shot commands |
+| Pane or scope tabs | Peer workbench containers or settings scopes | Unrelated commands |
 | Breadcrumbs | The current file, folder, or symbol path | General commands or unrelated history |
-| Menu bar | Stable global command categories | Context-sensitive commands that have no useful global category |
-| Context, dropdown, or overflow menu | Commands local to a target, trigger, or crowded toolbar | A permanently visible peer-navigation strip |
-| Activity item | Switching primary workbench destinations, with an optional status badge | Ordinary commands or dense labels in the vertical rail |
-| Command center | Global search and command entry in the title area | Local view filtering or a second copy while the top quick-input surface is open |
+| Menu bar | Stable global command categories | Commands with no useful global category |
+| Context, dropdown, or overflow menu | Commands local to a target or trigger | Permanent peer navigation |
+| Activity item | Primary workbench destinations | Ordinary commands or persistent labels in the vertical rail |
+| Command center | Global search and command entry | Local filtering or a duplicate global entry point |
 
 ## Action bars and toolbars
 
-Build a toolbar as a container with an ordered action list. Each item contains
-one button or menu trigger; separators are non-interactive list items. A
-horizontal bar uses Left/Right, Home, and End; a vertical bar uses Up/Down,
-Home, and End. Enter or Space invokes the focused action. Keep one action item
-in the tab order and move that tab stop with focus. Always skip separators during
-arrow navigation. Skip disabled items only when the toolbar is configured to
-focus enabled items exclusively; otherwise disabled items remain arrow-focusable
-but cannot invoke.
+Build a toolbar as one ordered action list. Each item contains one button or menu
+trigger; separators are non-interactive items. A horizontal bar uses Left/Right,
+Home, and End; a vertical bar uses Up/Down, Home, and End. Enter or Space invokes
+the focused action. Keep one item in the tab order and move that tab stop with
+focus. Always skip separators. Skip disabled items only when the toolbar is
+configured to focus enabled items exclusively; otherwise they remain
+arrow-focusable but cannot invoke.
 
-- Product-action glyphs occupy a `16px × 16px` icon box. The generic text or
-  keybinding label is `11px`, with `3px` padding and the control radius.
-- A horizontal separator is `1px × 16px` with `5px 4px` margins. In a vertical
-  bar, use a `1px` rule with `4px .8em` margins.
-- Disabled text uses the disabled-foreground role; an icon that cannot be
-  recolored uses `opacity: .6`. A disabled action keeps the default cursor and
-  does not invoke.
-- A toggle exposes its checked state as pressed. When the action bar is a
-  tablist, expose the same state as selected instead.
+- Use a `16px × 16px` product-icon box. Text and keybinding labels are `11px`
+  with `3px` padding and a `6px` radius.
+- A horizontal separator is `1px × 16px` with `5px 4px` margins. A vertical
+  separator is a `1px` rule with `4px .8em` margins.
+- Disabled text uses the disabled-foreground role. An icon that cannot be
+  recolored uses `opacity: .6`. Disabled actions keep the default cursor.
+- Expose a toggle as pressed. In a tablist, expose the same checked state as
+  selected.
 
-Keep the primary group inline and put secondary groups under a More trigger.
-Workbench title toolbars treat the `navigation` group as primary; do not infer
-that every contributed group deserves inline space. A responsive toolbar may
-shrink all actions or only the last action before overflow. The default shrink
-budget is a `20px` minimum plus `4px` action padding, so measure `24px` per
-candidate when deciding whether More is required. Move actions from the trailing
-edge into overflow, retain the configured minimum visible count, and reserve the
-same budget for More. Remove More when it would contain nothing. Join responsive
-overflow and pre-existing secondary actions with one separator.
+Keep primary actions inline and put secondary actions under More. In workbench
+title toolbars, the `navigation` group is primary; do not infer that every group
+belongs inline. Responsive toolbars may shrink all actions or only the last
+action. Measure a default minimum of `20px` plus `4px` action padding, or `24px`
+per action, when deciding whether to overflow. Move trailing actions into More,
+retain the configured minimum visible count, reserve the same `24px` for More,
+and remove More when it is empty. Join overflowed and pre-existing secondary
+actions with one separator.
 
-A select placed in an action bar may flex between `60px` and `170px`; clip its
-container and leave `10px` after it. Do not apply those bounds to ordinary text
+A select inside an action bar may flex between `60px` and `170px`; clip its
+container and leave `10px` after it. These bounds do not apply to ordinary text
 actions or localized labels.
 
 ## View-title actions
 
-Use view-title actions for commands that operate on the whole view. A practical
-inline set is creation, refresh, clear, collapse, or a mode toggle; longer and
-less frequent groups belong in More. Mutually exclusive, state-dependent
-commands may share one ordered slot—for example, cancel in place of refresh, or
-expand in place of collapse—so the row does not jump as the state changes.
-
-The anatomy is `header → title → toolbar`. Truncate the classic pane title
-and give it `min-width: 3ch`; place the toolbar after it with automatic leading
-space. In the classic pane header, the title is `11px`, bold, uppercase, and the
-header is `22px` high. Its action area has `8px` trailing space; items have `4px`
-trailing space and labels have `2px` padding. Modern UI raises the pane header to
-`28px`; use the Modern pane surface and separator roles rather than carrying over
-the classic header fill.
+Use `header → title → toolbar`. A pane header is `22px` high. Its title is
+`11px`, bold, uppercase, ellipsized, and has `min-width: 3ch`. Place the toolbar
+after the title with automatic leading space. Give the action area `8px` trailing
+space, each item `4px` trailing space, and each label `2px` padding.
 
 Actions may be quiet at rest, but reveal them when an expanded pane is hovered,
-when the header or a descendant has focus, or when the user requests always-
-visible actions. Do not hide an action that currently owns focus. A row-local
-toolbar can use the same intent rule: hidden at rest, visible on row hover, row
-focus, toolbar hover, or while one of its actions is active.
+when the header or a descendant has focus, or when always-visible actions are
+enabled. Never hide the action that owns focus. Row-local toolbars use the same
+visibility conditions: row hover, row focus, toolbar hover, or an active action.
 
-On narrow headers, let the title truncate and apply the toolbar's responsive
-overflow rule to the actions. Do not shrink product icons or separators to make
-a large inline set fit.
+On narrow headers, truncate the title and apply responsive overflow to the
+actions. Do not shrink product icons or separators to preserve a large inline
+set.
 
 ## Editor tabs
 
-Use editor tabs for open editors inside one editor group. The structure is a
-scrollable tab list followed by an editor-actions toolbar. The toolbar uses
-`flex: 0 1 auto`: it does not grow, but it may shrink. Each tab contains a label,
-an optional file icon, a reserved action or status column, and an inset visual
-fill. Keep the tab hit targets contiguous even though the fills look separated.
+Classic editor tabs are contiguous rectangles in a scrollable tab list followed
+by an editor-actions toolbar. Do not inset the visible tab into a rounded fill or
+create dead space between hit targets.
 
-### Modern UI direction
+- Use `35px` tab height by default and `22px` for the compact editor-tab setting.
+  Labels are `13px`. Start with `10px` inline-start padding; shrinking tabs with
+  file icons may reduce it to `5px`.
+- `fit` tabs are `120px` wide with `min-width: fit-content`. `shrink` tabs use an
+  `80px` minimum. `fixed` tabs default to `50px–160px` and grow evenly.
+- Compact pinned tabs are `38px` wide. Pinned tabs using shrink sizing are
+  `80px` wide. Keep pinned tabs sticky while normal tabs scroll beneath them.
+- Keep the editor-actions toolbar after the tab list with `4px` start and `8px`
+  end padding. Items have `4px` trailing space. In wrapped mode, place this
+  toolbar at the end of the last row.
 
-Modern editor tabs are rounded, inset fills rather than classic connected
-rectangles:
+Use the active, inactive, focused-group, and unfocused-group tab roles directly.
+Tabs meet edge to edge; use the tab border roles for their `1px` seams and
+optional `1px` active top or bottom line. The modified-tab top indicator is
+`2px`. When shadows are enabled, the active tab uses
+`inset 0 8px 12px rgba(0, 0, 0, .02)` and inactive hover uses
+`0 0 4px rgba(0, 0, 0, .08)`; remove both when workbench shadows are disabled.
 
-| Metric | Default | Compact |
-|---|---:|---:|
-| Visual fill height | `24px` | `20px` |
-| Total title height | `32px` | `28px` |
-| Transparent space above and below the fill | `4px` each | `4px` each |
+For `shrink` and `fixed`, clip the label and use a `5px` end gradient; use an
+ellipsis in high-contrast themes. A compact pinned tab without a file icon uses
+its label fallback rather than a product glyph.
 
-Inset the fill `2px` from both inline edges and give it the control radius. Use
-`13px` regular text, `6px` start padding, and `8px` end padding; when no file icon
-is present, use `8px` at the start. Remove classic tab seams, right borders,
-active-tab shadows, and the bottom strip. The inactive fill is transparent;
-hover and active states consume the dedicated Modern tab roles. Select the
-focused- or unfocused-group palette first, then the tab state. Active has its own
-hover role, multi-selected can add its selection stroke, and keyboard focus adds
-the focus outline without replacing active state. In high contrast, keep fills
-transparent and distinguish active/focus with solid outlines and hover with a
-dashed outline.
+Reserve a `28px` tab-action column and center a `16px` icon with `2px` padding.
+The active editor, hover, focus, dirty state, and non-compact pinned state reveal
+the close, dirty, pin, or unpin affordance in that one column. In an inactive
+editor group, a visible action uses `opacity: .5`; otherwise actions rest at
+`opacity: 0`. Do not add a second status column. Only the active tab is in the
+tab order.
 
-Use natural width for `fit` tabs and allow the flex item to reach `min-width: 0`.
-For `shrink` and `fixed`, truncate the label with an ellipsis. A compact sticky
-tab is `28px` wide around a `16px` file icon; when file icons are unavailable,
-use the label fallback rather than inventing a product glyph.
-
-Reserve a `24px` tab-action column by default. Persistent dirty and pinned states
-always reserve that column; when optional reservation is off, only clean tabs
-collapse it. The column becomes visible for dirty, pinned, hover, focus, and the
-active editor group; an inactive group may render a visible action at
-`opacity: .5`. Match the opaque action-overlay background to the tab's current
-inactive, hover, active, and focused-group role so the label cannot show through.
-If an unreserved overlay covers a clean label, use a `16px` fade bridge into that
-overlay.
-
-Dirty and pin indicators share the action column with close or unpin. On hover or
-focus, expose the applicable close or unpin action in that same column; do not
-add an adjacent action column. Keep the action bar focusable only on the active
-editor tab.
-
-When tabs do not fit, either scroll the single row horizontally or enable wrapped
-rows. Keep the editor-actions toolbar after the tab list; in wrapped mode position
-it at the end of the final row. A separate pinned row may sit above the normal
-row, divided by a single `1px` semantic separator.
-
-### Classic scope
-
-Classic tabs remain connected rectangles: `35px` high by default or `22px`
-compact, with `10px` start padding and classic borders and shadows. Classic
-`fixed` sizing defaults to `50px–160px`; `fit` targets `120px`, while `shrink`
-allows `80px`. Classic `shrink` and `fixed` labels may use a `5px` gradient fade
-instead of the Modern ellipsis. Treat these as compatibility geometry, not the
-direction for new Modern UI work.
+When tabs do not fit, scroll the single row horizontally or wrap rows. A separate
+pinned row may sit above the normal row. Keep the editor-actions toolbar outside
+the scrollable tab list.
 
 ## Pane and scope tabs
 
-Use pane tabs to switch peer containers in a sidebar, panel, or auxiliary bar.
-The Modern form stretches each hit target through the `32px` header and places a
-`24px` rounded fill inside it with `4px` transparent space above and below. Keep
-targets adjacent with `gap: 0`; visual spacing belongs to the inset fills, not to
-dead space between buttons.
+Workbench pane composites use flat text or icon items with an active line, not
+rounded inset fills.
 
-Text tabs use `10px` inline padding, `13px` regular text, and `22px` label line
-height. Icon-only pane tabs are `28px` wide with `6px` inline padding around a
-`16px` icon. Checked uses the Modern active roles; unchecked hover uses the
-Modern hover roles; focus adds a `1px` inset outline. High contrast follows the
-same solid-active, dashed-hover, solid-focus ordering as editor tabs. Use
-overflow for pane tabs that cannot fit rather than shrinking icon boxes.
+- Text items use `11px` uppercase text, `10px` inline padding, `2px` block
+  padding, and a `27px` line height. Their labels add `2px` padding, have no
+  radius, and keep a transparent background.
+- Icon items are `35px` high with `0 3px` padding around a `16px` icon.
+- Checked text items use the active foreground and a `1px` line near the bottom.
+  Keyboard focus strengthens that line to `2px`. Hover changes foreground; it
+  does not turn the item into a pill.
+- Checked icon items may use the flat, full-item active-background role, while
+  retaining the same active line. Do not inset that background.
+- For a top header, draw the active line at the bottom. For a footer, mirror it
+  at the top. Use More when peer destinations do not fit.
 
-A settings scope switcher is a narrower, explicitly scoped variant: a tablist of
-available scopes with `13px` semibold labels, `2px 8px` padding, control radius,
-active fill, and hover fill. Keep User, Remote, Workspace, and Folder in the
-switcher's action model. Disable Remote when no configured remote target is
-available, Workspace in an empty workbench, and Folder outside a folder
-workspace; the base presentation may suppress disabled items. Do not promote
-this settings-specific pill treatment into a rule for ordinary command toolbars.
+The Settings scope switcher is a specific flat tablist. Its container is `32px`
+high with a `1px` bottom border. Labels are `13px`, regular case, with
+`7px 8px 6.5px`; they have `0` radius and no fill. Checked and hovered labels
+use a `1px` bottom line; focus uses the focus-border role. Hide unavailable
+targets: Remote without a remote authority, Workspace in an empty workbench,
+and Folder outside a multi-folder workspace.
 
 ## Breadcrumbs
 
-Use breadcrumbs to expose the current resource hierarchy and open a picker for a
-path segment. The semantic structure is a horizontal `list` of `listitem`
-buttons, each containing its icon or label and a registered chevron separator.
-Hide the separator after the final item. Do not put unrelated actions in the
-breadcrumb list.
+Use breadcrumbs as a horizontal `list` of `listitem` buttons containing a label
+or icon and a registered chevron separator. Hide the separator after the final
+item. Do not add unrelated actions to the list.
 
-The breadcrumb row is `22px` high. Give each leading separator slot a
-`16px × 22px` box, leave `8px` after the final item, and leave `6px` after a
-symbol icon. A segment may use at most `80%` of the row width. Keep the list on
-one line and allow items to shrink; focused and selected labels use an underline.
-State precedence is combined focus-and-selection, then either focus or selection,
-then hover.
+The row is `22px` high. Each leading separator slot is `16px × 22px`; leave
+`8px` after the final item and `6px` after a symbol icon. A segment may use at
+most `80%` of the row width. Keep one line and let items shrink. Focused and
+selected labels are underlined. Resolve combined focus-and-selection before
+either state alone, then hover.
 
-Scroll horizontally when the path is wider than its container, translate wheel
-movement to the horizontal axis, and reveal the focused item. The default
-breadcrumb scrollbar is `3px`; its large mode is `8px`. Left/Right changes the
-focused segment, Enter or Down opens its picker, Space reveals it, and Escape
-returns focus to the editor.
+Scroll horizontally when the path exceeds its container, translate wheel input
+to the horizontal axis, and reveal the focused item. The default breadcrumb
+scrollbar is `3px`; its large setting is `8px`. Left/Right changes the focused
+segment, Enter or Down opens its picker, Space reveals it, and Escape returns
+focus to the editor.
 
-If an editor-type control shares the row, cap that control at `40%`, use
+If an editor-type picker shares the row, cap it at `40%`, use
 `0 4px 0 8px` padding, an `11px` ellipsized label, and a `13px` chevron. Give
 the breadcrumb list `min-width: 0` so it yields the remaining space.
 
 ## Menus, dropdowns, and overflow
 
-Use the menu bar for stable global categories, a context menu for commands
-specific to the invocation target, a dropdown for choices owned by one trigger,
-and More for actions displaced from a toolbar. A submenu is appropriate for one
-coherent, sizeable group; do not use nested menus to preserve arbitrary command
+Use the menu bar for global categories, a context menu for the invocation target,
+a dropdown for choices owned by one trigger, and More for toolbar actions that
+do not fit. Use a submenu for one coherent group, not to preserve arbitrary
 grouping.
 
 ### Menu bar
 
-The top-level list is a single-line flex row clipped by its container. Each title
-uses `0 8px` padding and a `5px` radius, with a `1px` inset focus outline.
-The More control is `22px × 22px` with `0 8px` padding; in overflow-only mode its
-occupied width is `38px`.
+The top-level list is one clipped flex row. Each title uses `0 8px` padding and a
+`5px` radius with a `1px` inset focus outline. More is `22px × 22px` with
+`0 8px` padding; when it is the only visible item, the bar occupies `38px`.
 
-Measure localized titles. As width falls, move trailing categories into More as
-submenus and reserve More before accepting the remaining titles. If only about a
-quarter of the categories would remain, collapse the complete menu bar to the
-single overflow trigger. Compact mode starts in that overflow-only form. Left
-and Right move among top-level categories; Escape closes the current menu.
+Measure localized titles. Move trailing categories into More and reserve More's
+width before accepting the remaining titles. When no more than roughly one
+quarter of the categories would remain, collapse the whole bar to More. Compact
+menu-bar mode starts in that overflow-only form. Left and Right move among
+top-level categories; Escape closes the current menu.
 
 ### Context and dropdown menus
 
-A menu popup contains a vertical action list. Each `24px` row contains a `2em`
-check slot, label, optional keybinding, and optional submenu indicator. Use
-`13px` text, `0 4px` row margins, `4px 0` list padding, an Outer-radius popup, a
-`1px` border, a Large shadow, and `160px` minimum width. Give label and keybinding
-`0 2em` padding and the submenu indicator `0 1.8em`. Keybinding and submenu
-indicator may use `opacity: .7`; a disabled menu item uses `opacity: .4` and the
-disabled foreground.
+A menu popup uses `13px` text, an `8px` radius, a `1px` border,
+`0 0 12px rgba(0, 0, 0, .14)` shadow, and `160px` minimum width. The vertical
+list has `4px 0` padding. Each row is `24px` high with `0 4px` margins and a
+`6px` radius. It contains a `2em` check slot, label, optional keybinding, and
+optional submenu indicator. Give labels and keybindings `0 2em` padding and the
+submenu indicator `0 1.8em`. Keybindings and submenu indicators use
+`opacity: .7`; when disabled they use `opacity: .4`, while the label uses the
+disabled-foreground role.
 
-Use `1px` separators with `5px 0` margins, and remove leading, trailing, or
+Use `1px` separators with `5px 0` margins. Remove leading, trailing, and
 consecutive separators. A checked item adds the check glyph without replacing
-its label. The currently focused row receives the menu-selection foreground and
-background; disabled state still prevents invocation. Open a hovered submenu
-after `250ms`, and flip it horizontally or vertically when it would leave the
-viewport. Cap scrolling to the available viewport, keep the focused row visible,
-and use a `7px` visible vertical scrollbar.
+its label. Focused rows use the menu-selection foreground, background, and
+optional `1px` inset border. Disabled rows cannot invoke.
+
+Open a hovered submenu after `250ms`. Flip it horizontally or vertically when
+needed to remain in the viewport. Cap scrolling to the available viewport, keep
+the focused row visible, and use a `7px` vertical scrollbar. Menus do not show
+tooltips.
 
 A dropdown trigger fills its toolbar height and centers its label. Expose popup
-availability and expanded state on the trigger. Do not add a tooltip inside an
-open menu; keybindings and submenu indicators already occupy the trailing lane.
+availability and expanded state on the trigger.
 
 ### Split and connected controls
 
 Use a split dropdown only when the primary click has a stable default and the
-adjacent chevron opens alternatives from the same action family. Two verified
-variants use different geometry:
+adjacent chevron offers alternatives from the same action family.
 
-- In an action-bar split dropdown, keep the primary action and dropdown in one
-  flex row with a `5px` group radius. Use a `16px` primary icon and a `12px`
-  chevron on a `16px` line box.
-- In a connected text-button dropdown, keep the controls separately focusable.
-  Use `4px 0 0 4px` on the primary button and `0 4px 4px 0` on the dropdown
-  button, remove the adjoining border widths, and draw the separator as a `1px`
-  rule when needed.
+- An action-bar split dropdown is one flex row with a `5px` group radius. Use a
+  `16px` primary icon and a `12px` chevron on a `16px` line box.
+- A connected text-button dropdown keeps both controls focusable. The primary
+  button uses `4px 0 0 4px`; the dropdown uses `0 4px 4px 0`. Remove the two
+  adjoining border widths and draw their separator as a `1px` rule.
 
 Do not transfer either variant's geometry to unrelated adjacent buttons.
 
 ## Activity items
 
-Use the activity rail for primary workbench destinations. Each item is an
-icon-only action with a selection indicator and optional badge. Keep the item
-label available to the accessible name and overflow menu; do not add persistent
-text inside the default vertical rail.
+Use the vertical Activity Bar for primary workbench destinations. Each item is
+an icon-only action with a selection marker and optional badge. Keep its label
+as the accessible name and in the overflow menu; do not render persistent text
+in the rail.
 
-Modern UI uses a `36px` rail and `36px` action box with a `24px` icon. Its active
-or hover fill is inset to `32px × 32px` and uses the control radius. The
-independent compact rail uses a `28px` rail, `28px` action box, `16px` icon, and
-`24px × 24px` fill. Modern UI removes the classic `2px` side marker: checked
-uses the active fill and foreground, unchecked hover uses the hover roles, and
-focus adds an inset outline. High contrast uses a solid checked outline, dashed
-hover outline, and solid focus outline.
+The default rail is `48px` wide. Items are `48px × 48px` with a `24px` icon.
+The independent compact Activity Bar setting uses a `36px` rail,
+`36px × 28px` items, and `16px` icons. Do not separate items with gaps.
 
-Badge text is `9px` semibold in a `16px` line box, with `8px` minimum content
-width, `0 4px` padding, and a circular radius. Modern UI positions that badge
-`18px` from the top and `3px` from the right. Compact badges move to `13px` from
-the top while retaining the `3px` right offset, with `9px` minimum width,
-`13px` line height, and `0 2px` padding. The classic rail's default offsets are
-`24px` from the top and `8px` from the right; do not carry those offsets into the
-narrower Modern rail.
+Checked items keep a full-height `2px` marker on the edge adjoining the window
+edge: left for a left rail, right for a right rail. Focus reuses this marker with
+the focus role. A theme may additionally provide the active-background role,
+but do not replace the marker with an inset rounded fill. Hover and checked
+states use the Activity Bar foreground roles.
 
-When the rail cannot fit all pinned destinations, keep pinned and active items
-in the visible set where possible and move trailing items to an Additional Views
-menu. Reserve one activity-item slot for that overflow trigger, and include the
-destination label and badge in its menu entry. A horizontally relocated activity
-bar is a scoped alternative: keep the header hit targets contiguous and paint a
-`24px × 24px` rounded fill behind each `16px` icon. Do not carry that visual-fill
-geometry back to the vertical rail.
+Default badges use `9px` semibold text, `16px` height and line height, `8px`
+minimum content width, `0 4px` padding, and a `20px` radius; position them
+`24px` from the top and `8px` from the right. In the compact Activity Bar,
+use `13px` height and line height, `9px` minimum width, `0 2px` padding, and a
+`13px` radius; position the badge `13px` from the top and `6px` from the right.
+
+When space runs out, preserve pinned and active destinations where possible and
+move trailing items into Additional Views. Reserve one item slot for that
+overflow trigger and retain each destination's label and badge in its menu item.
 
 ## Command center
 
-Use the command center as one global search or command trigger in the title
-area. Its structure is a centered toolbar region with optional leading
-navigation actions followed by a button containing a search icon and a
-shrinkable label. The main trigger is `22px` high, `38vw` wide up to `600px`,
-with `0 6px` outer margin, a `1px` border, Inner radius, and clipped contents.
-Use `0 12px` padding for grouped content and ellipsize the search label.
+Use one command center for global search and command entry in the title area. It
+is a centered toolbar region with optional leading navigation actions and a
+search trigger containing a shrinkable label.
 
-Hover switches the trigger to its active foreground, background, and border
-roles. When the whole title bar is inactive, the command-center foreground
-follows the inactive title-bar foreground, its border uses the dedicated
-command-center inactive-border role, and the title-bar contents use
-`opacity: .6`. Disabled back or forward actions use the shared disabled-action
-treatment and cannot invoke.
+The main trigger is `22px` high, `38vw` wide up to `600px`, with `0 6px`
+margin, a `1px` border, `6px` radius, and clipped contents. Use `0 12px` padding
+when it contains multiple groups and ellipsize the search label. The search icon
+is `14px`, uses `opacity: .8`, and has `3px` inline margins. A label-only form is
+left aligned with `8px` start padding and consumes the available width.
 
-In compact mode, hide the search icon, left-align the label, use `8px` start
-padding, and let the trigger consume the available width. When a top-aligned
-quick-input surface is already visible, hide the command-center trigger rather
-than showing two global entry points.
+At rest, use the command-center foreground, background, and border roles. Hover
+switches all three to their active roles. When the title bar is inactive, use
+the inactive title-bar foreground and command-center inactive-border role; the
+title-bar contents use `opacity: .6`. Disabled navigation actions use the shared
+disabled treatment and cannot invoke.
+
+When a top-aligned quick-input surface is visible, hide the command-center
+trigger rather than showing two global entry points.

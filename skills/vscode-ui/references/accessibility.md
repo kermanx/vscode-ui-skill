@@ -34,8 +34,8 @@ Read this reference only when the user explicitly requests improved, audited, or
 
 ## Focus and modals
 
-- Show keyboard focus with the semantic focus color. The standard indicator is a solid `1px` outline with `-1px` offset; checkboxes use a `2px` outer offset.
-- Use `:focus-visible` when pointer focus should stay visually quiet. Never suppress the keyboard-visible indicator.
+- Show focus with the semantic focus color. Base workbench controls use a solid `1px` outline with `-1px` offset; checkboxes use a `2px` outer offset. Match component-specific offsets where they differ.
+- Do not replace the Classic workbench's general `:focus` treatment with a global keyboard-only rule. Use `:focus-visible` only for a component whose established behavior distinguishes keyboard and pointer focus, and never suppress its keyboard-visible indicator.
 - A modal has dialog semantics, `aria-modal="true"`, a name, and a description. Move initial focus to the first input when present; otherwise use the primary action or the dialog itself.
 - Trap `Tab` and `Shift+Tab` within a modal, allow `Escape` to dismiss when dismissal is available, and restore focus to the element that opened it.
 - Preserve native editing keys inside text inputs and editable content embedded in a dialog or composite widget.

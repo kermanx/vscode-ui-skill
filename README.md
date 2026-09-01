@@ -1,6 +1,6 @@
 # VS Code UI Skill
 
-A framework-agnostic agent skill for building developer interfaces in the VS Code visual language. It covers design foundations, workbench structure, controls, collections, navigation, overlays, editor surfaces, interaction states, and representative compositions.
+A framework-agnostic agent skill for building developer interfaces in the current VS Code Classic workbench visual language: the default UI with `workbench.experimental.modernUI` disabled. It covers design foundations, workbench structure, controls, collections, navigation, overlays, editor surfaces, interaction states, and representative compositions.
 
 ## Install
 

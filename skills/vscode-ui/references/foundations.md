@@ -1,159 +1,131 @@
 # Foundations
 
-Choose a named role, tier, or semantic token before choosing a literal. Raw CSS
-values are acceptable when they faithfully express the shared scales below.
+This reference targets the connected Classic workbench with
+`workbench.experimental.modernUI` disabled. Do not introduce floating workbench
+cards, gaps around workbench parts, a rounded editor frame, Modern density
+metrics, or Modern-only surface and tab roles. The Dark Modern and Light Modern
+names below are color themes; they do not imply Modern UI geometry.
 
-Classic workbench geometry is the baseline because the experimental Modern UI
-profile is disabled by default. Use Modern UI when the target calls for its
-floating-card layout and refreshed component styling; keep its geometry and
-density rules together instead of mixing isolated Modern values into Classic UI.
+## Classic visual structure
 
-## Design values
+Build the shell as connected regions. The title bar, Activity Bar, Side Bar,
+editor groups, Panel, Auxiliary Bar, and Status Bar meet edge to edge. Separate
+them with component-owned `1px` borders, and use sashes for resize hit areas,
+rather than adding outer gaps, rounded cards, or a global frame.
 
-Reason from **Values → Principles → Moves**.
+There is no universal Classic spacing or radius scale. Use the exact geometry
+of the component being implemented; do not snap arbitrary values to a ramp or
+normalize different components. Representative component facts are:
 
-| Value | Principle | Practical move |
+| Component | Classic radius |
+|---|---:|
+| Text button, input, select, notification toast | `4px` |
+| Workbench hover | `5px` |
+| Workbench hover with pointer | `3px` |
+| Editor hover, dropdown, custom select, context menu | `8px` |
+| Dialog and quick input | `12px` |
+
+These values are not elevation tiers. Joined edges may be square, and shell
+parts and editor tabs should remain square where their component rules do.
+
+## Strokes and focus
+
+- Use `1px` for ordinary borders, separators, and the default focus stroke. A
+  component may omit its ordinary border when its theme role is unset or
+  transparent.
+- General keyboard focus uses a `1px solid` outline in the focus-border color
+  with `outline-offset: -1px`. Text buttons and checkboxes use an outward
+  `2px` offset; preserve such component exceptions.
+- Use the component's focus or active state token instead of changing border
+  thickness. High-contrast themes may add explicit contrast borders and should
+  not depend on shadows alone.
+
+## Classic shadows
+
+Use the existing shadow assigned to the component. Do not infer a general
+elevation hierarchy or exchange shadows because two surfaces have similar
+sizes.
+
+| Existing primitive | Value | Active Classic uses |
 |---|---|---|
-| Calm | Quiet at rest; present on intent | Let chrome recede until hover, focus, or interaction. |
-| Calm | Leave room to breathe | Use spacing and soft edges to group before adding another line or fill. |
-| Calm | Explain the interface plainly | Prefer a familiar word to a mystery glyph. |
-| Focused | One thing leads; the rest supports | Demote secondary content with a quieter type, icon, or surface role. |
-| Focused + Consistent | Elevation is encoded | Choose roundness and shadow from the surface's place in the stack. |
-| Consistent | Sameness signals sameness | Equivalent elements use the same named scales and states. |
-| Delightful | Delight earns its keep | Motion or polish must guide, confirm, orient, or smooth a jump. |
+| Small | `0 0 4px rgba(0, 0, 0, 0.08)` | Inactive-tab hover, Extensions item, Settings TOC, and SCM provider |
+| Medium | `0 0 6px rgba(0, 0, 0, 0.08)` | Title Bar, Activity Bar, minimap, and Extensions item hover |
+| Large | `0 0 12px rgba(0, 0, 0, 0.14)` | Menus, hovers, notifications, find and editor widgets |
+| Extra large | `0 0 20px rgba(0, 0, 0, 0.15)` | Dialog, quick input, and modal editor surface |
+| Active tab | `0 8px 12px rgba(0, 0, 0, 0.02)` | Inset active-tab depth |
+| Horizontal depth | `5px 0 10px -4px rgba(0, 0, 0, 0.05)` | Directional editor-part seam |
+| Vertical depth | `0 5px 10px -4px rgba(0, 0, 0, 0.04)` | Directional editor-part seam |
 
-## Spacing
-
-Use this ramp for `padding`, `margin`, `gap`, and fixed spacers:
-
-`0, 2, 4, 6, 8, 10, 12, 16, 20, 24, 28, 32, 36, 40px`
-
-Represent it with project-native custom properties such as `--space-0`,
-`--space-2`, …, `--space-40`, or use the raw lengths. Snap off-scale fixed pixel
-values to the nearest step and round ties upward. Leave structural values such as `auto`, `%`,
-`em`, `rem`, `fr`, custom properties, and `calc()` expressions unchanged.
-
-## Radius and elevation
-
-Choose radius by surface role, not taste.
-
-| Role | Radius | Use |
-|---|---:|---|
-| Compact | `2px` | Very compact elements |
-| Control | `4px` | Buttons, inputs, tabs, and list or tree rows that use the shared control treatment |
-| Inner | `6px` | Non-control containers inside another surface |
-| Outer | `8px` | Menus, editor hovers, Modern overlays, and floating workbench cards |
-| Extra-prominent (xLarge) | `12px` | Very prominent surfaces; Classic dialogs and quick input use this tier |
-| Circle | `9999px` or `50%` | Pills, dots, and circular controls |
-
-Use `0` at a joined edge or seam. A pill uses Circle rather than the nearest
-fixed-radius tier. Do not force every component into the general tier table. In
-Classic UI, platform hovers use `5px`, editor hovers and menus use `8px`, dialogs
-and quick input use `12px`, and notification toasts use `4px`. Modern UI brings
-these overlay surfaces, including dialogs, quick input, and toasts, to `8px`.
-Row radius is component-specific; confirm a specialized row before applying the
-shared `4px` list or tree treatment.
-
-## Strokes and shadows
-
-The standard border and separator stroke is `1px`. Whether an ordinary stroke
-exists is a yes/no decision; thicker strokes belong to a specific semantic state,
-not the general scale.
-
-Treat the shared shadows as CSS custom-property primitives:
-
-| Tier | Value | Typical scope |
-|---|---|---|
-| Small | `0 0 4px rgba(0, 0, 0, 0.08)` | Classic component or shallow structural lift |
-| Medium | `0 0 6px rgba(0, 0, 0, 0.08)` | Classic workbench-part lift |
-| Large | `0 0 12px rgba(0, 0, 0, 0.14)` | Floating menus, notifications, and similar overlays |
-| Extra-large | `0 0 20px rgba(0, 0, 0, 0.15)` | Dialogs, quick input, and modal editor surfaces |
-
-Classic workbench structure may also use dedicated active-tab and directional
-depth shadows. The optional Modern UI profile is intentionally flatter: it
-removes part, active-tab, and panel-depth shadows while retaining Large and
-Extra-large shadows for floating overlays. When the host is already using a
-high-contrast theme, follow its solid backgrounds and explicit contrast borders
-instead of adding decorative shadows.
+When workbench shadows are disabled, remove the part, tab, and directional
+depth shadows; floating overlays retain their own assigned shadows.
 
 ## Typography
 
-Choose a role by information rank. Within this ramp, regular is `400`, semibold
-is `600`, and there is no `500` role. Strong text keeps its size role and changes
-to `600`.
+The workbench root uses `13px` type with `line-height: 1.4`. Individual compact
+surfaces set their own sizes; do not impose a separate global typography ramp.
+Use the host or user font settings when available.
 
-| Role | Size | Default weight |
-|---|---:|---:|
-| Heading 1 | `26px` | `600` |
-| Heading 2 | `18px` | `600` |
-| Heading 3 | `13px` | `600` |
-| Body 1 | `13px` | `400` |
-| Body 2 | `11px` | `400` |
-| Label 1 | `12px` | `400` |
-| Label 2 | `11px` | `400` |
-| Label 3 | `10px` | `400` |
+| Platform | Workbench UI family | Workbench monospace family | Default editor family | Editor size / computed line height |
+|---|---|---|---|---:|
+| macOS | `-apple-system, BlinkMacSystemFont, sans-serif` | `"SF Mono", Monaco, Menlo, Courier, monospace` | `Menlo, Monaco, "Courier New", monospace` | `12px / 18px` |
+| Windows | `"Segoe WPC", "Segoe UI", sans-serif` | `Consolas, "Courier New", monospace` | `Consolas, "Courier New", monospace` | `14px / 19px` |
+| Linux | `system-ui, "Ubuntu", "Droid Sans", sans-serif` | `"Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace` | `"Droid Sans Mono", monospace` | `14px / 19px` |
 
-The workbench UI default is `13px` with `line-height: 1.4` on every platform.
-
-Use host or user font settings when available. Otherwise use these base,
-non-localized platform font families. The size and line-height column applies
-only to the editor/code font, not the workbench UI font.
-
-| Platform | UI font family | Editor/code font family | Editor/code size / line height |
-|---|---|---|---:|
-| macOS | `-apple-system, BlinkMacSystemFont, sans-serif` | `Menlo, Monaco, "Courier New", monospace` | `12px / 18px` |
-| Windows | `"Segoe WPC", "Segoe UI", sans-serif` | `Consolas, "Courier New", monospace` | `14px / 19px` |
-| Linux | `system-ui, "Ubuntu", "Droid Sans", sans-serif` | `"Droid Sans Mono", monospace` | `14px / 19px` |
+Use the localized platform fallbacks when the interface language needs CJK
+coverage.
 
 ## Icons
 
-- Use Codicons for product actions and workbench chrome. The default glyph size
-  is `16px`; use `12px` for dense or inline chrome. Do not invent an intermediate
-  size such as `14px`.
-- At `12px`, use the compact Codicon glyph where one exists; scaling the regular
-  glyph does not optically tune it.
-- Keep product icons and file icons as separate theme systems. Product icon
-  themes can replace registered UI glyphs. File, folder, and language icons come
-  from the active file-icon theme and may intentionally be absent when no such
-  theme is enabled.
-- With UnoCSS, an optional portable setup is `presetIcons` plus
-  `@iconify-json/codicon`; use the `codicon` collection prefix, typically
-  `i-codicon-...`.
+- Use Codicons for workbench actions and product chrome. The default glyph size
+  is `16px`; dense components may set `12px`, `13px`, or `14px`. Match the
+  component instead of forcing every icon to one compact size.
+- Keep product icons and file icons separate. Product icon themes can replace
+  registered UI glyphs. File, folder, and language icons come from the active
+  file-icon theme and may be absent when no file-icon theme is enabled.
+- With UnoCSS, use `presetIcons` with `@iconify-json/codicon`; address the
+  collection with classes such as `i-codicon-search`.
 
 ## Motion
 
-Animate only to guide, confirm, orient, or smooth a jump. Keep motion subtle,
-short, and interruptible; reveal chrome on intent rather than animating at rest.
-Gate motion behind the effective reduced-motion preference so the same state
-change remains understandable without animation.
+Classic motion is component-local. Do not add the scale-open animation used by
+other profiles to quick input or action widgets.
+
+- Context menus use an `83ms linear` fade-in.
+- Notification toasts transition transform and opacity over `300ms ease-out`;
+  reduced motion changes both durations to `0ms`.
+- Scrollbars reveal over `100ms linear` and may fade over `800ms linear`; the
+  no-animation state removes those transitions.
+- Determinate progress width changes over `100ms linear`; indeterminate progress
+  uses a `4s linear` loop.
+- Status Bar color and editor drop-target transitions run only when motion is
+  enabled.
 
 ## Semantic color roles
 
 Component rules consume semantic custom properties; literal colors belong only
-in standalone theme definitions. When hosted by VS Code, alias or use its public
+in standalone theme definitions. When hosted by VS Code, use its public
 `--vscode-*` properties directly. Outside that host, define project-owned
-semantic custom properties for the same roles; the names below are an exact
-reference contract, not a runtime or framework requirement.
+properties with the same responsibilities.
 
 | Concern | Semantic properties |
 |---|---|
 | Content | `--vscode-foreground`, `--vscode-descriptionForeground`, `--vscode-disabledForeground`, `--vscode-icon-foreground` |
 | Workbench regions | `--vscode-editor-background`, `--vscode-sideBar-background`, `--vscode-panel-background`, `--vscode-titleBar-activeBackground`, `--vscode-statusBar-background` |
-| Framed Modern UI surfaces | `--vscode-surface-background`, `--vscode-surface-foreground`, `--vscode-surface-border`, `--vscode-editor-border` |
+| Region seams | `--vscode-sideBar-border`, `--vscode-panel-border`, `--vscode-editorGroup-border`, `--vscode-editorGroupHeader-tabsBorder`, `--vscode-tab-border` |
+| Classic tabs | `--vscode-tab-activeBackground`, `--vscode-tab-activeForeground`, `--vscode-tab-activeBorderTop`, `--vscode-tab-inactiveBackground`, `--vscode-tab-inactiveForeground`, `--vscode-tab-hoverBackground` |
 | Inputs | `--vscode-input-background`, `--vscode-input-foreground`, `--vscode-input-border`, `--vscode-input-placeholderForeground` |
 | Interaction | `--vscode-focusBorder`, `--vscode-list-hoverBackground`, `--vscode-list-activeSelectionBackground`, `--vscode-list-activeSelectionForeground` |
 | Actions and links | `--vscode-button-background`, `--vscode-button-foreground`, `--vscode-button-hoverBackground`, `--vscode-textLink-foreground` |
 | Overlays | `--vscode-editorWidget-background`, `--vscode-widget-border`, `--vscode-menu-background`, `--vscode-notifications-background` |
-| State | `--vscode-errorForeground`, `--vscode-editorWarning-foreground`, `--vscode-editorInfo-foreground`, plus added, modified, and deleted roles |
+| State | `--vscode-errorForeground`, `--vscode-editorWarning-foreground`, `--vscode-editorInfo-foreground`, `--vscode-editorGutter-addedBackground`, `--vscode-editorGutter-modifiedBackground`, `--vscode-editorGutter-deletedBackground` |
 
-Modern tabs use their own active, hover, foreground, and action-background roles;
-inactive editor tabs are transparent by default. Do not reuse a classic tab
-literal when a Modern UI semantic role exists.
+Prefer the most specific component role. A generic foreground, border, or
+background is only a fallback when the component has no dedicated role.
 
 ## Dark Modern and Light Modern palettes
 
-These are color-theme values, independent of whether Modern UI geometry is
-enabled. Use them only in standalone theme definitions.
+These are color-theme values and work with Classic geometry. Use them only in
+standalone theme definitions.
 
 | Role | Dark Modern | Light Modern |
 |---|---:|---:|
@@ -180,34 +152,6 @@ enabled. Use them only in standalone theme definitions.
 | Information | `#59A4F9` | `#0063D3` |
 | Added | `#2EA043` | `#2EA043` |
 | Modified | `#0078D4` | `#005FB8` |
-
-## Optional Modern UI density and global metrics
-
-When Modern UI is enabled, its layout density defaults to Default. Compact layout
-density joins the workbench cards and tightens selected internal spacing; it is
-distinct from the independent compact Activity Bar and editor-tab-height settings.
-
-| Metric | Default density | Compact density | Scope |
-|---|---:|---:|---|
-| Gap between workbench cards | `4px` | `0` | Cluster perimeter remains `4px` in both |
-| Non-chat pane list-row side inset | `4px` | `2px` | Scrollbar remains at the pane edge |
-| Default-size Activity Bar item gap | `8px` | `4px` | The independent compact Activity Bar uses `0` |
-| Activity Bar inner lane | `8px` | `4px` | Excludes the shared outer perimeter |
-| Status bar content / total height | `22px / 28px` | `22px / 26px` | Main window with floating layout |
-
-Editor tab height does not follow Modern layout density. Its independent Default
-and Compact setting produces a `24px / 32px` and `20px / 28px` tab fill / total
-title height respectively in the multi-tab Modern UI.
-
-These global changes apply in both Modern UI densities unless a component sets
-an explicit local measurement:
-
-| Metric | Classic | Modern UI |
-|---|---:|---:|
-| Implicit scrollbar size | `10px` | `8px` |
-| Pane header height | `22px` | `28px` |
-| Base notification row height | `42px` | `34px` |
-| Part title, header, or footer height | `35px` | `32px` |
 
 ## Code rendering
 

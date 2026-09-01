@@ -1,340 +1,307 @@
 # Editor surfaces
 
-Use this reference for the visual shell around code and terminal-like content.
-It does not specify text layout, tokenization, editor behavior, or terminal
-emulation. Use the code typography and syntax-color rule in
+Use this reference for code editors, editor widgets, diffs, code blocks, and
+terminal-like content. Use the code typography and syntax-color rule in
 [foundations](./foundations.md), the editor-tab contract in
-[navigation and actions](./navigation-actions.md), and the shared focus,
-selection, disabled, and reveal rules in
-[interaction states](./interaction-states.md).
+[navigation and actions](./navigation-actions.md), and the shared focus and
+selection rules in [interaction states](./interaction-states.md).
 
-## Editor frame and canvas
+## Editor group and canvas
 
-Treat one editor group as one framed surface:
+Classic editor groups are flat adjoining regions, not rounded cards. Separate
+multiple groups with the editor-group separator role. Do not wrap tabs,
+breadcrumbs, and the canvas in an outer border or radius.
 
 ```text
-editor frame
-├─ editor tabs and optional breadcrumbs
+editor group
+├─ tabs and optional breadcrumbs
 └─ editor canvas
-   ├─ gutter: glyphs, line numbers, decorations
+   ├─ glyph margin
+   ├─ line numbers
+   ├─ line decorations
    ├─ code viewport
    ├─ minimap
-   └─ overview ruler and scrollbar
+   └─ overview ruler and scrollbars
 ```
 
-The Modern frame encloses the title area and canvas together. Use the editor
-background, a `1px` editor-border role, the Outer radius,
-`box-sizing: border-box`, and `overflow: hidden`. Let that outer frame own the
-corners; do not independently round the title strip and canvas. The frame
-replaces a leading-edge separator shadow rather than stacking another separator
-beside the border.
-
-Keep the scrollable editor layers positioned and clipped inside the canvas.
-Their foreground and background are the base layer; line, selection,
-diagnostic, find, inline-completion, and diff decoration roles sit above it.
-Keep the editor root able to host content and overlay widgets that explicitly
-allow editor overflow. Suggest, parameter-hint, rename, and hover widgets may
-extend beyond the canvas while remaining constrained by the surrounding
-window or workbench surface.
+Keep the scrollable editor layers inside the canvas. Let anchored widgets such
+as suggest, parameter hints, hover, and rename escape the editor bounds when
+needed, but constrain them to the surrounding window.
 
 ### Gutter and line state
 
-Lay gutter lanes out from left to right as glyph margin, line numbers, line
-decorations, then code. A standard line-decoration lane is `10px`. Reserve at
-least five character cells for line numbers, right-align them, and use tabular
-numerals. Give ordinary, active, and dimmed line numbers distinct foreground
-roles; do not signal the current line by changing alignment or weight.
+Lay gutter lanes out as glyph margin, line numbers, line decorations, then
+code. Use a `10px` line-decoration lane. Reserve at least five character cells
+for line numbers, right-align them, and use tabular numerals. Give ordinary,
+active, and dimmed line numbers separate foreground roles.
 
-The gutter has its own background role. The current-line treatment defaults to
-the code line, but may instead cover the gutter or both. Keep separate roles for
-the focused current-line fill, the inactive current-line fill, and an optional
-current-line border. The highlight remains a line-wide layer rather than a
-selected row component.
+The gutter has its own background role. Keep separate roles for the focused
+current-line fill, inactive current-line fill, and optional current-line
+border. A current-line highlight spans the line; it is not a list-row fill.
 
-Use the active-selection background while the editor owns focus and the
-inactive-selection background otherwise. Keep related selection highlights,
-word highlights, and symbol highlights visually weaker than the primary
-selection. Rounded multi-line selection joins are the normal treatment. High
-contrast removes those rounded joins but keeps a solid semantic selection fill;
-do not reduce the primary selection to an outline-only treatment.
+Use the active selection role while the editor owns focus and the inactive
+selection role otherwise. Keep selection highlights, word highlights, and
+symbol highlights weaker than the primary selection. Rounded joins between
+adjacent lines are the default selection rendering.
 
-Diagnostic marks stay attached to the text range:
+Attach diagnostics to text ranges rather than filling the row:
 
 | Severity | Range treatment |
 |---|---|
-| Error | `4px` double underline/border plus the error role |
-| Warning | `4px` double underline/border plus the warning role |
-| Information | `4px` double underline/border plus the information role |
-| Hint | `2px` dotted underline/border |
-| Unnecessary | `2px` dashed underline/border |
+| Error | `4px` double underline in the error role |
+| Warning | `4px` double underline in the warning role |
+| Information | `4px` double underline in the information role |
+| Hint | `2px` dotted underline in the hint role |
+| Unnecessary | `2px` dashed underline in the unnecessary-code role |
 
-Do not replace those range treatments with a row fill. Overview-ruler and
-minimap markers repeat information, warning, and error severities as secondary
-locators.
+Repeat error, warning, and information locations in the minimap or overview
+ruler only as secondary locators.
 
 ### Minimap, overview ruler, and scrolling
 
-The minimap is a secondary locator at the right edge by default. Its normal
-mode is proportional, renders character shapes, uses scale `1`, and samples at
-most `120` columns. Its viewport slider appears on pointer intent by default and
-stays present while active.
+Place the minimap at the right edge by default. Its default mode is
+proportional, renders character shapes at scale `1`, samples at most `120`
+columns, and reveals its viewport slider on pointer intent.
 
-Use the minimap size mode deliberately:
-
-| Mode | Behavior |
+| Minimap mode | Behavior |
 |---|---|
-| Proportional | Mirrors document proportion and may have its own scroll range |
-| Fill | Stretches or shrinks to the available height and has no independent scroll |
-| Fit | Shrinks to fit and has no independent scroll |
+| Proportional | Matches the editor contents and may scroll |
+| Fill | Stretches or shrinks to fill the editor height without scrolling |
+| Fit | Shrinks only as needed to stay within the editor height |
 
-The overview ruler sits at the outer code edge, has a border role, and supports
-three marker lanes. Map selection, find, diagnostics, diff changes, and cursor
-location to separate semantic marker roles rather than one accent. When showing
-full editor chrome, reserve a `14px` vertical scrollbar and a `12px` horizontal
-scrollbar; these are editor-native metrics, not the thin workbench scrollbar.
+The overview ruler uses a border role and supports three marker lanes. Keep
+selection, find, diagnostics, diff changes, and cursor markers semantically
+distinct. Use a `14px` vertical editor scrollbar and a `12px` horizontal editor
+scrollbar; these differ from the thinner workbench scrollbar.
 
 ## Editor tabs: surface delta
 
-Follow the complete tab geometry and state model in
-[navigation and actions](./navigation-actions.md). The editor-specific delta is
-the ownership boundary: tabs, breadcrumbs, and the canvas share the editor
-frame, background, border, and clipping. Modern inactive tab fills are
-transparent, so the editor surface remains the visible base; active and hover
-fills use their dedicated editor-tab roles. Use opaque action backgrounds over
-tab labels so text cannot show through a revealed close or status action.
+Follow [navigation and actions](./navigation-actions.md) for tab geometry and
+states. Tabs and breadcrumbs sit directly above the canvas without an enclosing
+card. Use the focused and unfocused editor-tab roles for the active document in
+each group. Do not dim an inactive group's canvas as a whole.
 
-An inactive editor group keeps its active document and selection facts, but
-uses the unfocused editor-tab palette and inactive editor-selection role. Do not
-dim the canvas as a whole.
+When a close or status action is revealed over a tab label, give its action
+area the matching tab background so label text cannot show through it.
 
 ## Find widget
 
-Place find at the canvas top-right. Its primary row contains the query, query
-options, match count, previous/next actions, and close; the replace row expands
-below it. The normal surface is `419px` wide and `34px` high, with a `1px`
-border, Outer radius, Large shadow, `4px` top offset, and `0 4px 0 9px` outer
-padding. Use a `13px` query and a minimum `25px` input/control row.
+Place find at the canvas top-right. Its first row contains the query, query
+options, match count, previous and next actions, and close; replace expands as
+a second row.
 
-Opening find slides it into view over `200ms`; reduced-motion mode removes that
-transition. Reserve space above the first code line while find is open so the
-widget does not cover the start of the document.
+The initial surface is `419px` wide and `34px` high, with a `1px` widget border,
+`8px` radius, `0 0 12px rgba(0, 0, 0, 0.14)` shadow, `4px` top offset, and
+`0 4px 0 9px` outer padding. Use `13px` query text and a minimum `25px`
+input/action row.
 
-Reduce the widget in stages as the canvas narrows:
+Opening find slides it into view over `200ms`; remove the transition when
+reduced motion is requested. Reserve space above the first code line while the
+widget is open by default.
 
-| State | Maximum width | Removed first |
+Adapt it in this order as width decreases:
+
+| State | Maximum width | Change |
 |---|---:|---|
-| Normal | `419px` | Nothing |
-| Reduced | available width | Match count |
-| Narrow | `257px` | Keep the reduced anatomy |
-| Collapsed | `170px` | Previous, next, replace, replace-all, and query-option controls |
+| Normal | `419px` | Full anatomy |
+| Reduced | available width | Hide match count |
+| Narrow | `257px` | Keep reduced anatomy |
+| Collapsed | `170px` | Also hide previous, next, replace, replace-all, and query options |
 
-Close remains available in every visible state. Let the query flex and clip
-inside the remaining width; do not scale icons. A replace-enabled widget grows
-to a second `25px` row instead of compressing both inputs into one line.
+Keep close visible. Let the query flex and clip; do not scale the icons. A
+replace-enabled widget grows to a second `25px` row.
 
-Give the current match its own fill and a `2px` border. Other matches and the
-find scope use separate translucent roles. A no-results match count uses the
-error foreground without recoloring the whole widget.
+Give the current match its own fill and `2px` border. Use separate roles for
+other matches and the find scope. Use the error foreground only on the match
+count when there are no results.
 
 ## Suggest widget
 
-Anchor suggestions to the insertion point. Place the list below when it fits;
-otherwise place it above. Keep the surface within the available window bounds
-and make the list scroll when space is constrained.
+Anchor suggestions to the insertion point. Place the list below when it fits
+and above otherwise. Keep it inside the window and scroll the list when space
+is constrained.
 
-The normal suggest surface is `430px` wide, has an Outer radius, `1px` border,
-and `0 2px 8px` shadow. Its list starts at twelve editor-line rows and never
-shrinks below `220px` wide. A loading or empty message collapses to one row and
-half the normal width. The optional status row is hidden by default; when
-enabled, it occupies one item row, uses `0 4px` padding, and adds a `1px` top
-border.
+The default surface is `430px` wide, has an `8px` radius, `1px` suggest border,
+and `0 2px 8px` shadow in the widget-shadow color. It starts at twelve editor
+line rows and never shrinks below `220px` wide. Loading and empty states collapse
+to one row and half the default width.
 
-Each row contains a `16px` kind icon, label/signature, optional qualifier and
-detail, then disclosure. Use `2px` leading content padding and `10px` trailing
-padding. Truncate the main line. Qualifiers and details use `85%` text; the
-trailing detail lane may consume at most `70%` of the row. A focused item uses
-the selected foreground, background, icon, focus-outline, and focused-match
-roles; an unfocused match uses the ordinary match role.
+The optional status row is hidden by default. When enabled, make it one item row
+high with `0 4px` padding and a `1px` top border.
 
-Documentation may open as a second surface. Start it at `330px` wide, never
-below `220px`, and try the inline end side, inline start side, then below or
-above. Use the first placement that fits; otherwise choose the placement with
-the most usable area and scroll the documentation. Keep its border, background,
-and foreground in the suggest family. The documentation surface does not add
-an independent shadow; the shadow belongs to the main suggest widget.
+Each suggestion row contains a `16px` kind icon, label and signature, optional
+qualifier and detail, then disclosure. Use `2px` leading content padding and
+`10px` trailing padding. Truncate the main line. Qualifiers and details use
+`85%` text; the trailing detail lane may consume at most `70%` of the row. Give
+a focused suggestion independent selected foreground, background, icon,
+outline, and match roles.
+
+Documentation may open as an attached second surface. Start it at `330px` wide
+and never below `220px`. Try inline end, inline start, then below or above. Use
+the first placement that fits; otherwise choose the placement with the most
+usable area and scroll its contents. Give it the same `8px` radius and suggest
+roles, but no independent shadow.
 
 ## Parameter hints
 
-Parameter hints share the hover palette but remain a distinct anchored widget.
-Use an Outer radius, `1px` border, Large shadow, `1.5em` line height, and a
-`440px` maximum width. Try above the call site first, then below. Wrap and
-break long documentation, and scroll once content reaches the larger of one
-quarter of the editor height or `250px`.
+Parameter hints use the hover palette but remain a distinct anchored widget.
+Use an `8px` radius, `1px` hover-widget border,
+`0 0 12px rgba(0, 0, 0, 0.14)` shadow, `1.5em` line height, and a `440px`
+maximum width. Try above the call site, then below. Wrap long documentation and
+scroll when its content reaches the larger of one quarter of the editor height
+or `250px`.
 
 Use `4px 5px` padding around the signature and `0 10px 0 5px` around
-documentation. Separate signature from documentation with a `1px` rule at
-reduced emphasis. Highlight the active parameter and make it bold.
+documentation. Separate them with a `1px` reduced-emphasis rule. Highlight the
+active parameter and make it bold.
 
-When multiple signatures exist, add a `22px` navigation rail containing
-`16px` previous/next actions and a `12px` count line. Keep cycling enabled so
-navigation continues from the last signature to the first.
+For multiple signatures, add a `22px` navigation rail with `16px` previous and
+next actions and a `12px` count line. Cycle from the last signature to the first
+by default.
 
 ## Hover
 
-Anchor hover to the inspected range and use hover background, foreground,
-border, highlight, and optional status-bar roles. The surface has a `1px`
-border, Outer radius, Large shadow, a `150px` minimum width, and a minimum height
-of one editor line plus `8px`. Prefer above; fall below when that produces the
-usable placement. Constrain both axes to the available viewport and allow the
-body to scroll and resize.
+Anchor hover to the inspected range. Use hover background, foreground, border,
+highlight, and optional status-bar roles. The surface has an `8px` radius,
+`1px` border, `0 0 12px rgba(0, 0, 0, 0.14)` shadow, `150px` minimum width, and
+a minimum height of one editor line plus `8px`.
 
-Hover opens after `300ms`, remains sticky while the pointer moves into it, and
-uses a `300ms` hiding delay. If a row offers copy, place the `16px` action
-`4px` from the top and end edges with `2px 4px` padding. Keep it visually hidden
-until the row is hovered or contains focus. Put optional actions in the hover
-status-bar role instead of adding a second popup.
+Prefer above by default and fall below when needed. Constrain both axes to the
+available window; allow the contents to scroll and the widget to resize.
 
-Inline code inside hover uses the text-code-block background. Longer signature
-or documentation sections wrap; horizontal overflow remains available for
-content whose formatting must be preserved.
+Hover opens after `300ms`, stays open while the pointer moves into it, and uses
+a `300ms` hiding delay. For a copyable row, place a `16px` action icon `4px`
+from the top and end edges with `2px 4px` padding. Hide it until the row is
+hovered or contains focus. Put optional actions in the hover status area
+instead of a second popup.
+
+Use the text-code-block background for inline code. Wrap long documentation;
+retain horizontal overflow where preserved formatting requires it.
 
 ## Peek surface
 
-Peek is an embedded editor zone, not a floating popup. Give it a top frame
-border and Large shadow, then divide the body into results and preview. The
-initial split is `30%` results and `70%` preview, with an initial height of
-eighteen editor lines. Let the divider resize horizontally. Keep at least
-`100px` for results and `200px` for preview.
+Peek is an embedded editor zone, not a popup. Give it a `1px` top frame border
+and `0 0 12px rgba(0, 0, 0, 0.14)` shadow, then split its body into results and
+preview. Start at `30%` results and `70%` preview with a height of eighteen
+editor lines. Make the divider resizable. Keep at least `100px` for results and
+`200px` for preview.
 
-The header height is `1.2` times the editor line height. Use a `13px` title,
-`20px` leading inset, trailing actions, and truncation for both title and
-metadata. Results use `23px` rows and receive initial focus. Give the selected
-result, matched text, preview background, preview gutter, preview match, and
-frame their own roles.
+The header is `1.2` times the editor line height. Use a `13px` title, `20px`
+leading inset, trailing actions, and truncation for title and metadata. Results
+use `23px` rows and receive initial focus. Give selected results, matched text,
+preview background, preview gutter, preview match, and frame separate roles.
 
-Keep peek clipped to the editor zone and let its results and preview scroll
-independently. Do not give it the hover/suggest border radius; its visual
-attachment to code is part of the hierarchy.
+Keep peek clipped to the editor zone and let results and preview scroll
+independently. Do not round it like a floating widget.
 
 ## Rename
 
-Anchor rename to the symbol range. Use the editor-widget background and shadow,
-the control radius, `3px` around the input group, and a minimum width of
-`200px`. Size the input to at least twenty character cells and approximately
-`1.1` times the symbol width when that is larger. Keep the editor font in the
-input so the proposed name aligns with the code context.
+Anchor rename to the symbol range. Use the editor-widget background, an
+optional `1px` widget border, `4px` radius, and
+`0 0 8px 2px` shadow in the widget-shadow color. Use `3px` padding around the
+input group and a `200px` minimum width.
 
-Place rename below when there is room for more than six candidate rows;
-otherwise place it above. A candidate row is one editor line plus `4px`. Show at
-most seven candidate rows and scroll the rest. The optional preview adds
-`4px 4px 0` outer padding and an `80%` label; do not reserve that space when no
-preview is present.
+Keep the editor font in the input. Size it to at least twenty character cells
+or `1.1` times the symbol length, whichever is larger. Prefer below when there
+is room for more than six candidate rows; otherwise prefer above.
 
-Focus stays in the rename input. Candidate suggestions extend the anchored
-surface rather than opening a second suggest popup. An empty or unchanged value
-cancels; acceptance remains the input's primary action.
+Each candidate row is one editor line plus `4px`. Show at most seven rows and
+scroll the rest. Preview mode adds `4px 4px 0` outer padding and an `80%` label;
+do not reserve that space otherwise.
+
+Keep focus in the rename input and append candidates to the same anchored
+surface. An empty, whitespace-only, or unchanged value cancels.
 
 ## Inline completions and edits
 
 Present a completion first as ghost text in the code flow. Use dedicated ghost
-foreground, background, and border roles; italic is the normal treatment.
-Syntax-colored ghost text uses `0.7` opacity so it remains subordinate to real
-code. A short suggestion may use a dotted underline, while text that will be
-replaced uses an underline.
+foreground, background, and border roles; italic is the default treatment.
+Syntax-colored ghost text uses `0.7` opacity. A short suggestion may use a
+dotted underline; replaced text uses an underline.
 
-Keep the inline-completion toolbar hidden until pointer intent by default. When
-shown as a bordered hint, use hover roles, `4px` padding, and a `1px` border.
-Keep next/previous, count, and accept actions together in one compact toolbar.
+Show the inline-completion toolbar on ghost-text hover by default. A bordered
+toolbar uses hover roles, `4px` padding, and a `1px` border. Keep previous,
+next, count, and related actions together.
 
-For edits, choose the least expansive presentation that expresses the change:
-inline insertion, inline deletion, word replacement, line replacement, then
-side-by-side when automatic layout has enough room. Use separate original and
-modified line/character roles. Deletions use strikethrough; inserted and
-removed ranges keep their semantic fills and `1px` outlines. A long-distance
-edit keeps a directional hint instead of painting all intervening lines.
+For edits, choose the smallest active presentation that explains the change:
+inline insertion or deletion, word replacement, line replacement, then
+side-by-side when enough width is available. Use separate original and modified
+line and character roles. Deletions use strikethrough. Empty inserted or
+removed ranges remain locatable with a `3px` vertical marker. Use a directional
+hint for a long-distance edit instead of filling every intervening line.
 
 ## Diff surface
 
-Use side-by-side diff by default with a resizable `50%` split. At `900px` or
-narrower, switch to inline diff when compact inline mode is allowed. The
-original side is read-only by default; keep its selection, scrolling, and code
-legible rather than dimming the entire pane.
+Use side-by-side diff by default with a resizable `50%` split. When the surface
+is `900px` wide or narrower, switch to inline diff by default. Keep the original
+side read-only unless editing it is an explicit feature.
 
-Separate inserted and removed line backgrounds from inserted and removed
-character backgrounds. Give gutter marks, overview marks, and moved-block
-borders their own roles. In high contrast, add a `1px` dashed range border. An
-empty character change remains locatable with a `3px` vertical marker, and
-inline deletions use strikethrough.
+Separate inserted and removed line fills from inserted and removed character
+fills. Keep gutter marks, overview marks, and moved-block borders independent.
+Inline deletions use strikethrough; an empty character change uses a `3px`
+vertical marker.
 
-Side-by-side editors use a `1px` separator with a small directional edge shadow.
-Alignment gaps may use an `8px × 8px` diagonal pattern so blank space is not
-mistaken for unchanged code. Keep the overview visible by default.
+Separate side-by-side editors with a `1px` diff border and directional edge
+shadows. Use an `8px × 8px` diagonal pattern for alignment gaps so blank space
+is not mistaken for unchanged code. Show the overview ruler by default.
 
-Unchanged-region collapsing is optional and off by default. If enabled, keep
-three context lines, require at least three hidden lines, and reveal twenty
-lines per expansion action. The centered control is `24px` high, or `11px` in
-compact mode. Preserve independent vertical overflow while synchronizing the
-comparison position.
+Unchanged-region collapsing is off by default. When enabled, keep three context
+lines, require at least three hidden lines, and reveal twenty lines per action.
+Use a `24px` control in normal mode and an `11px` control in compact mode.
 
 ## Code blocks
 
-Use a code block for read-only code embedded in prose, help, hover details, or a
-result. The portable structure is `pre > code`. Apply the syntax-color rule from
-foundations, use the text-code-block background, and preserve whitespace.
+Use `pre > code` for a simple read-only snippet and apply the syntax-color rule
+from foundations. Preserve whitespace and make the block, not the `code` child,
+own clipping and overflow.
 
-A standalone block uses `10px 12px` padding, a `1px` widget border, the Inner
-radius, `overflow: auto`, and `16px` space below it in prose. Let the `code`
-child be block-level with transparent background and no additional padding or
-radius. This keeps one clipping and scrolling owner.
+For an editor-backed interactive code block, use a `1px` semantic border, `6px`
+radius, and `16px` space below it. Change the border to the focus role when its
+editor owns focus.
 
-An actionable block may place a toolbar over its top edge. Use a `26px` toolbar
-surface offset `-15px`, cap it at `70%` of the block width, and use `24px`
-actions. Keep the toolbar hidden and non-interactive at rest; reveal it on block
-hover, block focus, or focus within the toolbar. A focused code block changes
-its border to the focus role.
+An actionable block may overlay a toolbar on its top edge. Use a `26px` toolbar
+offset `-15px`, cap it at `70%` of the block width, and use `24px` actions. Keep
+it hidden and non-interactive until the block is hovered, focused, or contains
+focus.
 
 ## Terminal-like surface
 
-Use this treatment for a static transcript, command output, or terminal-shaped
-developer surface. It does not provide shell behavior. The anatomy is a clipped
-surface containing a preformatted scroll viewport, optional command/status
-gutter, and optional split panes.
+Use this treatment for a terminal or static terminal-shaped developer surface.
+Use terminal background and foreground roles instead of assuming black. In a
+panel, terminal background falls back to the panel background; in an editor, it
+falls back to the editor-pane background.
 
-Use terminal background and foreground roles rather than assuming a black
-surface. In a panel, terminal background falls back to the panel background; in
-an editor, it falls back to the editor-pane background. Keep a `20px` start
-gutter for command or status decorations. Separate split panes with a `1px`
-terminal-border role and clip each pane independently.
+Reserve a `20px` start gutter for command or status decorations. Separate split
+panes with a `1px` terminal-border role and clip each pane independently.
 
-Use the editor monospace family when no terminal family is provided. Terminal
+Use the editor monospace family unless a terminal family is configured. Terminal
 text defaults to `12px` on macOS and `14px` elsewhere, with `0` letter spacing.
 Use a line-height multiplier of `1`, or `1.1` on Linux. Preserve preformatted
-spacing inside an overflow viewport rather than wrapping output as body copy.
+spacing inside an overflow viewport.
 
-Keep terminal selection distinct for active and inactive focus. The focused
-cursor is a block and does not blink by default; the inactive cursor is an
-outline. Use separate cursor foreground and cursor-accent roles so a block
-cursor does not erase the character beneath it.
+Keep active and inactive terminal selection backgrounds distinct. The focused
+cursor is a non-blinking block by default; the inactive cursor is an outline.
+Use separate cursor foreground and cursor-background roles so the character
+beneath a block cursor remains legible.
 
 Map ordinary and bright black, red, green, yellow, blue, magenta, cyan, and
-white to sixteen semantic terminal roles. Keep command success, command error,
-find-current, find-other, hover highlight, overview cursor, and overview find
-markers separate from that ANSI palette. Search fills remain translucent so
-they do not hide terminal text.
+white to sixteen terminal roles. Keep command success, command error, current
+find, other find matches, hover highlight, overview cursor, and overview find
+markers outside that ANSI palette. Find backgrounds remain translucent so text
+stays legible.
 
 ## Theme-role minimum
 
-An editor-themed surface should expose at least these independent role groups:
+Keep these role groups independent:
 
 | Group | Roles that must not collapse |
 |---|---|
-| Canvas | Foreground, background, gutter background, line numbers, active line number, focused current-line fill, inactive current-line fill |
-| Selection and find | Active selection, inactive selection, current find match, other find matches, find scope |
-| Widgets | Widget foreground/background/border/resize border/shadow; suggest selected and match roles; hover status role |
-| Inline and diff | Ghost text; inserted/removed line and character fills; gutter and overview markers; moved-block border |
-| Terminal | Foreground/background, active/inactive selection, cursor/cursor accent, split border, sixteen ANSI roles |
+| Canvas | Foreground, background, gutter, line numbers, active line number, focused current line, inactive current line |
+| Selection and find | Active selection, inactive selection, current find match, other matches, find scope |
+| Widgets | Widget foreground, background, border, resize border, shadow; suggest selection and match; hover status |
+| Inline and diff | Ghost text; inserted and removed line and character fills; gutter and overview markers; moved-block border |
+| Terminal | Foreground, background, active and inactive selection, cursor foreground and background, split border, sixteen ANSI roles |
 
-In high contrast, use solid theme roles, add explicit contrast borders where
-the component defines them, and remove widget shadows. Do not merge editor,
-widget, hover, suggest, diff, and terminal backgrounds into one generic dark
-rectangle.
+When explicit high-contrast support is requested, use the component's contrast
+roles instead of flattening editor, widget, hover, suggest, diff, and terminal
+surfaces into one rectangle.

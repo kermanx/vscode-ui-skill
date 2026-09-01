@@ -1,6 +1,6 @@
 # Composition patterns
 
-These are representative assembly recipes for developer-tool surfaces. They assume the existing families of trees, lists, inputs, action bars, badges, progress, and messages; they do not add another component system.
+These recipes mirror the current Classic workbench. Assemble them from the existing trees, lists, inputs, action bars, badges, progress, and messages. Do not add generic cards, floating containers, or shared surface geometry around them. Walkthrough cards are a component-specific exception described below.
 
 ## Explorer
 
@@ -60,7 +60,7 @@ These are representative assembly recipes for developer-tool surfaces. They assu
 
 - **Choose the smallest scope that owns the problem.** Input validation belongs beside its input; empty, filtered, loading, and query errors belong in the affected surface or pane; row-scoped failures belong on the row. Escalate to a notification when an operation has no durable local owner, fails after leaving the surface, or needs a workbench-level recovery action.
 - **Compose a notification in two levels.** The collapsed row is severity, message, and contextual toolbar. Expansion reveals wrapped detail, source, and primary action buttons; progress spans the item. Do not offer close while progress is running. Keep secondary configuration, expansion, and dismissal controls out of the resting row until hover, focus, or expansion.
-- **Separate interruption from history.** Transient toasts announce recent work without replacing the focused surface; a notification center retains the list, unread state, in-progress indication, filtering, and clear-all controls. Suppress optional toasts when they would cover an active input, since the center still preserves them.
+- **Separate interruption from history.** Transient toasts announce recent work without replacing the focused surface; a notification center retains the list, unread state, in-progress indication, filtering, and clear-all controls. When available height cannot fit every toast, queue the overflow while retaining it in the center.
 
 ## Empty workspace
 

@@ -1,6 +1,6 @@
-# Collections
+# Classic collections
 
-Lists, trees, and tables are dense workbench navigation surfaces. Keep their structure flat, their state explicit, and their render cost proportional to what is visible. Feature renderers may add labels, counts, actions, or editors, but the collection owns navigation, focus, selection, scrolling, filtering, and item identity.
+Lists, trees, and tables are dense Classic workbench surfaces. Rows run edge to edge inside the viewport; hover, focus, selection, and drop fills cover the row instead of a rounded or inset row card. Feature renderers may add labels, counts, actions, or editors, but the collection owns navigation, focus, selection, scrolling, filtering, and item identity.
 
 ## Choose the collection family
 
@@ -33,7 +33,7 @@ Focus and selection belong to collection state; render them onto the row instead
 
 Omit slots that the family or item kind does not use. Keep the row a single line in compact file, result, editor, and symbol collections. Settings are a verified exception: their descriptions and controls form a variable-height body beneath the title.
 
-Organizational rows are their own item kind. A section header or separator is not selectable or activatable simply because it occupies a row. A collapsible group is different: it is an interactive tree node and keeps its disclosure state. This distinction allows one collection to mix headers and actionable rows without teaching navigation that every visual row is a command.
+Give organizational rows their own renderer. Open Editors, for example, mixes editor rows with `11px`, bold, uppercase group rows. A collapsible group is a tree node with disclosure state; a purely visual separator is not an item.
 
 ## Compact metrics
 
@@ -52,7 +52,7 @@ The `22px` row is a scoped compact workbench pattern, not a global list height. 
 
 For the shared compact icon-label treatment, the leading file/icon slot is `16px` wide by `22px` high with a `6px` trailing gap. A standard tree disclosure lane is `16px` wide with `6px` trailing padding. Do not combine those into one oversized generic gutter: disclosure and content icon are separate slots.
 
-Standard workbench trees start depth-one content with an `8px` indent and add `8px` per deeper level. That step is configurable from `4px` through `40px`; keep the disclosure lane fixed while changing the depth step. These metrics do not apply to settings rows or another feature that deliberately replaces the compact tree presentation.
+Standard workbench trees use `8px` for both the initial indent and each depth step. The depth step is configurable from `4px` through `40px`; keep the disclosure lane fixed while changing it. These metrics do not apply to Settings or another feature that deliberately replaces the compact tree presentation.
 
 ## Labels, matches, and metadata
 
@@ -83,13 +83,13 @@ Make the primary label the row's shrinkable region:
 The shared icon-label primitive establishes these secondary treatments:
 
 - a suffix follows the name at `0.7` opacity;
-- a description follows with a `0.5em` leading gap, `0.9em` type, and `0.7` opacity;
-- a trailing after-decoration uses `0.9em` type, `0.75` opacity, and semibold weight;
+- a description follows with a `0.5em` leading gap and `0.9em` type; its resting opacity is `0.7` in dark themes and `0.95` in light themes;
+- a trailing after-decoration uses `0.9em` type, `0.75` opacity, and `600` weight;
 - descriptions return to full opacity on focused or selected rows so selection does not make supporting text harder to read.
 
 Use a description for context such as a parent path or symbol detail, a suffix for text grammatically attached to the name, and a decoration for status or aggregate data that belongs at the trailing edge. Counts in Explorer folders, Search results, and Outline problem markers verify the trailing-decoration pattern. Do not put all three into every row.
 
-Render matched substrings as spans inside the name or description; do not replace the label with an unrelated badge. Support more than one match range. Use `--vscode-list-highlightForeground` for a neutral row and `--vscode-list-focusHighlightForeground` when the row is focused. A filter UI may additionally use `--vscode-list-filterMatchBackground` and `--vscode-list-filterMatchBorder` for its bounded match treatment.
+Render matched substrings as spans inside the name or description and support more than one match range. The shared label treatment uses `--vscode-list-highlightForeground` for a neutral row and `--vscode-list-focusHighlightForeground` when focused. Pane-tree matches instead use `--vscode-list-filterMatchBackground` with a `1px` dotted `--vscode-list-filterMatchBorder` outline placed inside the match.
 
 ## Row states
 
@@ -100,6 +100,7 @@ Use the existing semantic roles rather than literal colors:
 | State | Theme roles |
 | --- | --- |
 | Focused row | `--vscode-list-focusBackground`, `--vscode-list-focusForeground`, `--vscode-list-focusOutline` |
+| Focused active selection | active-selection roles plus `--vscode-list-focusAndSelectionOutline` |
 | Active selection | `--vscode-list-activeSelectionBackground`, `--vscode-list-activeSelectionForeground`, `--vscode-list-activeSelectionIconForeground` |
 | Inactive selection | `--vscode-list-inactiveSelectionBackground`, `--vscode-list-inactiveSelectionForeground`, `--vscode-list-inactiveSelectionIconForeground` |
 | Inactive focus | `--vscode-list-inactiveFocusBackground`, `--vscode-list-inactiveFocusOutline` |
@@ -111,19 +112,17 @@ Keep outlines inside the row so they are not clipped by adjacent virtual rows. D
 
 ## Inline actions and editing
 
-Keep row actions at the trailing edge and reveal optional actions on row hover, focus, or selection. Preserve actions for persistent states that need them: Open Editors keeps the close or unpin affordance available for dirty and sticky items, while Settings keeps its toolbar available when the toolbar itself is active. Using `visibility` for the quiet state preserves the row's label/action geometry.
+Keep row actions at the trailing edge and reveal optional actions on row hover, focus, or selection. Preserve actions for persistent states that need them: Open Editors keeps the close or unpin affordance available for dirty and sticky items, while Settings keeps its toolbar available when the toolbar itself is active. Open Editors hides quiet actions with `visibility`, preserving their geometry; Search removes quiet actions from layout and hides the count when actions appear at narrow widths.
 
-At narrow widths, keep the primary label shrinkable and the action container fixed. Search results hide a count badge while hover or focus reveals actions, preventing those actions from covering the result name.
+At narrow widths, keep the primary label shrinkable and the action container fixed. Do not let actions cover the result name.
 
 Inline rename is an explicit collection state, not an input inserted opportunistically by the row renderer. Explorer verifies this sequence:
 
 1. preserve the leading resource icon and replace only the displayed label with an input;
 2. initialize selection for the likely edit target: the base name for a file, all text for a folder;
 3. validate while typing and show the message at the editor;
-4. commit with `Enter`; cancel with `Escape`; define blur behavior deliberately;
+4. commit with `Enter`; cancel with `Escape`; on blur, commit only a valid value and cancel an invalid one;
 5. restore the ordinary label template when the edit session ends.
-
-Because virtual rows are reusable, the collection must retain the edit target and value even if scrolling causes the original row DOM to be recycled.
 
 ## Trees
 
@@ -141,7 +140,7 @@ Sticky rows are rendered copies of the same ancestor templates, not a second hea
 
 Compose a table as a resizable header above a virtual list body. A visible row contains one cell per column in the same order as the headers. Column resizing updates the measured width of the header and every currently rendered cell; new virtual rows receive the current widths when rendered.
 
-Headers and cells do not wrap: they shrink within their assigned width and ellipsize. Column minima and maxima belong to the table instance because no universal column width is verified. Optional separators use `--vscode-tree-tableColumnsBorder`. Optional zebra striping uses `--vscode-tree-tableOddRowsBackground`, but do not apply the odd-row fill over focused, selected, or hovered states.
+Headers and cells do not wrap: they shrink within their assigned width and ellipsize. Each column owns its width constraints; an unspecified minimum is `120px`, and an unspecified maximum is unbounded. Optional separators use `--vscode-tree-tableColumnsBorder`. Optional zebra striping uses `--vscode-tree-tableOddRowsBackground`, but do not apply the odd-row fill over focused, selected, or hovered states.
 
 ## Finding and filtering
 
