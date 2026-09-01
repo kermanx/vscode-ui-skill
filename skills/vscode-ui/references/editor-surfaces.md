@@ -276,8 +276,8 @@ panes with a `1px` terminal-border role and clip each pane independently.
 
 Use the editor monospace family unless a terminal family is configured. Terminal
 text defaults to `12px` on macOS and `14px` elsewhere, with `0` letter spacing.
-Use a line-height multiplier of `1`, or `1.1` on Linux. Preserve preformatted
-spacing inside an overflow viewport.
+Use a line-height multiplier of `1`, or `1.1` on Linux. Keep the character-cell
+grid inside the terminal's own scrollable viewport.
 
 Keep active and inactive terminal selection backgrounds distinct. The focused
 cursor is a non-blinking block by default; the inactive cursor is an outline.

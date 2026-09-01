@@ -41,7 +41,7 @@ Tabs have their own state model:
 | Severity / validation | Inputs keep separate info, warning, and error foreground/background/border roles. The severity border replaces the base input border; while a severity is present, suppress the ordinary focus outline so the validation decoration remains the border signal. |
 | Read-only | Model read-only separately from disabled. Keep the surface's normal active, selection, hover, and focus styling; disable mutating actions through capability state instead of dimming the entire editor or row. |
 
-For menus, focus is the selection treatment: focused items use the menu selection foreground, background, and border. Checked adds a checkmark without replacing that focus treatment. Disabled uses the disabled foreground. Pointer focus omits the selection outline, while keyboard-visible focus retains it; high-contrast themes keep the outline for either input mode.
+For menus, focused rows use `list.hoverForeground` and `list.hoverBackground` through the default menu styles, plus the optional `menu.selectionBorder` outline. Checked adds a checkmark without replacing that focus treatment. Disabled uses the disabled foreground. Pointer focus omits the selection outline, while keyboard-visible focus retains it; high-contrast themes keep the outline for either input mode.
 
 ## Work and drag states
 

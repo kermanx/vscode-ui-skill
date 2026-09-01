@@ -67,7 +67,7 @@ The primary sidebar is the principal navigation/detail column. The auxiliary sid
 
 ## Editor and panel
 
-The editor is the primary flexible surface. Its default group minimum is 220px by 70px; an active editor may raise or lower those constraints. Resize the active group first. If that group cannot move farther along the requested axis, resize the whole editor region.
+The editor is the primary flexible surface. Its default group minimum is 220px by 70px; an active editor may raise or lower those constraints.
 
 The panel is supporting horizontal or vertical work. Its minimum is 300px wide when vertical and 77px high when horizontal. Preserve its last visible extent across hide/show.
 
@@ -75,7 +75,7 @@ The panel is supporting horizontal or vertical work. Its minimum is 300px wide w
 
 A part may contain a title, an optional secondary header, scrollable content, and an optional footer. Every visible title, secondary header, or footer consumes 35px; content receives the remaining block size.
 
-Part titles use 8px inline outer padding, 12px before the label, and 5px before title actions. Keep the title label on one line with ellipsis. Put actions at the trailing edge.
+Part titles use 8px inline outer padding and 12px before the label. The base title-action slot has 5px leading padding; composite part titles such as the sidebars and panel override it to 8px. Keep the title label on one line with ellipsis. Put actions at the trailing edge.
 
 A collapsible view header is a 22px control, not decoration. Support pointer activation, `Enter`/`Space` toggling, `Left` to collapse, and `Right` to expand. A collapsed view occupies only its header; an expanded view adds its constrained body. Use the header border between stacked views rather than enclosing each view in another structural frame.
 

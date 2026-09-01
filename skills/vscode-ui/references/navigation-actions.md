@@ -121,8 +121,8 @@ rounded inset fills.
 
 The Settings scope switcher is a specific flat tablist with a `1px` bottom
 border. Labels are `13px`, regular case, with `7px 8px 6.5px`; they have `0`
-radius and no fill. Checked and hovered labels use a `1px` bottom line; focus
-uses the focus-border role. Hide unavailable targets: Remote without a remote
+radius and no fill. Checked labels use a `1px` bottom line. Hover only raises
+opacity; focus uses the focus-border role. Hide unavailable targets: Remote without a remote
 authority, Workspace in an empty workbench, and Folder unless the workbench is
 in workspace state with at least one folder.
 
@@ -160,9 +160,9 @@ The top-level list is one clipped flex row. Each title uses `0 8px` padding and 
 `5px` radius with a `1px` inset focus outline. More is `22px × 22px` with
 `0 8px` padding; when it is the only visible item, the bar occupies `38px`.
 
-Measure localized titles. Move trailing categories into More and reserve More's
-width before accepting the remaining titles. When no more than roughly one
-quarter of the categories would remain, collapse the whole bar to More. Compact
+Measure localized titles. If no more than `floor(m / 4) + 1` of `m` showable
+categories initially fit, collapse the whole bar to More. Otherwise reserve
+More's width and move trailing categories into it until the row fits. Compact
 menu-bar mode starts in that overflow-only form. Left and Right move among
 top-level categories; Escape closes the current menu.
 
