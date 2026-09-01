@@ -128,7 +128,7 @@ Inline rename is an explicit collection state, not an input inserted opportunist
 
 A tree row composes, in order, an indent layer, disclosure control, and overflow-clipped content. Indent guides are `1px` strokes with three modes: `none`, `onHover`, and `always`. In `onHover`, active guides remain visible and hovering the tree reveals all inactive guides; `always` keeps all guides visible. Use `--vscode-tree-indentGuidesStroke` for active guides and `--vscode-tree-inactiveIndentGuidesStroke` for inactive guides.
 
-Do not mark every ancestor guide of a focused or selected item as active. An active node that is expanded and has children activates its own continuation guide; otherwise it activates its immediate parent's guide. Therefore, for an ordinary focused or selected leaf row, only the deepest, rightmost ancestry guide uses the active stroke; every earlier ancestry guide on that row keeps the inactive stroke.
+Treat an indent guide as an ancestor-owned vertical guide assembled from the same column segment across its visible descendant rows, not as independent row-local strokes. When an indent node becomes active, apply the active stroke to every visible segment owned by that node, producing one continuous active guide through its visible subtree. Do not activate only the segment beside the focused or selected row, and do not activate every ancestor column. An expanded active node owns the active guide; otherwise its immediate parent does. With a single focused or selected leaf, the immediate parent's entire guide is active; this is the deepest, rightmost guide at that row. All other visible guides keep the inactive stroke.
 
 Filtering and type navigation are separate behaviors:
 
