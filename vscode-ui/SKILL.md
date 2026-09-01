@@ -1,61 +1,57 @@
 ---
 name: vscode-ui
-description: "Build or review framework-agnostic web interfaces in the VS Code visual language: calm, dense, hierarchical, theme-aware developer tooling expressed with semantic HTML, native CSS, or portable atomic CSS. Use for application shells, sidebars, panels, editors, trees, lists, toolbars, settings, dialogs, command surfaces, and other coding-tool UI; also use when an existing interface feels too much like a generic SaaS dashboard or needs VS Code-style visual and interaction consistency."
+description: "Build or review framework-agnostic web interfaces in the VS Code visual language: calm, dense, hierarchical, theme-aware developer tooling expressed with semantic HTML, native CSS, or portable atomic CSS. Use for application shells, sidebars, panels, editors, trees, lists, toolbars, settings, dialogs, command surfaces, and other coding-tool UI; also use when an existing interface feels like a generic SaaS dashboard or needs VS Code-style visual and interaction consistency."
 ---
 
 # Build VS Code-Style UI
 
-Create a compact desktop-tool interface without copying or importing VS Code implementation code. Preserve the project's framework, build system, and component conventions. Express every rule as semantic HTML, native CSS, or standard atomic utilities; do not require a CSS library or frontend framework.
+Create an interface that feels consistent with VS Code without requiring the reader to know VS Code or copying, importing, or depending on its implementation code.
 
-## Apply the design philosophy
+Preserve the project's framework, behavior, data model, and component boundaries. Express the result with semantic HTML, native CSS, or portable atomic CSS.
 
-Reason in this order: **Value → Principle → Move → Value**. Start with the intended feeling, choose the principle that serves it, apply a concrete token or behavior, then verify the feeling again.
+## Work from evidence
 
-| Value | Principle | Test |
+- Apply only the verified rules in the references. Do not extrapolate a missing design rule from taste, a nearby component, or a generic design-system convention.
+- Inspect the product's hierarchy, actions, data, constraints, and existing patterns before choosing a composition.
+- Respect each rule's stated scope. A component-specific value overrides a shared default only for that component.
+- When the references do not settle a detail, preserve the project's existing choice or omit the unsupported detail.
+- Do not load every reference by default. Read only the files needed for the current surface.
+
+## Use the design philosophy
+
+Reason from **Values → Principles → Moves**.
+
+| Value | Principle | Move |
 |---|---|---|
-| Calm | Quiet at rest, present on intent | Does idle chrome compete with the work? |
-| Calm | Room to breathe | Is density organized by space instead of boxes and separators? |
-| Calm | Explain plainly and kindly | Can the user understand labels and actions without guessing? |
-| Focused | One thing leads; the rest supports | Is the primary content or action visually obvious? |
-| Focused + Consistent | Encode elevation; do not eyeball it | Does each surface use the radius and treatment for its role? |
-| Consistent | Sameness signals sameness | Do equivalent elements use the same named scales and states? |
-| Delightful | Delight earns its keep | Does motion or polish guide, confirm, orient, or smooth a jump? |
+| Calm | Quiet at rest; present on intent | Let secondary chrome recede until hover, focus, or interaction. |
+| Calm | Leave room to breathe | Group with spacing and soft edges before adding another line or fill. |
+| Calm | Explain the interface plainly | Prefer a familiar word to an unfamiliar glyph. |
+| Focused | One thing leads; the rest supports | Demote supporting content with quieter type, icons, or surfaces. |
+| Focused + Consistent | Elevation is encoded | Choose roundness and shadow from the surface's place in the stack. |
+| Consistent | Sameness signals sameness | Give equivalent elements the same named scales and states. |
+| Delightful | Delight earns its keep | Use motion or polish only to guide, confirm, orient, or smooth a jump. |
 
-Treat Calm, Focused, Consistent, and Delightful as constraints, not decoration. Break calm only for an intentional event such as a critical warning. Remove any flourish that cannot name the job it performs.
+Name the value and principle before choosing a concrete move.
 
 ## Read the relevant references
 
-- Read [foundations.md](references/foundations.md) before choosing CSS values, type, icons, borders, colors, focus styles, code rendering, or atomic utilities.
-- Read [patterns.md](references/patterns.md) before building or changing layout, controls, lists, trees, navigation, overlays, settings, or responsive behavior.
-- Do not read [accessibility.md](references/accessibility.md) by default. Read it only when the user explicitly asks to improve, audit, or provide comprehensive accessibility support.
+- Read [foundations.md](references/foundations.md) before selecting spacing, radius, type, icons, strokes, shadows, colors, motion, density, or code rendering.
+- Read [interaction-states.md](references/interaction-states.md) when implementing or reviewing hover, focus, selection, disabled, checked, expanded, busy, drag, dirty, read-only, or reveal behavior.
+- Read [workbench-shell.md](references/workbench-shell.md) for the application frame, title and status bars, activity rail, sidebars, editor region, panels, framing, resizing, and density profiles.
+- Read [controls.md](references/controls.md) for buttons, action controls, text entry, search, validation, selects, checkboxes, compact toggles, segmented choices, keybinding labels, and badges.
+- Read [collections.md](references/collections.md) for lists, trees, tables, rows, filtering, inline editing, empty results, and virtualization.
+- Read [navigation-actions.md](references/navigation-actions.md) for toolbars, view-title actions, tabs, breadcrumbs, menus, activity items, and the command center.
+- Read [overlays-feedback.md](references/overlays-feedback.md) for hovers, context views, quick input, dialogs, notifications, progress, spinners, severity, inline confirmation, and welcome states.
+- Read [editor-surfaces.md](references/editor-surfaces.md) for the editor frame, gutter, minimap, editor widgets, peek, rename, inline edits, diff, code blocks, and terminal-like surfaces.
+- Read [composition-patterns.md](references/composition-patterns.md) when assembling a complete developer-tool feature from the verified primitives and behaviors above.
 
-## Follow the implementation workflow
+Do not read [accessibility.md](references/accessibility.md) by default. Read it only when the user explicitly requests improved, audited, or comprehensive accessibility support.
 
-1. **Inspect the product context.** Identify the existing stack, theme mechanism, icon source, reusable primitives, and visual constraints. Extend them instead of replacing them.
-2. **Name the hierarchy.** Identify the central work surface, primary action, secondary panes, utility chrome, overlays, and transient feedback. Decide what leads before styling.
-3. **Define semantic tokens.** Reuse existing tokens or introduce a small `--ui-*` contract. Keep color literals inside theme definitions only. Use the exact size ramps in [foundations.md].
-4. **Build semantic structure.** Prefer native controls and meaningful document structure. Use Grid for the application shell and Flexbox for one-dimensional rows and toolbars. Keep component selectors shallow.
-5. **Style by role.** Use continuous panes, compact rows, quiet toolbars, restrained borders, and role-based elevation. Avoid assembling the page as a grid of rounded cards.
-6. **Implement every state.** Cover rest, hover, active, `:focus-visible`, selected, expanded, disabled, busy, empty, warning, and error states. Reveal secondary actions on hover and `:focus-within` without making them keyboard-inaccessible.
-7. **Handle constrained space.** Let text columns shrink, truncate only with ellipsis and accessible full text, preserve fixed icons/actions, and collapse lower-priority panes before primary work.
-8. **Verify the result.** Run the project's checks. Inspect the rendered UI at normal and narrow sizes, at zoom, with keyboard-only input, reduced motion, light/dark themes, and high contrast. Fix principle-level failures rather than isolated pixels.
+## Build and review
 
-## Enforce the visual character
+1. Identify the primary work, supporting regions, commands, persistent state, and narrow-layout constraints.
+2. Establish semantic structure and ownership before styling. Keep state on the component or region that owns it.
+3. Apply the relevant verified contracts without replacing the project's working behavior or framework.
+4. Verify hierarchy, overflow, constrained layouts, light and dark themes, and the interaction states that the surface actually supports.
 
-- Keep typography small and functional. Use size and weight to establish rank, not to create marketing-style drama.
-- Prefer flat, continuous work surfaces over card grids, decorative containers, and nested backgrounds.
-- Use borders only to communicate structure, focus, selection, validation, or high-contrast separation.
-- Keep chrome transparent or recessed at rest; reveal affordances on intent.
-- Prefer a clear text label to a mystery glyph. Use icon-only actions only for universal meanings or truly constrained space, and label them accessibly.
-- Write concise sentence-case labels. Use direct verbs for actions.
-- Prefer Codicons as the product-icon family. When UnoCSS is available, use its Icons preset with Iconify's `codicon` collection as described in [foundations.md](references/foundations.md). Never use emoji as interface icons.
-- Keep motion subtle, short, interruptible, and optional. Do not add bounce, parallax, or decorative loops.
-- Avoid gradients, glass effects, oversized radii, large hero headings, floating-card dashboards, and ornamental shadows.
-
-## Review in design terms
-
-Report issues as: **feeling → surface → broken principle → corrective move → number, if useful**.
-
-Example: “The sidebar is not Calm: its permanent fill and separators are loud at rest. Recess the surface, remove unneeded strokes, and reveal row actions on intent.”
-
-Do not stop at “change 8px to 6px.” Say “this Inner surface is using the Outer radius tier,” then correct the shared role.
+When reviewing, report each issue as **feeling → surface → broken principle → corrective move → verified value, when useful**. Name the role, tier, or ramp before the literal value.

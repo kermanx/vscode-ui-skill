@@ -1,44 +1,32 @@
 # Foundations
 
-Use these scales directly in native CSS or express the same declarations with the project's atomic utility syntax. Prefer semantic custom properties so theme and density changes remain centralized.
+Choose a named role, tier, or semantic token before choosing a literal. Raw CSS
+values are acceptable when they faithfully express the shared scales below.
 
-## Contents
+## Design values
 
-- [Spacing](#spacing)
-- [Radius and elevation](#radius-and-elevation)
-- [Typography](#typography)
-- [Icons and strokes](#icons-and-strokes)
-- [Semantic color contract](#semantic-color-contract)
-- [Classic Dark Modern and Light Modern palettes](#classic-dark-modern-and-light-modern-palettes)
-- [Code rendering](#code-rendering)
-- [Native CSS and atomic equivalents](#native-css-and-atomic-equivalents)
+Reason from **Values → Principles → Moves**.
+
+| Value | Principle | Practical move |
+|---|---|---|
+| Calm | Quiet at rest; present on intent | Let chrome recede until hover, focus, or interaction. |
+| Calm | Leave room to breathe | Use spacing and soft edges to group before adding another line or fill. |
+| Calm | Explain the interface plainly | Prefer a familiar word to a mystery glyph. |
+| Focused | One thing leads; the rest supports | Demote secondary content with a quieter type, icon, or surface role. |
+| Focused + Consistent | Elevation is encoded | Choose roundness and shadow from the surface's place in the stack. |
+| Consistent | Sameness signals sameness | Equivalent elements use the same named scales and states. |
+| Delightful | Delight earns its keep | Motion or polish must guide, confirm, orient, or smooth a jump. |
 
 ## Spacing
 
-Use only this spacing ramp for `padding`, `margin`, `gap`, and fixed spacers:
+Use this ramp for `padding`, `margin`, `gap`, and fixed spacers:
 
 `0, 2, 4, 6, 8, 10, 12, 16, 20, 24, 28, 32, 36, 40px`
 
-Snap an off-scale value to the nearest step; round ties upward. Leave structural values such as `auto`, `%`, `fr`, `min-content`, `max-content`, `calc()`, and theme variables intact.
-
-```css
-:root {
-  --ui-space-0: 0px;
-  --ui-space-2: 2px;
-  --ui-space-4: 4px;
-  --ui-space-6: 6px;
-  --ui-space-8: 8px;
-  --ui-space-10: 10px;
-  --ui-space-12: 12px;
-  --ui-space-16: 16px;
-  --ui-space-20: 20px;
-  --ui-space-24: 24px;
-  --ui-space-28: 28px;
-  --ui-space-32: 32px;
-  --ui-space-36: 36px;
-  --ui-space-40: 40px;
-}
-```
+Represent it with project-native custom properties such as `--space-0`,
+`--space-2`, …, `--space-40`, or use the raw lengths. Snap off-scale fixed pixel
+values to the nearest step and round ties upward. Leave structural values such as `auto`, `%`,
+`em`, `rem`, `fr`, custom properties, and `calc()` expressions unchanged.
 
 ## Radius and elevation
 
@@ -46,237 +34,167 @@ Choose radius by surface role, not taste.
 
 | Role | Radius | Use |
 |---|---:|---|
-| Compact | 2px | Tiny, tightly packed elements |
-| Control | 4px | Buttons, inputs, tabs, interactive rows |
-| Inner | 6px | Containers nested inside another surface |
-| Outer | 8px | Menus, hovers, dialogs, toasts, floating overlays |
-| Extra-prominent | 12px | Rare, deliberately prominent outer surfaces |
-| Circle | 9999px or 50% | Pills, dots, circular controls |
+| Compact | `2px` | Very compact elements |
+| Control | `4px` | Buttons, inputs, tabs, and interactive rows |
+| Inner | `6px` | Non-control containers inside another surface |
+| Outer | `8px` | Menus, hovers, dialogs, toasts, and other overlays |
+| Extra-prominent | `12px` | Rare, deliberately prominent surfaces |
+| Circle | `9999px` or `50%` | Pills, dots, and circular controls |
 
-Do not replace a pill with the nearest fixed radius. Avoid rounding large structural panes merely to make them look modern.
+Control, Inner, and Outer are the normal elevation tiers. Use `0` at a joined
+edge or seam. A pill uses Circle rather than the nearest fixed-radius tier.
 
-```css
-:root {
-  --ui-radius-xs: 2px;
-  --ui-radius-control: 4px;
-  --ui-radius-inner: 6px;
-  --ui-radius-outer: 8px;
-  --ui-radius-xl: 12px;
-  --ui-radius-circle: 9999px;
-}
-```
+## Strokes and shadows
+
+The standard border and separator stroke is `1px`. Whether an ordinary stroke
+exists is a yes/no decision; thicker strokes belong to a specific semantic state,
+not the general scale.
+
+Treat the shared shadows as CSS custom-property primitives:
+
+| Tier | Value | Typical scope |
+|---|---|---|
+| Small | `0 0 4px rgba(0, 0, 0, 0.08)` | Classic component or shallow structural lift |
+| Medium | `0 0 6px rgba(0, 0, 0, 0.08)` | Classic workbench-part lift |
+| Large | `0 0 12px rgba(0, 0, 0, 0.14)` | Floating menus, notifications, and similar overlays |
+| Extra-large | `0 0 20px rgba(0, 0, 0, 0.15)` | Dialogs, quick input, and modal editor surfaces |
+
+Classic workbench structure may also use dedicated active-tab and directional
+depth shadows. Modern UI is intentionally flatter: remove part, active-tab, and
+panel-depth shadows, while retaining Large and Extra-large shadows for floating
+overlays. When the host is already using a high-contrast theme, follow its solid
+backgrounds and explicit contrast borders instead of adding decorative shadows.
 
 ## Typography
 
-Use the host UI font or a neutral system UI stack. Reserve monospace for code, identifiers, paths, key sequences, and aligned technical data.
+Choose a role by information rank. Within this ramp, regular is `400`, semibold
+is `600`, and there is no `500` role. Strong text keeps its size role and changes
+to `600`.
 
 | Role | Size | Default weight |
 |---|---:|---:|
-| Heading 1 | 26px | 600 |
-| Heading 2 | 18px | 600 |
-| Heading 3 | 13px | 600 |
-| Body 1 | 13px | 400 |
-| Body 2 | 11px | 400 |
-| Label 1 | 12px | 400 |
-| Label 2 | 11px | 400 |
-| Label 3 | 10px | 400 |
+| Heading 1 | `26px` | `600` |
+| Heading 2 | `18px` | `600` |
+| Heading 3 | `13px` | `600` |
+| Body 1 | `13px` | `400` |
+| Body 2 | `11px` | `400` |
+| Label 1 | `12px` | `400` |
+| Label 2 | `11px` | `400` |
+| Label 3 | `10px` | `400` |
 
-Use only `400` and `600`. There is no medium `500`; “strong” means the same size role at `600`. Use `line-height: 1.4` for normal UI text. Use `12px/17px` for validation messages when a fixed validation treatment is needed.
+The workbench UI default is `13px` with `line-height: 1.4` on every platform.
 
-## Icons and strokes
+Use host or user font settings when available. Otherwise use these base,
+non-localized platform font families. The size and line-height column applies
+only to the editor/code font, not the workbench UI font.
 
-- Use `16px` icons for standalone or primary actions.
-- Use `12px` icons for dense rows, inline glyphs, and secondary chrome. Use an optically tuned compact glyph when the icon family provides one.
-- Do not use intermediate icon sizes such as `14px`.
-- Use a `1px` standard border or separator. Preserve thicker strokes only when required for focus, accessibility, or semantic emphasis.
+| Platform | UI font family | Editor/code font family | Editor/code size / line height |
+|---|---|---|---:|
+| macOS | `-apple-system, BlinkMacSystemFont, sans-serif` | `Menlo, Monaco, "Courier New", monospace` | `12px / 18px` |
+| Windows | `"Segoe WPC", "Segoe UI", sans-serif` | `Consolas, "Courier New", monospace` | `14px / 19px` |
+| Linux | `system-ui, "Ubuntu", "Droid Sans", sans-serif` | `"Droid Sans Mono", monospace` | `14px / 19px` |
 
-Prefer **Codicons** for product actions and developer-tool concepts. If the project uses UnoCSS, use `presetIcons` with Iconify's Codicons collection:
+## Icons
 
-```sh
-pnpm add -D @unocss/preset-icons @iconify-json/codicon
-```
+- Use Codicons for product actions and workbench chrome. The default glyph size
+  is `16px`; use `12px` for dense or inline chrome. Do not invent an intermediate
+  size such as `14px`.
+- At `12px`, use the compact Codicon glyph where one exists; scaling the regular
+  glyph does not optically tune it.
+- Keep product icons and file icons as separate theme systems. Product icon
+  themes can replace registered UI glyphs. File, folder, and language icons come
+  from the active file-icon theme and may intentionally be absent when no such
+  theme is enabled.
+- With UnoCSS, an optional portable setup is `presetIcons` plus
+  `@iconify-json/codicon`; use the `codicon` collection prefix, typically
+  `i-codicon-...`.
 
-```ts
-import presetIcons from '@unocss/preset-icons'
-import { defineConfig } from 'unocss'
+## Motion
 
-export default defineConfig({
-  presets: [presetIcons()],
-})
-```
+Animate only to guide, confirm, orient, or smooth a jump. Keep motion subtle,
+short, and interruptible; reveal chrome on intent rather than animating at rest.
+Gate motion behind the effective reduced-motion preference so the same state
+change remains understandable without animation.
 
-Use the Iconify collection prefix `codicon`:
+## Semantic color roles
 
-```html
-<span class="i-codicon-search text-[16px]" aria-hidden="true"></span>
-<span class="i-codicon-close-compact text-[12px]" aria-hidden="true"></span>
-```
+Component rules consume semantic custom properties; literal colors belong only
+in standalone theme definitions. When hosted by VS Code, alias or use its public
+`--vscode-*` properties directly. Outside that host, define project-owned
+semantic custom properties for the same roles; the names below are an exact
+reference contract, not a runtime or framework requirement.
 
-The equivalent colon syntax, such as `i-codicon:search`, is also valid. Prefer the individual `@iconify-json/codicon` package over the full icon-set bundle. Do not confuse Codicons with the separate `vscode-icons` collection, which is primarily a colorful file-type icon set.
-
-Let monochrome icons inherit `currentColor`. Put the accessible name on the enclosing control; keep a decorative icon `aria-hidden="true"`. Keep class names statically discoverable by UnoCSS, or safelist any names assembled dynamically.
-
-## Semantic color contract
-
-Never put color literals in component CSS. Define them once in light, dark, high-contrast light, and high-contrast dark theme layers. Reuse the project's existing names where possible; otherwise expose this contract:
-
-| Purpose | Tokens |
+| Concern | Semantic properties |
 |---|---|
-| Text | `--ui-fg`, `--ui-fg-muted`, `--ui-fg-disabled`, `--ui-fg-placeholder`, `--ui-selection-fg`, `--ui-link` |
-| Surfaces | `--ui-bg-canvas`, `--ui-bg-pane`, `--ui-bg-elevated`, `--ui-bg-input` |
-| Interaction | `--ui-bg-hover`, `--ui-bg-selection`, `--ui-focus` |
-| Structure | `--ui-border`, `--ui-control-border`, `--ui-border-contrast`, `--ui-shadow` |
-| Accent | `--ui-accent`, `--ui-accent-hover`, `--ui-accent-fg` |
-| Status | `--ui-error`, `--ui-warning`, `--ui-info`, `--ui-success` |
+| Content | `--vscode-foreground`, `--vscode-descriptionForeground`, `--vscode-disabledForeground`, `--vscode-icon-foreground` |
+| Workbench regions | `--vscode-editor-background`, `--vscode-sideBar-background`, `--vscode-panel-background`, `--vscode-titleBar-activeBackground`, `--vscode-statusBar-background` |
+| Framed Modern UI surfaces | `--vscode-surface-background`, `--vscode-surface-foreground`, `--vscode-surface-border`, `--vscode-editor-border` |
+| Inputs | `--vscode-input-background`, `--vscode-input-foreground`, `--vscode-input-border`, `--vscode-input-placeholderForeground` |
+| Interaction | `--vscode-focusBorder`, `--vscode-list-hoverBackground`, `--vscode-list-activeSelectionBackground`, `--vscode-list-activeSelectionForeground` |
+| Actions and links | `--vscode-button-background`, `--vscode-button-foreground`, `--vscode-button-hoverBackground`, `--vscode-textLink-foreground` |
+| Overlays | `--vscode-editorWidget-background`, `--vscode-widget-border`, `--vscode-menu-background`, `--vscode-notifications-background` |
+| State | `--vscode-errorForeground`, `--vscode-editorWarning-foreground`, `--vscode-editorInfo-foreground`, plus added, modified, and deleted roles |
 
-Supply concrete values in the theme layer before rendering. Component rules must consume the tokens.
+Modern tabs use their own active, hover, foreground, and action-background roles;
+inactive editor tabs are transparent by default. Do not reuse a classic tab
+literal when a Modern UI semantic role exists.
 
-When running inside a VS Code theme host, adapt public host variables instead of duplicating the palette:
+## Dark Modern and Light Modern palettes
 
-```css
-.vscode-theme-adapter {
-  --ui-font-sans: var(--vscode-font-family);
-  --ui-font-code: var(--vscode-editor-font-family);
-  --ui-code-font-size: var(--vscode-editor-font-size);
-  --ui-code-font-weight: var(--vscode-editor-font-weight);
-  --ui-fg: var(--vscode-foreground);
-  --ui-fg-muted: var(--vscode-descriptionForeground);
-  --ui-fg-disabled: var(--vscode-disabledForeground);
-  --ui-bg-canvas: var(--vscode-editor-background);
-  --ui-bg-pane: var(--vscode-sideBar-background);
-  --ui-bg-elevated: var(--vscode-editorWidget-background);
-  --ui-bg-input: var(--vscode-input-background);
-  --ui-bg-hover: var(--vscode-list-hoverBackground);
-  --ui-bg-selection: var(--vscode-list-activeSelectionBackground);
-  --ui-border: var(--vscode-widget-border);
-  --ui-border-contrast: var(--vscode-contrastBorder);
-  --ui-focus: var(--vscode-focusBorder);
-  --ui-accent: var(--vscode-button-background);
-  --ui-accent-hover: var(--vscode-button-hoverBackground);
-  --ui-accent-fg: var(--vscode-button-foreground);
-  --ui-link: var(--vscode-textLink-foreground);
-  --ui-error: var(--vscode-errorForeground);
-  --ui-warning: var(--vscode-editorWarning-foreground);
-  --ui-info: var(--vscode-editorInfo-foreground);
-  --ui-shadow: var(--vscode-widget-shadow);
-}
-```
+These are color-theme values, independent of whether Modern UI geometry is
+enabled. Use them only in standalone theme definitions.
 
-Use solid backgrounds and explicit contrast borders in high-contrast themes. Remove decorative shadows there.
+| Role | Dark Modern | Light Modern |
+|---|---:|---:|
+| Editor background | `#1F1F1F` | `#FFFFFF` |
+| Active shell background | `#181818` | `#F8F8F8` |
+| Editor widget background | `#202020` | `#F8F8F8` |
+| Input background | `#313131` | `#FFFFFF` |
+| List or tree hover background | `#2A2D2E` | `#F2F2F2` |
+| Active list selection background | `#04395E` | `#E8E8E8` |
+| Active list selection foreground | `#FFFFFF` | `#000000` |
+| Shell and tab border | `#2B2B2B` | `#E5E5E5` |
+| Input border | `#3C3C3C` | `#CECECE` |
+| Foreground | `#CCCCCC` | `#3B3B3B` |
+| Description foreground | `#9D9D9D` | `#3B3B3B` |
+| Active tab foreground | `#FFFFFF` | `#3B3B3B` |
+| Inactive tab foreground | `#9D9D9D` | `#868686` |
+| Input placeholder | `#989898` | `#767676` |
+| Focus and primary button background | `#0078D4` | `#005FB8` |
+| Primary button hover background | `#026EC1` | `#0258A8` |
+| Primary button foreground | `#FFFFFF` | `#FFFFFF` |
+| Text link | `#4DAAFC` | `#005FB8` |
+| Error and deleted | `#F85149` | `#F85149` |
+| Warning | `#CCA700` | `#BF8803` |
+| Information | `#59A4F9` | `#0063D3` |
+| Added | `#2EA043` | `#2EA043` |
+| Modified | `#0078D4` | `#005FB8` |
 
-## Classic Dark Modern and Light Modern palettes
+## Modern UI density and global metrics
 
-Use these representative colors in standalone theme definitions. Keep the literals out of component rules. Prefer host theme variables when they are available.
+Modern UI defaults to Default density. Compact density joins the workbench cards
+and tightens selected internal spacing; it is distinct from the independent
+compact Activity Bar setting.
 
-| Role | Semantic token | Dark Modern | Light Modern |
-|---|---|---:|---:|
-| Editor canvas | `--ui-bg-canvas` | `#1F1F1F` | `#FFFFFF` |
-| Sidebar, panel, title and status chrome | `--ui-bg-pane` | `#181818` | `#F8F8F8` |
-| Elevated editor widget | `--ui-bg-elevated` | `#202020` | `#F8F8F8` |
-| Input and control background | `--ui-bg-input` | `#313131` | `#FFFFFF` |
-| List or tree hover | `--ui-bg-hover` | `#2A2D2E` | `#F2F2F2` |
-| Active list selection | `--ui-bg-selection` | `#04395E` | `#E8E8E8` |
-| Active selection foreground | `--ui-selection-fg` | `#FFFFFF` | `#000000` |
-| Subtle structural border | `--ui-border` | `#2B2B2B` | `#E5E5E5` |
-| Input and control border | `--ui-control-border` | `#3C3C3C` | `#CECECE` |
-| Primary foreground | `--ui-fg` | `#CCCCCC` | `#3B3B3B` |
-| Secondary foreground | `--ui-fg-muted` | `#9D9D9D` | `#616161` |
-| Inactive foreground | `--ui-fg-disabled` | `#868686` | `#868686` |
-| Input placeholder | `--ui-fg-placeholder` | `#989898` | `#767676` |
-| Accent and keyboard focus | `--ui-accent`, `--ui-focus` | `#0078D4` | `#005FB8` |
-| Accent hover | `--ui-accent-hover` | `#026EC1` | `#0258A8` |
-| Accent foreground | `--ui-accent-fg` | `#FFFFFF` | `#FFFFFF` |
-| Link | `--ui-link` | `#4DAAFC` | `#005FB8` |
-| Error and deletion | `--ui-error` | `#F85149` | `#F85149` |
-| Warning | `--ui-warning` | `#CCA700` | `#BF8803` |
-| Information | `--ui-info` | `#59A4F9` | `#0063D3` |
-| Success and addition | `--ui-success` | `#2EA043` | `#2EA043` |
+| Metric | Default density | Compact density | Scope |
+|---|---:|---:|---|
+| Gap between workbench cards | `4px` | `0` | Cluster perimeter remains `4px` in both |
+| Non-chat pane list-row side inset | `4px` | `2px` | Scrollbar remains at the pane edge |
+| Default-size Activity Bar item gap | `8px` | `4px` | The independent compact Activity Bar uses `0` |
+| Activity Bar inner lane | `8px` | `4px` | Excludes the shared outer perimeter |
+| Editor tab fill / total title height | `24px / 32px` | `20px / 28px` | Multi-tab Modern UI |
+| Status bar content / total height | `22px / 28px` | `22px / 26px` | Main window with floating layout |
 
-Treat this as a compact starter palette, not a license to replace semantic tokens with literals. Add new colors only in the theme layer and name them by role.
+These global changes apply in both Modern UI densities unless a component sets
+an explicit local measurement:
+
+| Metric | Classic | Modern UI |
+|---|---:|---:|
+| Implicit scrollbar size | `10px` | `8px` |
+| Pane header height | `22px` | `28px` |
+| Base notification row height | `42px` | `34px` |
+| Part title, header, or footer height | `35px` | `32px` |
 
 ## Code rendering
 
-Use the platform's VS Code defaults when the host does not provide font settings:
-
-| Platform | UI font | Editor code font | Default code size | Default code line height |
-|---|---|---|---:|---:|
-| macOS | `-apple-system, BlinkMacSystemFont, sans-serif` | `Menlo, Monaco, "Courier New", monospace` | `12px` | `18px` |
-| Windows | `"Segoe WPC", "Segoe UI", sans-serif` | `Consolas, "Courier New", monospace` | `14px` | `19px` |
-| Linux | `system-ui, "Ubuntu", "Droid Sans", sans-serif` | `"Droid Sans Mono", monospace` | `14px` | `19px` |
-
-Use `13px/1.4` for normal workbench UI. Populate `--ui-font-sans`, `--ui-font-code`, `--ui-code-font-size`, and `--ui-code-line-height` from the target platform row. Inside a theme host, map the available font variables instead of freezing platform defaults.
-
-Use **Shiki** for syntax highlighting. Do not maintain syntax colors with custom regular expressions, hand-authored token classes, or a mixed highlighter stack. Dark Modern inherits Dark+ syntax colors and Light Modern inherits Light+ syntax colors, so use Shiki's bundled `dark-plus` and `light-plus` themes. Do not invent `dark-modern` or `light-modern` Shiki IDs.
-
-```sh
-pnpm add shiki
-```
-
-```ts
-import { codeToHtml } from 'shiki'
-
-const html = await codeToHtml(source, {
-  lang: language,
-  themes: {
-    light: 'light-plus',
-    dark: 'dark-plus',
-  },
-  defaultColor: false,
-})
-```
-
-Bind the generated dual-theme variables to the application theme without `!important`:
-
-```css
-.shiki {
-  margin: 0;
-  overflow: auto;
-  padding: var(--ui-space-12) var(--ui-space-16);
-  border: 1px solid var(--ui-border);
-  border-radius: var(--ui-radius-inner);
-  font-family: var(--ui-font-code);
-  font-size: var(--ui-code-font-size);
-  font-weight: var(--ui-code-font-weight, 400);
-  line-height: var(--ui-code-line-height);
-}
-
-[data-ui-theme='light-modern'] .shiki {
-  color: var(--shiki-light);
-  background-color: var(--ui-bg-canvas);
-}
-
-[data-ui-theme='light-modern'] .shiki span {
-  color: var(--shiki-light);
-}
-
-[data-ui-theme='dark-modern'] .shiki {
-  color: var(--shiki-dark);
-  background-color: var(--ui-bg-canvas);
-}
-
-[data-ui-theme='dark-modern'] .shiki span {
-  color: var(--shiki-dark);
-}
-```
-
-Generate highlighted HTML at build time or on the server when possible. Reuse one highlighter instance for repeated runtime rendering, load only required languages and themes in performance-sensitive clients, and fall back to escaped plain `<pre><code>` when the language is unknown.
-
-## Native CSS and atomic equivalents
-
-Treat atomic classes as a serialization of CSS, not a separate design system. Adapt names to the selected atomic engine.
-
-| Native CSS | Common atomic expression |
-|---|---|
-| `display: flex` | `flex` |
-| `align-items: center` | `items-center` |
-| `justify-content: space-between` | `justify-between` |
-| `min-width: 0` | `min-w-0` |
-| `flex: 1 1 0%` | `flex-1` |
-| `flex-shrink: 0` | `shrink-0` |
-| `overflow: hidden` | `overflow-hidden` |
-| `white-space: nowrap` | `whitespace-nowrap` |
-| `text-overflow: ellipsis` | `text-ellipsis` |
-| `border-radius: var(--ui-radius-control)` | `rounded-[var(--ui-radius-control)]` |
-| `gap: var(--ui-space-6)` | `gap-[var(--ui-space-6)]` |
-
-Prefer class selectors, kebab-case component names, explicit state attributes/classes, and minimal specificity. Co-locate component styles. Do not add `!important` to escape cascade ownership.
+Use Shiki for syntax highlighting.

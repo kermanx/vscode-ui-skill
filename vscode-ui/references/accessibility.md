@@ -1,72 +1,55 @@
 # Accessibility
 
-Apply this checklist to every interactive surface. Compact UI must remain fully operable without a mouse and understandable without color or vision.
+Read this reference only when the user explicitly requests improved, audited, or comprehensive accessibility support.
 
-## Structure and names
+## Keyboard access
 
-- Prefer native semantic elements before adding ARIA.
-- Give every interactive element an accessible name. Use visible text first, then `aria-labelledby`, then `aria-label` for icon-only controls.
-- Hide decorative duplicate icons with `aria-hidden="true"`.
-- Expose widget state with `aria-expanded`, `aria-selected`, `aria-checked`, `aria-pressed`, `aria-current`, and `aria-invalid` as appropriate.
-- Use correct composite roles and relationships for trees, grids, tablists, menus, toolbars, and dialogs. Follow the corresponding WAI-ARIA keyboard pattern.
-- Preserve correct item position and total count for virtualized lists and trees.
+- Every pointer action must have a keyboard path. Keep the tab order logical and keep composite-widget navigation scoped to the active widget.
+- Use `Tab` and `Shift+Tab` to enter, leave, and move between controls. Within lists, trees, tab lists, menus, and toolbars, use the widget's arrow-key model instead of adding every item to the page tab order.
+- Custom buttons and toggles must respond to both `Enter` and `Space`. Disabled custom controls expose their disabled state and leave the tab order.
+- Lists support arrow and page navigation; `Enter` selects the focused item. Trees add `Left` and `Right` for collapse, parent, expand, and child navigation.
+- Do not reserve an action for hover. Make context actions, expansion, selection, and dismissal reachable from the keyboard.
 
-## Keyboard and focus
+## Names, roles, and states
 
-- Make every pointer action keyboard-operable.
-- Keep a logical `Tab` order. Use arrow keys inside composite widgets rather than adding every row to the page tab sequence.
-- Dismiss popovers, menus, and dialogs with `Escape`; restore focus to the opener.
-- Trap focus only inside a modal dialog, and release it on close.
-- Never reveal essential controls on hover alone; pair hover with `:focus-within` or persistent keyboard access.
-- Do not remove focus indicators. Use `:focus-visible` so the ring appears for keyboard intent rather than every pointer click.
+- Use native controls when their semantics fit. A custom widget must provide the equivalent role, keyboard behavior, name, and state.
+- Every interactive element needs an accessible name. For icon-only actions, name the action, not the icon. Associate existing visible text through `aria-labelledby` or `aria-describedby` when possible.
+- Expose the state users need to understand the control: `aria-expanded`, `aria-selected`, `aria-checked`, `aria-pressed`, `aria-disabled`, and `aria-multiselectable` where each state applies.
+- Hide decorative or redundant icons, separators, and visual duplicates from the accessibility tree.
+- Keep DOM state synchronized after every interaction and after recycled content is rebound to new data.
 
-```css
-.ui-focusable:focus-visible {
-  outline: 1px solid var(--ui-focus);
-  outline-offset: -1px;
-}
+## Virtualized collections
 
-input[type="checkbox"]:focus-visible {
-  outline-offset: 2px;
-}
-```
+- Give the focusable collection an accessible name and the correct composite role. Keep DOM focus on the collection and point `aria-activedescendant` only to the currently rendered focused item; remove it when that item is not rendered.
+- Give every rendered item an ID, an item role, and an accessible label. Reflect selection, checked state, hierarchy level, and expansion on the item that owns that state.
+- Set `aria-setsize` to the logical peer count and `aria-posinset` to the item's one-based position among those peers. Exclude separators and non-item chrome, and recompute both values after filtering.
+- For trees, expose `aria-level`; expose `aria-expanded` only on collapsible nodes. Position and set size are based on visible siblings, not the number of recycled DOM rows.
 
-## Text and dynamic content
+## Announcements
 
-- Provide an accessible tooltip on both hover and focus when visible text is truncated.
-- Associate descriptions and validation with their controls through `aria-describedby`.
-- Use a polite live region for result counts, progress, and non-urgent updates. Use an assertive alert only for urgent errors or action results that require immediate attention.
-- Keep announcements concise and avoid announcing the same event twice.
-- Do not encode status by color alone; add text, icon shape, or another non-color cue.
+- Use an assertive `alert` only for urgent information that must interrupt current speech, such as a critical error or warning.
+- Use a polite `status` for progress, result counts, loading, selection feedback, and other non-urgent updates. Prefer polite delivery unless interruption is necessary.
+- Keep announcements concise and atomic. Do not announce an event twice through overlapping live regions, signals, or visible controls.
+- A purely decorative loading indicator is hidden from assistive technology. If the indicator is the only busy-state message, give it status semantics and a useful label.
 
-## Themes and perception
+## Focus and modals
 
-- Verify normal text at `4.5:1` contrast and large text or meaningful non-text UI at `3:1` unless a stricter product requirement applies.
-- Provide light, dark, high-contrast light, and high-contrast dark theme values.
-- Use solid high-contrast backgrounds and explicit borders. Remove shadows that disappear or create noise in high contrast.
-- Preserve usable focus, selection, disabled, hover, error, and warning distinctions in every theme.
-- Test zoom and text scaling without hiding primary actions, causing two-dimensional page scrolling, or clipping labels.
+- Show keyboard focus with the semantic focus color. The standard indicator is a solid `1px` outline with `-1px` offset; checkboxes use a `2px` outer offset.
+- Use `:focus-visible` when pointer focus should stay visually quiet. Never suppress the keyboard-visible indicator.
+- A modal has dialog semantics, `aria-modal="true"`, a name, and a description. Move initial focus to the first input when present; otherwise use the primary action or the dialog itself.
+- Trap `Tab` and `Shift+Tab` within a modal, allow `Escape` to dismiss when dismissal is available, and restore focus to the element that opened it.
+- Preserve native editing keys inside text inputs and editable content embedded in a dialog or composite widget.
 
-## Motion
+## High contrast and reduced motion
 
-- Honor `prefers-reduced-motion`.
-- Use motion only to guide, confirm, orient, or smooth a state change.
-- Keep transitions interruptible. Remove decorative loops, bounce, and parallax.
-
-```css
-@media (prefers-reduced-motion: reduce) {
-  .ui-motion {
-    scroll-behavior: auto;
-    animation: none;
-    transition: none;
-  }
-}
-```
+- Verify dedicated high-contrast light and high-contrast dark presentations in addition to regular light and dark themes. Keep focus, selection, active, disabled, error, and warning states distinguishable without relying on a subtle fill alone.
+- Detect forced-colors mode and retain visible borders and focus indicators instead of assuming regular theme colors or shadows will survive.
+- Honor `prefers-reduced-motion: reduce`. Gate nonessential transitions and looping animations behind motion permission, and keep loading or state feedback understandable when animation is removed.
 
 ## Verification
 
-- Navigate the complete flow with keyboard only.
-- Check focus entry, movement, dismissal, and restoration.
-- Inspect the accessibility tree and spoken names, roles, states, and live updates.
-- Test a screen reader for custom composites and dynamic content.
-- Test narrow containers, long localized strings, zoom, reduced motion, and all four theme modes.
+- Complete every flow with keyboard only, including opening and closing overlays, changing composite selection, and reaching secondary actions.
+- Inspect the accessibility tree for names, roles, relationships, and live states. Verify the flow with a screen reader.
+- Scroll and filter virtualized collections; confirm active descendants always exist and positions describe the logical collection rather than the rendered window.
+- Open and close each modal from multiple launch points; confirm initial focus, focus containment, `Escape`, and focus restoration.
+- Test regular light, regular dark, high-contrast light, high-contrast dark, forced-colors mode, and reduced motion.

@@ -1,4 +1,0 @@
-interface:
-  display_name: "VS Code UI"
-  short_description: "Build calm, dense, theme-aware developer UI"
-  default_prompt: "Use $vscode-ui to build this interface with a calm, dense, theme-aware desktop-tool aesthetic."
