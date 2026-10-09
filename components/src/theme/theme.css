@@ -1,0 +1,24 @@
+@import './tokens.css';
+@import '@vscode/codicons/dist/codicon.css';
+
+.vc-theme {
+  --vscode-shadow-lg: 0 0 12px rgba(0, 0, 0, 0.14);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
+  line-height: 1.4em;
+  color: var(--vscode-foreground);
+  background: var(--vscode-sideBar-background);
+}
+.vc-theme [tabindex]:focus {
+  outline: 1px solid var(--vscode-focusBorder);
+  outline-offset: -1px;
+  opacity: 1;
+}
+.vc-theme [tabindex]:active { outline: 0 !important; }
+.vc-theme .codicon { color: var(--vscode-icon-foreground); }
+.vc-theme .codicon[class*='codicon-'] { font-size: 16px; }

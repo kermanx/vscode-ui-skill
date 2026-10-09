@@ -1,0 +1,13 @@
+/* Fixture geometry only. Control appearance comes exclusively from upstream. */
+body { margin: 0; }
+#fixture { padding: 16px; box-sizing: border-box; min-height: 100vh; background: var(--vscode-sideBar-background); }
+.specimen { width: 100%; }
+.button-specimen { display: flex; flex-direction: column; gap: 16px; padding: 4px; box-sizing: border-box; }
+.button-host { width: 184px; }
+.tree-specimen { height: 264px; }
+.fixture-label { display: flex; align-items: center; height: 22px; line-height: 22px; overflow: hidden; }
+.fixture-label > .codicon { width: 16px; margin-right: 6px; flex-shrink: 0; }
+.fixture-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fixture-description { margin-left: 8px; opacity: .7; font-size: 12px; white-space: nowrap; }
+.outside { margin-top: 20px; font: inherit; color: inherit; background: transparent; border: 1px solid var(--vscode-button-secondaryBorder, var(--vscode-contrastBorder, transparent)); padding: 4px 8px; }
+.codicon-tree-item-expanded::before { content: '\eab4'; }

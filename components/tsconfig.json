@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "ESNext", "moduleResolution": "Bundler",
+    "strict": true, "skipLibCheck": true, "esModuleInterop": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"], "types": ["vite/client", "node"],
+    "noEmit": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue", "stories/**/*.ts", "stories/**/*.vue", ".storybook/**/*.ts", "uno.config.ts"]
+}

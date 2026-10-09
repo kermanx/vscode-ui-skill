@@ -1,0 +1,52 @@
+{
+  "name": "vscode-classic-examples",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "storybook dev -p 6006 --no-open",
+    "build": "vite build && vue-tsc -p tsconfig.lib.json",
+    "check": "vue-tsc --noEmit",
+    "test": "playwright test",
+    "storybook:build": "storybook build"
+  },
+  "dependencies": {
+    "@vscode/codicons": "^0.0.46-43",
+    "jsonc-parser": "^3.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "@storybook/addon-docs": "^10.6.1",
+    "@storybook/vue3-vite": "^10.6.1",
+    "@types/node": "^26.6.4",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "esbuild": "^0.28.2",
+    "pixelmatch": "^8.0.0",
+    "pngjs": "^7.0.0",
+    "storybook": "^10.6.1",
+    "typescript": "^5.9.3",
+    "unocss": "^66.10.5",
+    "vite": "^7.3.7",
+    "vue": "^3.5.43",
+    "vue-tsc": "^3.3.12"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist",
+    "src",
+    "License.txt",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  }
+}
