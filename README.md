@@ -1,5 +1,13 @@
 # VS Code UI Skills
 
+## Repository layout
+
+- [`skills/`](skills/) — installable agent skills.
+- [`components/`](components/) — self-contained Vue + UnoCSS component examples, Storybook, and tests.
+- [`internal-docs/`](internal-docs/) — development notes, source mappings, and the original-component comparison fixture; excluded from the component package.
+- [`vscode/`](vscode/) — pinned source reference.
+
+
 ## vscode-ui
 
 A framework-agnostic agent skill for building developer interfaces in the current VS Code Classic workbench visual language: the default UI with `workbench.experimental.modernUI` disabled. It covers design foundations, workbench structure, controls, collections, navigation, overlays, editor surfaces, interaction states, and representative compositions.
