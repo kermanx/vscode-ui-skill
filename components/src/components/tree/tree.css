@@ -7,9 +7,6 @@
 .vc-tree-resource { color: var(--vc-decoration-color); }
 .vc-tree-resource[data-decoration]::after { content: attr(data-decoration); color: var(--vc-decoration-color); }
 .vc-theme[data-theme="light"] .monaco-icon-label .label-description { opacity: .95; }
-.vc-theme .monaco-action-bar:not(.vertical) .action-label:not(.disabled):hover { background-color: var(--vscode-toolbar-hoverBackground); }
-.vc-theme .monaco-action-bar:not(.vertical) .action-item.active .action-label:not(.disabled) { background-color: var(--vscode-toolbar-activeBackground); }
-.vc-theme .monaco-action-bar:not(.vertical) .action-label:hover:not(.disabled) { outline: 1px dashed var(--vscode-toolbar-hoverOutline); outline-offset: -1px; }
 .vc-tree-row.selected { background: var(--vscode-list-inactiveSelectionBackground); color: var(--vscode-list-inactiveSelectionForeground); }
 .vc-tree-row:hover:not(.selected):not(.focused) { background: var(--vscode-list-hoverBackground); color: var(--vscode-list-hoverForeground); }
 .vc-tree:focus .vc-tree-row.focused { background: var(--vscode-list-focusBackground); color: var(--vscode-list-focusForeground); }

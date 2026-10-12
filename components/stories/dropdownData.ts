@@ -6,7 +6,7 @@ export const dropdownActions: DropdownAction[] = [
   { id: 'auto-save', label: 'Auto Save', checked: true },
 ];
 export const dropdownExamples = [
-  { label: 'Open Folder', secondary: false, disabled: false },
+  { label: 'Open Folder', title: true, secondary: false, disabled: false },
   { label: 'Run Task', secondary: true, disabled: false },
   { label: 'Unavailable', secondary: false, disabled: true },
 ];

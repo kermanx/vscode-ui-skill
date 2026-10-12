@@ -1,0 +1,45 @@
+/* Copyright (c) Microsoft Corporation. Licensed under the MIT License. */
+.settings-editor { background:var(--vscode-editor-background); }
+.settings-editor .suggest-input-container { padding:2px 6px;border:1px solid var(--vscode-settings-textInputBorder,transparent);border-radius:4px;background:var(--vscode-input-background);color:var(--vscode-input-foreground);height:26px;box-sizing:border-box; }
+.settings-editor .suggest-input-container.synthetic-focus { outline:1px solid var(--vscode-focusBorder);outline-offset:-1px; }
+.settings-editor .vc-settings-search-input::placeholder { color:var(--vscode-input-placeholderForeground);opacity:1; }
+.settings-editor .vc-settings-tree > .monaco-scrollable-element { height:100%; }
+.settings-editor .vc-settings-tree .monaco-list-row { position:absolute;width:100%; }
+.settings-editor .vc-settings-tree .monaco-tl-row { height:auto; }
+.settings-editor .vc-settings-tree .monaco-tl-contents { width:100%; }
+.settings-editor .vc-settings-tree .monaco-list-rows { contain:none; }
+.settings-editor .vc-settings-tree .setting-item-text { --vscode-input-background:var(--vscode-settings-textInputBackground);--vscode-input-foreground:var(--vscode-settings-textInputForeground);--vscode-input-border:var(--vscode-settings-textInputBorder); }
+.settings-editor .vc-settings-tree .setting-item-number { --vscode-input-background:var(--vscode-settings-numberInputBackground);--vscode-input-foreground:var(--vscode-settings-numberInputForeground);--vscode-input-border:var(--vscode-settings-numberInputBorder); }
+.settings-editor .vc-settings-tree .setting-item-enum { --vscode-dropdown-background:var(--vscode-settings-dropdownBackground);--vscode-dropdown-foreground:var(--vscode-settings-dropdownForeground);--vscode-dropdown-border:var(--vscode-settings-dropdownBorder);--vscode-dropdown-listBackground:var(--vscode-settings-dropdownBackground); }
+.settings-editor .vc-settings-tree .setting-value-checkbox { --vscode-inputOption-activeBackground:transparent;--vscode-inputOption-activeForeground:inherit;--vscode-inputOption-activeBorder:transparent; }
+.settings-editor .vc-settings-tree > .monaco-scrollable-element > div > .monaco-list-rows,.settings-editor .vc-settings-toc-list > .monaco-scrollable-element > .vc-scrollable-viewport > .vc-scrollable-content > .monaco-list-rows { background:var(--vscode-editor-background); }
+.settings-editor .vc-settings-toc-list .monaco-list-row { background:transparent; }
+.settings-editor .vc-settings-toc-list .monaco-list-row:hover,.settings-editor .vc-settings-toc-list .monaco-list-row.focused { color:var(--vscode-settings-settingsHeaderHoverForeground); }
+.settings-editor .vc-settings-toc-list .monaco-list-row.selected { color:var(--vscode-settings-headerForeground); }
+.settings-editor .vc-settings-toc-list:focus .monaco-list-row.focused { outline:1px solid var(--vscode-focusBorder);outline-offset:-1px; }
+
+.settings-editor .setting-item-enum .select-container > select { width:320px; }
+
+.settings-editor > .settings-body .settings-tree-container .setting-item.setting-item-enum .setting-item-value > .setting-item-control > .select-container > select { width:320px; }
+
+.settings-editor .suggest-input-placeholder { position:absolute;z-index:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;pointer-events:none;margin-top:1px;color:var(--vscode-input-placeholderForeground); }
+.settings-editor .vc-settings-toc-list .monaco-list-rows { transform:translate3d(0px,0px,0px);contain:strict; }
+.settings-editor .vc-settings-toc-list .monaco-list-rows { overflow:hidden; }
+
+
+.settings-editor .vc-settings-tree [data-setting-row] { background:var(--vscode-editor-background); }
+/* The native SelectBox context view lives outside SettingsEditor. Keep Settings'
+   tree-row typography from cascading into the composed select context. */
+.settings-editor > .settings-body .settings-tree-container .vc-select-panel .monaco-list-row { line-height:22px !important; }
+.settings-editor > .settings-body .settings-tree-container .vc-select-panel .monaco-list-row.focused { outline:1px solid var(--vscode-contrastActiveBorder,transparent) !important; }
+
+/* SuggestEnabledInput uses the editor view's strict, translated lines-content.
+   Keep its single-line render layer while the host supplies bounded plain search. */
+.settings-editor .vc-settings-search-viewport { position:relative;overflow:hidden;height:20px; }
+.settings-editor .vc-settings-search-lines { position:absolute;overflow:hidden;width:16777216px;height:16777216px;transform:translate3d(0,0,0);contain:strict;top:0;left:0; }
+.settings-editor .vc-settings-search-input { position:absolute;font:inherit;font-feature-settings:"liga" 0,"calt" 0;line-height:20px;height:20px;white-space:pre;padding:0;border:0;outline:0!important;background:none;color:inherit;box-sizing:border-box; }
+.settings-editor .vc-settings-toc-list:focus,.settings-editor .vc-settings-tree:focus { outline:0; }
+.settings-editor .vc-settings-toc-list .monaco-list-row.selected,.settings-editor .vc-settings-toc-list .monaco-list-row.focused { background:var(--vscode-editor-background); }
+
+/* NativeEditContext's readonly focus sink during host IME suspension. */
+.settings-editor .ime-text-area { min-width:0;min-height:0;margin:0;padding:0;position:absolute;outline:none!important;resize:none;border:none;overflow:hidden;color:transparent;background-color:transparent;z-index:-10; }

@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import Pane from '../src/components/pane/Pane.vue';
+import PaneSpecimen from './PaneSpecimen.vue';
+import PaneBodySample from './PaneBodySample.vue';
+import Compare from './Compare.vue';
+import { paneActions,paneSecondary } from './PaneData';
+const meta={title:'Components/Pane',component:Pane,args:{title:'Explorer',description:'project',expanded:true,collapsible:true,headerVisible:true,location:'sidebar',actions:paneActions,secondaryActions:paneSecondary,actionsVisibility:'hover'},argTypes:{location:{control:'select',options:['sidebar','panel']},actionsVisibility:{control:'select',options:['hover','expanded','always']}}} satisfies Meta<typeof Pane>;
+export default meta;type Story=StoryObj<typeof meta>;
+export const Review:Story={parameters:{controls:{disable:true}},render:(_,context)=>({components:{Compare},setup:()=>({globals:context.globals}),template:'<Compare kind="pane" :theme="globals.theme" />'})};
+export const Playground:Story={tags:['autodocs'],render:args=>({components:{Pane,PaneBodySample},setup:()=>({args}),template:'<div class="playground"><div :style="{width:\'340px\',height:(args.headerVisible?22:0)+(args.expanded?62:0)+\'px\'}"><Pane v-bind="args" @update:expanded="args.expanded=$event"><PaneBodySample :index="0" kind="input" :height="62" /></Pane></div></div>'}),parameters:{docs:{description:{story:'独立可折叠面板，标题栏固定22px，body尺寸由宿主布局分配。首次展开才挂载body；收起200ms后脱离DOM，再展开保留组件与输入状态。标题操作使用Toolbar，count使用Extensions标题组合。Enter/Space切换，左右键收起/展开（沿用原版，包括修饰键）；非collapsible不能收起。这里不包含PaneView的组布局、分割调整或拖动重排。'}}}};
+export const Specimen:Story={parameters:{controls:{disable:true}},render:(_,context)=>({components:{PaneSpecimen},setup:()=>({globals:context.globals}),template:'<PaneSpecimen :theme="globals.theme" />'})};

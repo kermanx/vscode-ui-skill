@@ -1,0 +1,10 @@
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import Sash from '../src/components/sash/Sash.vue';
+import SashSpecimen from './SashSpecimen.vue';
+import Compare from './Compare.vue';
+const meta = { title:'Components/Sash', component:Sash, args:{ orientation:'vertical', state:'enabled', position:160 }, argTypes:{ orientation:{ control:'select', options:['vertical','horizontal'] }, state:{ control:'select', options:['enabled','disabled','minimum','maximum'] } } } satisfies Meta<typeof Sash>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Review:Story = { parameters:{ controls:{ disable:true } }, render:(_,context) => ({ components:{ Compare }, setup:() => ({ globals:context.globals }), template:'<Compare kind="sash" :theme="globals.theme" />' }) };
+export const Playground:Story = { render:args => ({ components:{ Sash }, setup:() => ({ args }), template:'<div class="playground"><div style="position:relative;height:240px"><span>Hover or drag the divider</span><Sash v-bind="args" /></div></div>' }), parameters:{ docs:{ description:{ story:'Sash是独立拖动条：300ms悬停显色，拖动时保持全局cursor并暂时禁用iframe指针。minimum/maximum只改变方向光标；调用方根据事件更新position并夹取布局边界。linkedSash及orthogonalStartSash/EndSash接组件ref，实现联动和角落双轴拖动。触摸支持拖动和双击复位；组件不添加原版没有的键盘行为。' }, source:{ code:'<Sash :position="width" @drag-start="initial = width" @change="width = initial + $event.currentX - $event.startX" @reset="width = 160" />' } } } };
+export const Specimen:Story = { parameters:{ controls:{ disable:true } }, render:(_,context) => ({ components:{ SashSpecimen }, setup:() => ({ globals:context.globals }), template:'<SashSpecimen :theme="globals.theme" />' }) };

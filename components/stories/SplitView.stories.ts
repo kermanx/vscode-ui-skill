@@ -1,0 +1,10 @@
+import type { Meta,StoryObj } from '@storybook/vue3-vite';
+import SplitView from '../src/components/split-view/SplitView.vue';
+import SplitViewSpecimen from './SplitViewSpecimen.vue';
+import Compare from './Compare.vue';
+import {splitMain} from './SplitViewData';
+const meta={title:'Components/Split View',component:SplitView,args:{views:splitMain,orientation:'horizontal',proportionalLayout:true,inverseAltBehavior:false},argTypes:{orientation:{control:'select',options:['horizontal','vertical']}}} satisfies Meta<typeof SplitView>;
+export default meta;type Story=StoryObj<typeof meta>;
+export const Review:Story={parameters:{controls:{disable:true}},render:(_,context)=>({components:{Compare},setup:()=>({globals:context.globals}),template:'<Compare kind="split-view" :theme="globals.theme" />'})};
+export const Playground:Story={render:args=>({components:{SplitView},setup:()=>({args}),template:'<div class="playground" style="height:320px"><SplitView v-bind="args"><template #default="{item,size}"><div style="padding:8px">{{item.id}} · {{size}}px</div></template></SplitView></div>'}),parameters:{docs:{description:{story:'SplitView 按 minimumSize / maximumSize 传播尺寸约束，支持比例布局、优先级、折叠恢复与 Alt 对称拖动。views[].size 只提供初始或新增视图大小；后续通过 v-model:sizes 或 resizeView 请求大小。按视图 id 使用命名插槽，默认插槽接收 item/size/index/visible。双击仅触发 sashReset，调用方可调用 distributeViewSizes。linkedSashes 接另一 SplitView 的 getSash(index)；颜色与间距由内容组件决定。'},source:{code:'<SplitView :views="[{ id: \'sidebar\', size: 200, minimumSize: 80, snap: true }, { id: \'editor\', size: 600, minimumSize: 200 }]" orientation="horizontal" v-model:sizes="sizes"><template #sidebar>Explorer</template><template #editor>Editor</template></SplitView>'}}}};
+export const Specimen:Story={parameters:{controls:{disable:true}},render:(_,context)=>({components:{SplitViewSpecimen},setup:()=>({globals:context.globals}),template:'<SplitViewSpecimen :theme="globals.theme" />'})};

@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import { ref } from 'vue';
+import Hover from '../src/components/hover/Hover.vue';
+import HoverSpecimen from './HoverSpecimen.vue';
+import Compare from './Compare.vue';
+const meta = { title: 'Components/Hover', component: Hover, args: { target: null, content: 'Inspect the current value.', position: 'below', showPointer: true } } satisfies Meta<typeof Hover>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Review: Story = { parameters: { controls: { disable: true } }, render: (_, context) => ({ components: { Compare }, setup: () => ({ globals: context.globals }), template: '<Compare kind="hover" :theme="globals.theme" />' }) };
+export const Playground: Story = { render: args => ({ components: { Hover }, setup: () => ({ args, target: ref<HTMLElement>() }), template: '<div class="playground"><button ref="target" @click="$refs.hover.show(true)">Show hover</button><Hover ref="hover" v-bind="args" :target="target || null" /></div>' }) };
+export const Specimen: Story = { parameters: { controls: { disable: true } }, render: (_, context) => ({ components: { HoverSpecimen }, setup: () => ({ globals: context.globals }), template: '<HoverSpecimen :theme="globals.theme" />' }) };

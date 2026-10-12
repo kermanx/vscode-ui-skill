@@ -1,0 +1,14 @@
+/* Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. */
+
+/* The pinned `iconlabel.css` is copied verbatim next to this file, so its one `.vs`-scoped rule
+ * stays byte-identical. That rule keys off the workbench theme class (`.vs` = light); the replica's
+ * theme root is `.vc-theme[data-theme="light"]` instead, exactly like the list and tree components
+ * already alias it. Without this the light theme would keep the 0.7 description opacity.
+ *
+ * The selector is deliberately as short as the one `.vs` rule it replaces: it must stay below the
+ * `.monaco-list-row.focused/.selected .label-description { opacity: 1 }` rules of the copied
+ * stylesheet, which are more specific and have to keep winning. */
+
+.vc-theme[data-theme="light"] .monaco-icon-label .label-description {
+	opacity: .95;
+}

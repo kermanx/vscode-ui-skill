@@ -1,8 +1,20 @@
+/* Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. */
 @import './tokens.css';
 @import '@vscode/codicons/dist/codicon.css';
+@import '../components/codicon/glyphs.css';
+@import '../components/codicon/variables.css';
 
 .vc-theme {
+  --monaco-monospace-font: var(--vc-platform-monospace-font, "SF Mono", Monaco, Menlo, Courier, monospace);
+  --vscode-icon-chevron-down-content: "\eab4";
+  --vscode-icon-chevron-down-font-family: codicon;
+  --vscode-shadow-sm: 0 0 4px rgba(0, 0, 0, 0.08);
+  --vscode-shadow-md: 0 0 6px rgba(0, 0, 0, 0.08);
+  --vscode-shadow-depth-x: 5px 0 10px -4px rgba(0, 0, 0, 0.05);
+  --vscode-shadow-depth-y: 0 5px 10px -4px rgba(0, 0, 0, 0.04);
+  --vscode-shadow-active-tab: 0 8px 12px rgba(0, 0, 0, 0.02);
   --vscode-shadow-lg: 0 0 12px rgba(0, 0, 0, 0.14);
+  --vscode-shadow-xl: 0 0 20px rgba(0, 0, 0, 0.15);
   position: relative;
   z-index: 1;
   overflow: hidden;
@@ -14,11 +26,75 @@
   color: var(--vscode-foreground);
   background: var(--vscode-sideBar-background);
 }
-.vc-theme [tabindex]:focus {
+.vc-theme [tabindex="0"]:focus,
+.vc-theme [tabindex="-1"]:focus,
+.vc-theme .synthetic-focus,
+.vc-theme select:focus,
+.vc-theme input[type="button"]:focus,
+.vc-theme input[type="text"]:focus,
+.vc-theme button:focus,
+.vc-theme textarea:focus,
+.vc-theme input[type="search"]:focus,
+.vc-theme input[type="checkbox"]:focus {
   outline: 1px solid var(--vscode-focusBorder);
   outline-offset: -1px;
   opacity: 1;
 }
-.vc-theme [tabindex]:active { outline: 0 !important; }
+.vc-theme [tabindex="0"]:active,
+.vc-theme [tabindex="-1"]:active,
+.vc-theme select:active,
+.vc-theme input[type="button"]:active,
+.vc-theme input[type="checkbox"]:active { outline: 0 !important; }
+.vc-theme input { color: inherit; font-family: inherit; font-size: 100%; }
+.vc-theme input::placeholder,
+.vc-theme textarea::placeholder { color: var(--vscode-input-placeholderForeground); }
+.vc-theme[data-theme="hcDark"] .synthetic-focus input,
+.vc-theme[data-theme="hcLight"] .synthetic-focus input { background: transparent; }
+.vc-theme input[type="checkbox"]:focus { outline-offset: 2px; }
+.vc-theme .synthetic-focus :focus { outline: 0 !important; }
+.vc-theme .monaco-inputbox.info.synthetic-focus,
+.vc-theme .monaco-inputbox.warning.synthetic-focus,
+.vc-theme .monaco-inputbox.error.synthetic-focus,
+.vc-theme .monaco-inputbox.info input[type="text"]:focus,
+.vc-theme .monaco-inputbox.warning input[type="text"]:focus,
+.vc-theme .monaco-inputbox.error input[type="text"]:focus { outline: 0 !important; }
+.vc-theme a:active { color: inherit; background-color: inherit; }
 .vc-theme .codicon { color: var(--vscode-icon-foreground); }
 .vc-theme .codicon[class*='codicon-'] { font-size: 16px; }
+.vc-theme .monaco-action-bar:not(.vertical) .action-label:not(.disabled):hover { background-color: var(--vscode-toolbar-hoverBackground); }
+.vc-theme .monaco-action-bar:not(.vertical) .action-item.active .action-label:not(.disabled),
+.vc-theme .monaco-action-bar:not(.vertical) .monaco-dropdown.active .action-label:not(.disabled) { background-color: var(--vscode-toolbar-activeBackground); }
+.vc-theme .monaco-action-bar:not(.vertical) .action-label:hover:not(.disabled) { outline: 1px dashed var(--vscode-toolbar-hoverOutline); outline-offset: -1px; }
+
+/* Custom Dropdown (select) Arrows */
+
+.vc-theme select {
+	font-family: inherit;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	/* Hides inner border from FF */
+	border: 1px solid;
+}
+
+.vc-theme .select-container {
+	position: relative;
+}
+
+.vc-theme .select-container:after {
+	content: var(--vscode-icon-chevron-down-content);
+	font-family: var(--vscode-icon-chevron-down-font-family);
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	line-height: 16px;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 4px;
+	margin: auto;
+	pointer-events: none;
+}
+
+
+.vc-theme .mac select:focus { border-color: transparent; }

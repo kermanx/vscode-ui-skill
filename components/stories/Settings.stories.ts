@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import SettingsEditor from '../src/components/settings/SettingsEditor.vue';
+import SettingsSpecimen from './SettingsSpecimen.vue';
+import {settingsGroups} from './SettingsData';
+import type {SettingsGroup} from '../src/components/settings/types';
+import Compare from './Compare.vue';
+const meta={title:'Components/Settings',component:SettingsEditor,args:{groups:settingsGroups as SettingsGroup[],height:620}} satisfies Meta<typeof SettingsEditor>;
+export default meta;type Story=StoryObj<typeof meta>;
+export const Review:Story={parameters:{controls:{disable:true}},render:(_,context)=>({components:{Compare},setup:()=>({globals:context.globals}),template:'<Compare kind="settings" :theme="globals.theme" />'})};
+export const Playground:Story={render:args=>({components:{SettingsEditor},setup:()=>({args}),template:'<div style="width:880px"><SettingsEditor v-bind="args" /></div>'}),parameters:{docs:{description:{story:'经典设置编辑器：标量、布尔、枚举、多行文本、JSON 编辑入口、分组、搜索、作用域、修改标记和校验。搜索支持普通文本、@modified、@id: 和 @tag:；复杂建议、同步和扩展发现由宿主提供。'},source:{code:'<SettingsEditor :groups="groups" v-model:values="values" v-model:target="target" v-model:query="query" @change="saveSetting" @open-json="openSettingsJson" />'}}}};
+export const Specimen:Story={parameters:{controls:{disable:true}},render:(_,context)=>({components:{SettingsSpecimen},setup:()=>({globals:context.globals}),template:'<SettingsSpecimen :theme="globals.theme" />'})};

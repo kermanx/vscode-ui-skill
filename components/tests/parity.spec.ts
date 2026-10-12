@@ -1,3 +1,4 @@
+import { settleFixturePaint } from './paint';
 import { test, expect, type BrowserContext, type Page, type TestInfo } from '@playwright/test';
 import { PNG } from 'pngjs';
 import pixelmatch from 'pixelmatch';
@@ -24,36 +25,17 @@ async function state(page: Page) {
 async function equalState(pages: readonly Page[]) {
   await expect.poll(async () => JSON.stringify(await state(pages[1])) === JSON.stringify(await state(pages[0]))).toBe(true);
 }
-async function equalPixels(pages: readonly Page[], testInfo: TestInfo, name: string, compareButtonCorners = false) {
+async function equalPixels(pages: readonly Page[], testInfo: TestInfo, name: string, repaint = false) {
   // Both images are produced live in one browser/environment, never from replica snapshots.
   const buffers: Buffer[] = [];
   for (const page of pages) {
     await page.bringToFront();
-    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    if (repaint) await settleFixturePaint(page);
+    else await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     buffers.push(await page.getByTestId('specimen').screenshot({ animations: 'disabled' }));
   }
   const [a, b] = buffers.map(buffer => PNG.sync.read(buffer));
   expect({ width: b.width, height: b.height }).toEqual({ width: a.width, height: a.height });
-  if (compareButtonCorners) {
-    // Chromium's incremental rounded border/outline rasterization can differ by 1–2/255,
-    // including after focus leaves. Check geometry/colors, then normalize only those corners.
-    const measurements = [];
-    for (const page of pages) measurements.push(await page.locator('[data-index="1"]').evaluate(el => {
-      const s = getComputedStyle(el), r = el.getBoundingClientRect(), host = el.closest('[data-testid="specimen"]')!.getBoundingClientRect();
-      return { x: r.x - host.x, y: r.y - host.y, width: r.width, height: r.height,
-        styles: ['border', 'border-radius', 'background-color', 'color', 'outline', 'outline-offset', 'padding', 'font'].map(k => s.getPropertyValue(k)) };
-    }));
-    expect(measurements[1]).toEqual(measurements[0]);
-    const r = measurements[0];
-    for (let i = 0; i < a.data.length; i += 4) {
-      const x = (i / 4) % a.width, y = Math.floor(i / 4 / a.width);
-      const nearCorner = (Math.abs(x - r.x) <= 8 || Math.abs(x - r.x - r.width) <= 8)
-        && (Math.abs(y - r.y) <= 8 || Math.abs(y - r.y - r.height) <= 8);
-      if (nearCorner && [0, 1, 2, 3].every(c => Math.abs(a.data[i + c] - b.data[i + c]) <= 2)) {
-        for (let c = 0; c < 4; c++) b.data[i + c] = a.data[i + c];
-      }
-    }
-  }
   const diff = new PNG({ width: a.width, height: a.height });
   const count = pixelmatch(a.data, b.data, diff.data, a.width, a.height, { threshold: 0, includeAA: true });
   if (count) {
@@ -67,9 +49,9 @@ async function equalPixels(pages: readonly Page[], testInfo: TestInfo, name: str
 for (const theme of ['dark', 'light', 'hcDark', 'hcLight']) {
   test(`Button visual + keyboard parity / ${theme}`, async ({ context }, info) => {
     const pages = await pair(context, 'button', theme);
-    await equalPixels(pages, info, 'default');
+    await equalPixels(pages, info, 'default', true);
     for (const page of pages) await page.locator('[data-index="0"]').hover();
-    await equalPixels(pages, info, 'hover');
+    await equalPixels(pages, info, 'hover', true);
     for (const page of pages) {
       await page.mouse.move(410, 400);
       await page.locator('[data-index="1"]').focus();
@@ -77,7 +59,7 @@ for (const theme of ['dark', 'light', 'hcDark', 'hcLight']) {
     }
     await equalState(pages);
     expect((await state(pages[0])).clicks).toBe(1);
-    await equalPixels(pages, info, 'keyboard-focus', theme.startsWith('hc'));
+    await equalPixels(pages, info, 'keyboard-focus', true);
     for (const page of pages) {
       await page.keyboard.up('Space');
       await page.keyboard.press('Enter');
@@ -88,7 +70,7 @@ for (const theme of ['dark', 'light', 'hcDark', 'hcLight']) {
     }
     await equalState(pages);
     expect((await state(pages[0])).clicks).toBe(2);
-    await equalPixels(pages, info, 'disabled-focus', theme.startsWith('hc'));
+    await equalPixels(pages, info, 'disabled-focus', true);
   });
 
   test(`Tree appearance + selection parity / ${theme}`, async ({ context }, info) => {
@@ -232,7 +214,7 @@ for (const theme of ['dark', 'light', 'hcDark', 'hcLight']) {
       await page.keyboard.press('ArrowRight');
       await expect(page.locator('[data-id="tree"]').getByRole('button', { name: 'Discard Changes' })).toBeFocused();
     }
-    await equalPixels(pages, info, 'disabled-action-focus');
+    await equalPixels(pages, info, 'disabled-action-focus', theme === 'light');
     for (const page of pages) {
       await page.keyboard.press('Enter');
       await page.keyboard.press('Home');

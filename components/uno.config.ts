@@ -3,6 +3,8 @@ import { defineConfig, presetWind3 } from 'unocss';
 // No reset: browser defaults and VS Code's local box models are part of the reference.
 export default defineConfig({
   presets: [presetWind3()],
+  // Component classes must not generate unrelated utility styles.
+  blocklist: ['visible', 'invisible', 'hover-contents', 'italic'],
   shortcuts: {
     'vc-button-layout': 'box-border flex w-full items-center justify-center text-center cursor-pointer',
     'vc-tree-row-layout': 'absolute box-border overflow-hidden w-full cursor-pointer',

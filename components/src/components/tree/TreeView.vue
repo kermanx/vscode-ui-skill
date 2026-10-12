@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import '../action-bar/actionbar.css';
 import { computed, nextTick, ref, useId, watch, onBeforeUnmount } from 'vue';
 import { useTree } from './useTree';
 import type { TreeNode, TreeAction } from './types';
 import TreeActions from './TreeActions.vue';
+import { isContextMenuKey } from '../../internal/contextMenuKeyboard';
+import type { ContextMenuAnchor } from '../context-menu/types';
 import { StandardWheelEvent, type IMouseWheelEvent } from '../../internal/standardWheelEvent';
 
 const props = withDefaults(defineProps<{
@@ -14,7 +17,7 @@ const props = withDefaults(defineProps<{
 }>(), { ariaLabel: 'Tree', height: 264, multiple: true, expandOnLabel: false });
 const expanded = defineModel<string[]>('expandedIds', { default: () => [] });
 const selected = defineModel<string[]>('selectedIds', { default: () => [] });
-const emit = defineEmits<{ focusChange: [id: string | undefined]; contextmenu: [node: TreeNode, event: MouseEvent]; action: [action: TreeAction, node: TreeNode] }>();
+const emit = defineEmits<{ focusChange: [id: string | undefined]; contextmenu: [node: TreeNode | undefined, event: MouseEvent | KeyboardEvent, anchor?: ContextMenuAnchor]; action: [action: TreeAction, node: TreeNode] }>();
 const element = ref<HTMLElement>();
 const viewport = ref<HTMLElement>();
 const scrollTop = ref(0);
@@ -48,7 +51,25 @@ const thumbTop = computed(() => Math.round(scrollTop.value * thumbRatio.value));
 const activeDescendant = computed(() => renderedRows.value.some(row => row.node.id === focused.value) ? rowId(focused.value!) : undefined);
 watch(totalHeight, () => nextTick(() => setScroll(scrollTop.value)));
 
+let contextKeyDown = false;
+function keyup(event: KeyboardEvent) {
+  contextKeyDown = false;
+  if (!isContextMenuKey(event)) return;
+  event.preventDefault(); event.stopPropagation();
+  const item = rows.value.find(row => row.node.id === focused.value)?.node;
+  const anchor = focused.value ? document.getElementById(rowId(focused.value)) || element.value : element.value;
+  emit('contextmenu', item, event, anchor);
+}
+function contextmenu(event: MouseEvent) {
+  if (contextKeyDown) return;
+  const id = (event.target as HTMLElement).closest<HTMLElement>('.monaco-list-row')?.dataset.id;
+  tree.focus(id);
+  const item = rows.value.find(row => row.node.id === focused.value)?.node;
+  emit('contextmenu', item, event, event);
+}
 function keydown(event: KeyboardEvent) {
+  contextKeyDown = isContextMenuKey(event);
+  if (contextKeyDown) { event.preventDefault(); event.stopPropagation(); return; }
   if (event.key === 'Tab' && event.target === element.value && !event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey && focused.value) {
     const row = document.getElementById(rowId(focused.value));
     const action = row?.querySelector<HTMLElement>('[tabindex="0"]');
@@ -99,7 +120,7 @@ onBeforeUnmount(() => clearTimeout(scrollTimer));
   <div ref="element" class="vc-tree monaco-list mouse-support always" :class="{ 'element-focused': focused }" role="tree" tabindex="0"
     :style="{ height: `${height}px` }" :aria-label="ariaLabel" :aria-multiselectable="multiple || undefined"
     :aria-activedescendant="activeDescendant" @mouseenter="hovering = true" @mouseleave="hovering = false"
-    @keydown="keydown" @mousedown="element?.focus()" @wheel="wheel">
+    @keydown="keydown" @keyup="keyup" @contextmenu="contextmenu" @mousedown="element?.focus()" @wheel="wheel">
     <div ref="viewport" class="vc-tree-viewport monaco-scrollable-element" @scroll="scroll" @click.self="tree.blank()">
       <div class="vc-tree-rows monaco-list-rows" :style="{ height: `${totalHeight}px` }" @click.self="tree.blank()">
         <div v-for="(row, i) in renderedRows" :id="rowId(row.node.id)" :key="row.node.id" :data-id="row.node.id"
@@ -109,7 +130,7 @@ onBeforeUnmount(() => clearTimeout(scrollTimer));
           :aria-posinset="row.position" :aria-setsize="row.setSize" :aria-selected="selectedSet.has(row.node.id)"
           :aria-expanded="row.node.children?.length ? expandedSet.has(row.node.id) : undefined"
           @click="tree.click(row, $event, ($event.target as HTMLElement).classList.contains('monaco-tl-twistie'))"
-          @contextmenu="tree.focus(row.node.id); emit('contextmenu', row.node, $event)">
+          >
           <div class="monaco-tl-row vc-tree-content-layout">
             <div class="monaco-tl-indent" :style="{ width: `${(row.depth - 1) * 8}px` }" aria-hidden="true">
               <div v-for="ancestor in row.ancestors" :key="ancestor" class="indent-guide" style="width: 8px" :class="{ active: activeGuides.has(ancestor) }" />
@@ -146,6 +167,5 @@ onBeforeUnmount(() => clearTimeout(scrollTimer));
 <style src="./upstream/tree.css" />
 <style src="./upstream/scrollbars.css" />
 <style src="./upstream/iconlabel.css" />
-<style src="./upstream/actionbar.css" />
 <style src="./upstream/views.css" />
 <style src="./tree.css" />

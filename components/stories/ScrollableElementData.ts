@@ -1,0 +1,1 @@
+export const scrollableRows = Array.from({ length: 28 }, (_, index) => ({ label: `${String(index + 1).padStart(2, '0')}  Project file ${index + 1}.ts`, detail: `src/components — line ${index + 1}` }));

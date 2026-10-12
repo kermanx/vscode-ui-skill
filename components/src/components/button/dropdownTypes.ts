@@ -1,6 +1,1 @@
-export type DropdownAction = {
-  id: string;
-  label: string;
-  disabled?: boolean;
-  checked?: boolean;
-} | { separator: true };
+export type { MenuEntry as DropdownAction } from '../menu/types';

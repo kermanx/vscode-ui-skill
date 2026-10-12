@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import Tooltip from '../tooltip/Tooltip.vue';
 
 const props = withDefaults(defineProps<{
   label: string;
@@ -8,10 +9,13 @@ const props = withDefaults(defineProps<{
   small?: boolean;
   disabled?: boolean;
   ariaLabel?: string;
+  /** A string supplies the hover; true uses the visible label. */
+  title?: boolean | string;
 }>(), { secondary: false, small: false, disabled: false });
 const emit = defineEmits<{ click: [event: MouseEvent | KeyboardEvent]; escape: [event: KeyboardEvent] }>();
 const element = ref<HTMLAnchorElement>();
 const highlighted = ref(false);
+const hoverText = computed(() => typeof props.title === 'string' ? props.title : props.title ? props.label : '');
 // Undefined theme variables intentionally retain the CSS initial value.
 const style = computed(() => props.secondary ? {
   backgroundColor: `var(--vscode-button-${highlighted.value ? 'secondaryHoverBackground' : 'secondaryBackground'})`,
@@ -41,10 +45,11 @@ defineExpose({ focus: () => element.value?.focus() });
 
 <template>
   <a ref="element" class="monaco-button monaco-text-button vc-button-layout" :class="{ secondary, small, disabled }"
-    role="button" tabindex="0" :aria-label="ariaLabel" :aria-disabled="disabled"
+    role="button" tabindex="0" :aria-label="ariaLabel ?? (typeof title === 'string' ? title : undefined)" :aria-disabled="disabled"
     :style="style" @click="click" @keydown="keydown"
     @mouseover="!disabled && (highlighted = true)" @mouseout="highlighted = false"
     @focus="!disabled && (highlighted = true)" @blur="!disabled && (highlighted = false)">
+    <Tooltip v-if="hoverText" :target="element" :text="hoverText" placement="element" />
     <span v-if="icon" class="codicon" :class="`codicon-${icon}`" aria-hidden="true" /><span>{{ label }}</span>
   </a>
 </template>

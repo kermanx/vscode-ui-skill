@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import List from '../src/components/list/List.vue';
+import ListSpecimen from './ListSpecimen.vue';
+import { listItems } from './ListData';
+import Compare from './Compare.vue';
+const meta = { title: 'Components/List', component: List, args: { items: listItems, ariaLabel: 'Open files', multiple: true, height: 264 } } satisfies Meta<typeof List>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Review: Story = { parameters: { controls: { disable: true } }, render: (_, context) => ({ components: { Compare }, setup: () => ({ globals: context.globals }), template: '<Compare kind="list" :theme="globals.theme" />' }) };
+export const Playground: Story = { render: args => ({ components: { List }, setup: () => ({ args }), template: '<div class="playground"><List v-bind="args" /></div>' }), parameters: { docs: { description: { story: '经典 Open Editors 行组合：22px 虚拟行、IconLabel 描述和资源装饰、行首 ActionBar。焦点与选中独立；支持 Ctrl/Cmd、Shift 连选、方向键、Home/End、PageUp/PageDown、输入首字母查找及 Tab 进入操作栏。items 使用稳定 id；selectedIds 是受控选择，height 决定视口。' }, source: { code: '<List :items="files" v-model:selected-ids="selected" aria-label="Open files" :height="264" @action="onAction" />' } } } };
+export const Specimen: Story = { parameters: { controls: { disable: true } }, render: (_, context) => ({ components: { ListSpecimen }, setup: () => ({ globals: context.globals }), template: '<ListSpecimen :theme="globals.theme" />' }) };

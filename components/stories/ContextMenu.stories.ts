@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import ContextMenu from '../src/components/context-menu/ContextMenu.vue';
+import ContextMenuSpecimen from './ContextMenuSpecimen.vue';
+import Compare from './Compare.vue';
+import { contextMenuActions } from './ContextMenuData';
+const meta = { title: 'Components/Context Menu', component: ContextMenu, args: { actions: contextMenuActions, autoSelectFirstItem: false } } satisfies Meta<typeof ContextMenu>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Review: Story = { parameters: { controls: { disable: true } }, render: (_, context) => ({ components: { Compare }, setup: () => ({ globals: context.globals }), template: '<Compare kind="context-menu" :theme="globals.theme" />' }) };
+export const Playground: Story = { render: args => ({ components: { ContextMenu }, setup: () => ({ args }), template: '<div class="playground"><button @contextmenu.prevent="$refs.menu.show($event)">Right-click for actions</button><ContextMenu ref="menu" v-bind="args" /></div>' }), parameters: { docs: { source: { code: '<button @contextmenu.prevent="menu.show($event)">Actions</button>\n<ContextMenu ref="menu" :actions="actions" @action="runCommand" />' } } } };
+export const Specimen: Story = { parameters: { controls: { disable: true } }, render: (_, context) => ({ components: { ContextMenuSpecimen }, setup: () => ({ globals: context.globals }), template: '<ContextMenuSpecimen :theme="globals.theme" />' }) };

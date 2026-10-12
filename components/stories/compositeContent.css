@@ -1,0 +1,6 @@
+.fixture-composite-content { box-sizing:border-box;padding:16px;background:var(--vscode-sideBar-background);color:var(--vscode-foreground); }
+.fixture-composite-content.activity { position:absolute;left:80px;right:16px;top:16px;height:360px; }
+.fixture-composite-content.panel { height:140px;background:var(--vscode-panel-background); }
+.fixture-composite-content strong { font-size:13px;font-weight:600; }
+.fixture-composite-content p { margin:12px 0 0;color:var(--vscode-descriptionForeground);line-height:1.5; }
+.fixture-composite-content:focus { outline:1px solid var(--vscode-focusBorder);outline-offset:-1px; }

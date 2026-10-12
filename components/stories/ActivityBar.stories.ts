@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import {ref} from 'vue';
+import ActivityBar from '../src/components/activity-bar/ActivityBar.vue';
+import ActivityBarSpecimen from './ActivityBarSpecimen.vue';
+import {activityBarItems} from './ActivityBarData';
+import Compare from './Compare.vue';
+const meta={title:'Components/Activity Bar',component:ActivityBar,args:{items:activityBarItems(),side:'left',iconClickBehavior:'toggle'}} satisfies Meta<typeof ActivityBar>;
+export default meta;type Story=StoryObj<typeof meta>;
+export const Review:Story={parameters:{controls:{disable:true}},render:(_,context)=>({components:{Compare},setup:()=>({globals:context.globals}),template:'<Compare kind="activity-bar" :theme="globals.theme" />'})};
+export const Playground:Story={render:args=>({components:{ActivityBar},setup:()=>({args,activeId:ref('explorer'),visible:ref(true)}),template:'<div class="playground" style="height:420px"><ActivityBar v-bind="args" v-model:active-id="activeId" v-model:sidebar-visible="visible" /></div>'}),parameters:{docs:{description:{story:'经典视图切换栏：图标、徽标、固定、溢出、上下文菜单和键盘焦点。菜单操作通过事件交给应用；当前不包含 Accounts/Manage 与工作台拖放。'},source:{code:'<ActivityBar :items="views" v-model:active-id="activeView" v-model:sidebar-visible="sidebarVisible" />'}}}};
+export const Specimen:Story={parameters:{controls:{disable:true}},render:(_,context)=>({components:{ActivityBarSpecimen},setup:()=>({globals:context.globals}),template:'<ActivityBarSpecimen :theme="globals.theme" />'})};

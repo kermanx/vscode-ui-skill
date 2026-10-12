@@ -1,0 +1,103 @@
+/* Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. */
+.vc-problems {
+  overflow: hidden;
+  background: var(--vscode-panel-background);
+  color: var(--vscode-foreground);
+}
+.vc-problems .viewpane-filter .input {
+  padding-right: var(--problem-filter-padding) !important;
+}
+.vc-problems-tree {
+  position: relative;
+  width: 100%;
+  outline: 0 !important;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.vc-problems-tree .monaco-list-rows {
+  position: relative;
+  width: 100%;
+  background: var(--vscode-panel-background);
+  transform: translate3d(0, 0, 0);
+  contain: strict;
+  overflow: hidden;
+}
+.vc-problems .monaco-link {
+  text-decoration: none;
+  color: var(--vscode-textLink-foreground);
+  cursor: pointer;
+}
+.vc-problems .monaco-link:hover {
+  color: var(--vscode-textLink-activeForeground);
+}
+.vc-problems .marker-icon.error .codicon {
+  color: var(--vscode-problemsErrorIcon-foreground);
+}
+.vc-problems .marker-icon.warning .codicon {
+  color: var(--vscode-problemsWarningIcon-foreground);
+}
+.vc-problems .marker-icon.info .codicon {
+  color: var(--vscode-problemsInfoIcon-foreground);
+}
+.vc-problems .resource-label-container .monaco-icon-label {
+  height: 22px;
+}
+.vc-problems-tree .monaco-list-row.selected {
+  background: var(--vscode-list-inactiveSelectionBackground);
+  color: var(--vscode-list-inactiveSelectionForeground);
+}
+.vc-problems-tree .monaco-list-row:hover:not(.selected):not(.focused) {
+  background: var(--vscode-list-hoverBackground);
+  color: var(--vscode-list-hoverForeground);
+}
+.vc-problems-tree:focus .monaco-list-row.focused {
+  background: var(--vscode-list-focusBackground);
+  color: var(--vscode-list-focusForeground);
+}
+.vc-problems-tree:focus .monaco-list-row.selected {
+  background: var(--vscode-list-activeSelectionBackground);
+  color: var(--vscode-list-activeSelectionForeground);
+}
+.vc-problems-tree:focus .monaco-list-row.selected .codicon {
+  color: var(--vscode-list-activeSelectionIconForeground);
+}
+.vc-problems-tree .monaco-list-row.focused .codicon {
+  color: var(--vscode-list-inactiveSelectionIconForeground);
+}
+.vc-problems-tree:focus .monaco-list-row.focused {
+  outline: 1px solid var(--vscode-list-focusOutline);
+  outline-offset: -1px;
+}
+.vc-problems-tree:focus .monaco-list-row.focused.selected {
+  outline-color: var(
+    --vscode-list-focusAndSelectionOutline,
+    var(--vscode-contrastActiveBorder, var(--vscode-list-focusOutline))
+  );
+}
+.vc-problems-tree .monaco-list-row.selected {
+  outline: 1px dotted var(--vscode-contrastActiveBorder);
+  outline-offset: -1px;
+}
+.vc-problems-tree .monaco-list-row:hover {
+  outline: 1px dashed var(--vscode-contrastActiveBorder);
+  outline-offset: -1px;
+}
+.vc-theme:is([data-theme="hcDark"], [data-theme="hcLight"])
+  .vc-problems-tree:not(.element-focused):not(:active):focus::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  outline: 1px solid var(--vscode-focusBorder);
+  outline-offset: -1px;
+  pointer-events: none;
+  z-index: 15;
+}
+.vc-problems-tree:hover .monaco-tl-indent > .indent-guide {
+  opacity: 1;
+  border-color: var(--vscode-tree-inactiveIndentGuidesStroke);
+}
+.vc-problems-tree .monaco-tl-indent > .indent-guide.active {
+  opacity: 1;
+  border-color: var(--vscode-tree-indentGuidesStroke);
+}

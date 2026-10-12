@@ -1,0 +1,10 @@
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import ScrollableElement from '../src/components/scrollable-element/ScrollableElement.vue';
+import ScrollableElementSpecimen from './ScrollableElementSpecimen.vue';
+import Compare from './Compare.vue';
+const meta = { title: 'Components/Scrollable Element', component: ScrollableElement, args: { height: 176, horizontal: 'auto', vertical: 'auto', shadows: true, containWheel: false, scrollByPage: false }, argTypes: { horizontal: { control: 'select', options: ['auto', 'hidden', 'visible'] }, vertical: { control: 'select', options: ['auto', 'hidden', 'visible'] } } } satisfies Meta<typeof ScrollableElement>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Review: Story = { parameters: { controls: { disable: true } }, render: (_, context) => ({ components: { Compare }, setup: () => ({ globals: context.globals }), template: '<Compare kind="scrollable-element" :theme="globals.theme" />' }) };
+export const Playground: Story = { render: args => ({ components: { ScrollableElement }, setup: () => ({ args }), template: '<div class="playground"><ScrollableElement v-bind="args"><div style="width:760px"><div v-for="i in 28" :key="i" style="height:22px;line-height:22px">Project file {{ i }}.ts — scroll the container horizontally and vertically.</div></div></ScrollableElement></div>' }), parameters: { docs: { description: { story: '默认在悬停/滚动时显示需要的滚动条，支持双轴、轨道定位/按页、拖动、阴影和动态内容测量。visible 仍只显示有溢出的轴；hidden 隐藏轨道但保留该轴滚动能力。默认边界滚轮向外层传播，containWheel 可以阻止。键盘行为由内容宿主提供。' }, source: { code: '<ScrollableElement :height="176" v-model:scroll-top="top" v-model:scroll-left="left"><YourContent /></ScrollableElement>' } } } };
+export const Specimen: Story = { parameters: { controls: { disable: true } }, render: (_, context) => ({ components: { ScrollableElementSpecimen }, setup: () => ({ globals: context.globals }), template: '<ScrollableElementSpecimen :theme="globals.theme" />' }) };

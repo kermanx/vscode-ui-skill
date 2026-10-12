@@ -1,0 +1,30 @@
+/* Copyright (c) Microsoft Corporation. Licensed under the MIT License. */
+/* Virtualization, row labels, theme states and the scroll viewport. */
+.vc-list { position: relative; width: 100%; white-space: nowrap; overflow: hidden; user-select: none; -webkit-user-select: none; outline: 0 !important; }
+.vc-list-viewport { height: 100%; overflow: auto; scrollbar-width: none; }
+.vc-list-viewport::-webkit-scrollbar { display: none; }
+.vc-list-rows { position: relative; width: 100%; background: var(--vscode-sideBar-background); transform: translate3d(0, 0, 0); contain: strict; overflow: hidden; }
+.vc-list-row { touch-action: none; }
+.vc-list-resource { color: var(--vc-decoration-color); }
+.vc-list-resource[data-decoration]::after { content: attr(data-decoration); color: var(--vc-decoration-color); }
+.vc-theme[data-theme="light"] .open-editors .monaco-icon-label .label-description { opacity: .95; }
+.vc-list-row.selected { background: var(--vscode-list-inactiveSelectionBackground); color: var(--vscode-list-inactiveSelectionForeground); }
+.vc-list-row:hover:not(.selected):not(.focused) { background: var(--vscode-list-hoverBackground); color: var(--vscode-list-hoverForeground); }
+.vc-list:focus .vc-list-row.focused { background: var(--vscode-list-focusBackground); color: var(--vscode-list-focusForeground); }
+.vc-list:focus .vc-list-row.selected { background: var(--vscode-list-activeSelectionBackground); color: var(--vscode-list-activeSelectionForeground); }
+.vc-list:focus .vc-list-row.selected .codicon { color: var(--vscode-list-activeSelectionIconForeground); }
+.vc-list-row.focused .codicon { color: var(--vscode-list-inactiveSelectionIconForeground); }
+.vc-list:focus .vc-list-row.focused { outline: 1px solid var(--vscode-list-focusOutline); outline-offset: -1px; }
+.vc-list:focus .vc-list-row.focused.selected { outline-color: var(--vscode-list-focusAndSelectionOutline, var(--vscode-contrastActiveBorder, var(--vscode-list-focusOutline))); }
+.vc-list-row.selected, .vc-list-row.focused.selected { outline: 1px dotted var(--vscode-contrastActiveBorder); outline-offset: -1px; }
+.vc-list-row:hover { outline: 1px dashed var(--vscode-contrastActiveBorder); outline-offset: -1px; }
+.vc-theme:is([data-theme="hcDark"], [data-theme="hcLight"]) .vc-list:not(.element-focused):not(:active):focus::before { content: ''; position: absolute; inset: 0; outline: 1px solid var(--vscode-focusBorder); outline-offset: -1px; pointer-events: none; z-index: 15; }
+.vc-list-scrollbar { position: absolute; right: 0; top: 0; height: 100%; width: 10px; z-index: 14; opacity: 0; pointer-events: none; transition: opacity 800ms linear; background: var(--vscode-scrollbar-background); }
+.vc-list-scrollbar.visible { opacity: 1; pointer-events: auto; transition: opacity 100ms linear; }
+.vc-list-thumb { position: absolute; width: 10px; background: var(--vscode-scrollbarSlider-background); }
+.vc-list-thumb:hover { background: var(--vscode-scrollbarSlider-hoverBackground); }
+.vc-list-thumb.active { background: var(--vscode-scrollbarSlider-activeBackground); }
+.vc-list-shadow { position: absolute; top: 0; left: 3px; width: 100%; height: 3px; box-shadow: var(--vscode-scrollbar-shadow) 0 6px 6px -6px inset; pointer-events: none; }
+.vc-list-shadow-corner { left: 0; width: 3px; }
+
+.vc-theme:is([data-theme="hcDark"], [data-theme="hcLight"]) .open-editors .open-editor { line-height:20px; }

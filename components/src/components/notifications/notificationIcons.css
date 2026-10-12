@@ -1,0 +1,13 @@
+/* Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. */
+/* Precomputed notification icon registrations. */
+.codicon-notifications-clear::before { content: "\ea76"; }
+.codicon-notifications-clear-all::before { content: "\eabf"; }
+.codicon-notifications-hide::before { content: "\eab4"; }
+.codicon-notifications-hide-up::before { content: "\eab7"; }
+.codicon-notifications-expand::before { content: "\eab7"; }
+.codicon-notifications-expand-down::before { content: "\eab4"; }
+.codicon-notifications-collapse::before { content: "\eab4"; }
+.codicon-notifications-collapse-up::before { content: "\eab7"; }
+.codicon-notifications-configure::before { content: "\eaf8"; }
+.codicon-notifications-do-not-disturb::before { content: "\ec08"; }
+.codicon-notifications-position::before { content: "\ebcb"; }

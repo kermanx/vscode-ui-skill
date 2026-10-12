@@ -1,0 +1,323 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vc-statusbar {
+  box-sizing: border-box;
+  cursor: default;
+  width: 100%;
+  height: 22px;
+  font-size: 12px;
+  display: flex;
+  overflow: hidden;
+}
+
+.monaco-enable-motion .vc-statusbar {
+  transition: background-color 0.15s ease-out;
+}
+
+.vc-statusbar.mac:focus {
+  /* Rounded corners to make focus outline appear properly (unless fullscreen) */
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.vc-statusbar.mac.macos-tahoe:focus {
+  /* macOS Tahoe increased rounded corners size */
+  border-bottom-right-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+
+.vc-statusbar:not(:focus).status-border-top::after {
+  /* Top border only visible unless focused to make room for focus outline */
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  pointer-events: none;
+  background-color: var(--status-border-top-color);
+  width: 100%;
+  height: 1px;
+}
+
+.vc-statusbar > .left-items,
+.vc-statusbar > .right-items {
+  display: flex;
+}
+
+.vc-statusbar > .right-items {
+  flex-wrap: wrap; /* overflow elements by wrapping */
+  flex-direction: row-reverse; /* let the elements to the left wrap first */
+}
+
+.vc-statusbar > .left-items {
+  flex-grow: 1; /* left items push right items to the far right end */
+}
+
+.vc-statusbar > .items-container > .statusbar-item {
+  display: inline-block;
+  line-height: 22px;
+  height: 100%;
+  vertical-align: top;
+  max-width: 40vw;
+  font-variant-numeric: tabular-nums;
+}
+
+.vc-statusbar > .items-container > .statusbar-item.has-beak {
+  position: relative;
+}
+
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.has-beak
+  > .status-bar-item-beak-container {
+  position: absolute;
+  left: calc(50% - 5px); /* centering relative to parent */
+  top: -5px;
+  width: 10px;
+  height: 5px;
+}
+
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.has-beak
+  > .status-bar-item-beak-container:before {
+  content: "";
+  position: fixed;
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+
+.vc-statusbar > .items-container > .statusbar-item.left.first-visible-item {
+  padding-right: 0;
+  padding-left: 2px;
+}
+
+.vc-statusbar > .items-container > .statusbar-item.right.last-visible-item {
+  padding-right: 2px;
+  padding-left: 0;
+}
+
+.vc-statusbar > .items-container > .statusbar-item > .statusbar-item-label {
+  cursor: pointer;
+  display: flex;
+  height: 100%;
+  margin-right: 3px;
+  margin-left: 3px;
+  padding: 0 5px;
+  white-space: pre; /* gives some degree of styling */
+  align-items: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  outline-width: 0px; /* do not render focus outline, we already have background */
+}
+
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.compact-left
+  > .statusbar-item-label {
+  margin-left: 0;
+  margin-right: 5px; /* +2px because padding is smaller and we want to preserve spacing between items */
+  padding: 0 3px;
+}
+
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.compact-right
+  > .statusbar-item-label {
+  margin-left: 5px; /* +2px because padding is smaller and we want to preserve spacing between items */
+  margin-right: 0;
+  padding: 0 3px;
+}
+
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.compact-left.compact-right
+  > .statusbar-item-label {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.left.first-visible-item
+  > .statusbar-item-label,
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.right.last-visible-item
+  > .statusbar-item-label,
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.has-background-color
+  > .statusbar-item-label {
+  margin-left: 0; /* Reduce margin to let element attach to the corners */
+  margin-right: 0;
+  padding-left: 8px; /* But increase padding to preserve our usual spacing */
+  padding-right: 8px;
+}
+
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.compact-left.has-background-color
+  > .statusbar-item-label {
+  padding-left: 3px;
+  padding-right: 10px;
+}
+
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.compact-right.has-background-color
+  > .statusbar-item-label {
+  padding-left: 10px;
+  padding-right: 3px;
+}
+
+.vc-statusbar > .items-container > .statusbar-item > a:hover:not(.disabled) {
+  text-decoration: none;
+  color: var(--vscode-statusBarItem-hoverForeground);
+}
+
+.vc-statusbar > .items-container > .statusbar-item > a.disabled {
+  cursor: default;
+}
+
+.vc-statusbar > .items-container > .statusbar-item span.codicon {
+  text-align: center;
+  color: inherit;
+}
+
+.vc-statusbar > .items-container > .statusbar-item a:active:not(.disabled) {
+  outline: 1px solid var(--vscode-contrastActiveBorder) !important;
+  outline-offset: -1px;
+}
+
+.vc-theme:not([data-theme="hcDark"]):not([data-theme="hcLight"])
+  .vc-statusbar
+  > .items-container
+  > .statusbar-item
+  a:active:not(.disabled) {
+  background-color: var(--vscode-statusBarItem-activeBackground) !important;
+}
+
+.vc-statusbar > .items-container > .statusbar-item a:hover:not(.disabled) {
+  outline: 1px dashed var(--vscode-contrastActiveBorder);
+  outline-offset: -1px;
+}
+
+.vc-statusbar > .items-container > .statusbar-item a:hover:not(.disabled) {
+  background-color: var(--vscode-statusBarItem-hoverBackground) !important;
+}
+
+/** Status bar entry item kinds */
+
+.vc-statusbar > .items-container > .statusbar-item.warning-kind {
+  color: var(--vscode-statusBarItem-warningForeground);
+  background-color: var(--vscode-statusBarItem-warningBackground);
+}
+
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.warning-kind.has-command:hover {
+  background-color: var(--vscode-statusBarItem-warningHoverBackground);
+}
+
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.warning-kind
+  a:hover:not(.disabled) {
+  color: var(--vscode-statusBarItem-warningHoverForeground);
+  background-color: var(
+    --vscode-statusBarItem-warningHoverBackground
+  ) !important;
+}
+
+.vc-statusbar > .items-container > .statusbar-item.error-kind {
+  color: var(--vscode-statusBarItem-errorForeground);
+  background-color: var(--vscode-statusBarItem-errorBackground);
+}
+
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.error-kind
+  a:hover:not(.disabled) {
+  color: var(--vscode-statusBarItem-errorHoverForeground);
+  background-color: var(--vscode-statusBarItem-errorHoverBackground) !important;
+}
+
+.vc-statusbar > .items-container > .statusbar-item.prominent-kind {
+  color: var(--vscode-statusBarItem-prominentForeground);
+  background-color: var(--vscode-statusBarItem-prominentBackground);
+}
+
+/**
+ * Using :not(.compact-right):not(.compact-left) here to improve the visual appearance
+ * when a prominent item uses `compact: true` with other items. The presence of the
+ * !important directive for `background-color` otherwise blocks our special hover handling
+ * code here:
+ *
+ * Note: this is currently only done for the prominent kind, but needs to be expanded if
+ * other kinds use compact feature.
+ */
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.prominent-kind:not(.compact-right):not(.compact-left)
+  a:hover:not(.disabled) {
+  color: var(--vscode-statusBarItem-prominentHoverForeground);
+  background-color: var(
+    --vscode-statusBarItem-prominentHoverBackground
+  ) !important;
+}
+
+.vc-statusbar > .items-container > .statusbar-item.remote-kind {
+  color: var(--vscode-statusBarItem-remoteForeground);
+  background-color: var(--vscode-statusBarItem-remoteBackground);
+}
+
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.remote-kind
+  a:hover:not(.disabled) {
+  color: var(--vscode-statusBarItem-remoteHoverForeground);
+  background-color: var(
+    --vscode-statusBarItem-remoteHoverBackground
+  ) !important;
+}
+
+.vc-statusbar > .items-container > .statusbar-item.offline-kind {
+  color: var(--vscode-statusBarItem-offlineForeground);
+  background-color: var(--vscode-statusBarItem-offlineBackground);
+}
+
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.offline-kind
+  a:hover:not(.disabled) {
+  color: var(--vscode-statusBarItem-offlineHoverForeground);
+  background-color: var(
+    --vscode-statusBarItem-offlineHoverBackground
+  ) !important;
+}
+
+.vc-statusbar {
+  position: relative;
+}
+.vc-statusbar a {
+  color: inherit;
+  text-decoration: none;
+}
+.vc-theme .vc-statusbar:focus {
+  outline-color: var(--vc-statusbar-focus, var(--vscode-focusBorder));
+}
+.vc-theme .vc-statusbar > .items-container > .statusbar-item a:focus-visible {
+  outline: 1px solid var(--vc-statusbar-entry-focus);
+  outline-offset: var(--vc-statusbar-focus-offset);
+}
+.vc-statusbar
+  > .items-container
+  > .statusbar-item.has-beak
+  > .status-bar-item-beak-container:before {
+  border-bottom-color: var(--vc-statusbar-beak);
+}

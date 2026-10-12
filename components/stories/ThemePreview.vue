@@ -4,6 +4,9 @@ import { createTheme, type ThemeBase } from '../src/theme/createTheme';
 import Button from '../src/components/button/Button.vue';
 import DropdownButton from '../src/components/button/DropdownButton.vue';
 import TreeView from '../src/components/tree/TreeView.vue';
+import InputBox from '../src/components/input-box/InputBox.vue';
+import Checkbox from '../src/components/checkbox/Checkbox.vue';
+import Toggle from '../src/components/toggle/Toggle.vue';
 import { treeNodes, expandedNodes } from './data';
 const sample = `{
   // Paste the contents of a VS Code color theme here.
@@ -16,6 +19,10 @@ const sample = `{
     "button.hoverBackground": "#9672bd",
     "button.foreground": "#ffffff",
     "focusBorder": "#be94eb",
+    "input.background": "#362b44",
+    "input.foreground": "#e1d6ed",
+    "checkbox.background": "#362b44",
+    "checkbox.border": "#805da9",
     "list.activeSelectionBackground": "#57416e",
     "list.focusOutline": "#be94eb",
     "gitDecoration.modifiedResourceForeground": "#e8b16b",
@@ -23,6 +30,7 @@ const sample = `{
 }`;
 const source = ref(sample), base = ref<ThemeBase | ''>('');
 const fileName = ref('theme.json'), files = ref<Record<string, string>>({});
+const query = ref(''), autoSave = ref(true), matchCase = ref(false);
 const expanded = ref([...expandedNodes]), selected = ref<string[]>([]), message = ref('');
 const result = computed(() => {
   try { return { theme: createTheme(source.value, { base: base.value || undefined, fileName: fileName.value, files: files.value }), error: '' }; }
@@ -53,6 +61,8 @@ function selectFile() { source.value = files.value[fileName.value]; }
       <div class="vc-theme theme-preview" :data-theme="result.theme.base" :style="result.theme.style" data-testid="imported-theme">
         <h2>{{ result.theme.name }}</h2>
         <div class="theme-button-row"><Button label="Create File" icon="add" @click="message = 'Create File'" /><DropdownButton label="Open Folder" :actions="[{ id: 'window', label: 'Open in New Window' }]" @action="message = $event" /></div>
+        <div class="theme-form-row"><InputBox v-model="query" placeholder="Search files" aria-label="Theme preview search" /><Toggle v-model:checked="matchCase" title="Match Case" icon="case-sensitive" /></div>
+        <div class="theme-checkbox-row"><Checkbox v-model:checked="autoSave" label="Auto Save" /></div>
         <TreeView :nodes="treeNodes" v-model:expanded-ids="expanded" v-model:selected-ids="selected" aria-label="Theme preview files" @action="(action, node) => message = `${node.label}: ${action.label}`" />
         <p>{{ message || '选择树节点、悬停按钮，检查主题配色。' }}</p>
       </div>
@@ -76,6 +86,9 @@ function selectFile() { source.value = files.value[fileName.value]; }
 .theme-preview h2 { font-size: 16px; font-weight: 500; margin: 0 0 20px; }
 .theme-button-row { display: flex; align-items: start; gap: 12px; margin-bottom: 24px; }
 .theme-button-row > * { width: 184px; }
+.theme-form-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.theme-form-row > .monaco-inputbox { flex: 1; }
+.theme-checkbox-row { margin-bottom: 20px; }
 .theme-page [role=alert] { color: var(--vscode-list-errorForeground); }
 @media(max-width:850px) { .theme-import-grid { grid-template-columns: 1fr; } }
 </style>

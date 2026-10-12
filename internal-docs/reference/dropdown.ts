@@ -11,6 +11,7 @@ import { dropdownExamples, dropdownActions } from '../../components/stories/drop
 export function mountDropdown(root: HTMLElement, surface: HTMLElement, state: any) {
   const iconStyle = document.createElement('style'); iconStyle.textContent = formatRule(Codicon.dropDownButton); root.append(iconStyle);
   const view = new ContextView(root, ContextViewDOMPosition.FIXED);
+  window.addEventListener('resize', () => view.layout());
   const handler = new ContextMenuHandler({ showContextView: delegate => view.show(delegate), hideContextView: data => view.hide(data) } as any,
     { publicLog2() {} } as any, { error: console.error } as any, { lookupKeybinding: () => undefined } as any);
   state.actions = [];

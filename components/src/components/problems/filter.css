@@ -1,0 +1,111 @@
+/* Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. */
+.viewpane-filter-container {
+  max-width: inherit;
+}
+
+.viewpane-filter-container {
+  cursor: default;
+  display: flex;
+}
+
+.viewpane-filter-container.grow {
+  flex: 1;
+}
+
+.viewpane-filter-container > .viewpane-filter {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.viewpane-filter-container > .viewpane-filter .monaco-inputbox {
+  height: 24px;
+  font-size: 12px;
+  flex: 1;
+}
+
+.pane-header
+  .viewpane-filter-container
+  > .viewpane-filter
+  .monaco-inputbox
+  .monaco-inputbox {
+  height: 20px;
+  line-height: 18px;
+}
+
+.vc-theme[data-theme="light"]
+  .viewpane-filter-container
+  > .viewpane-filter
+  .monaco-inputbox {
+  height: 25px;
+}
+
+.viewpane-filter-container > .viewpane-filter > .viewpane-filter-controls {
+  position: absolute;
+  top: 0px;
+  bottom: 0;
+  right: 0px;
+  display: flex;
+  align-items: center;
+}
+
+.viewpane-filter-container
+  > .viewpane-filter
+  > .viewpane-filter-controls
+  > .viewpane-filter-badge {
+  margin: 4px 2px 4px 0px;
+  padding: 0px 8px;
+  border-radius: 2px;
+}
+
+.viewpane-filter > .viewpane-filter-controls > .viewpane-filter-badge.hidden,
+.viewpane-filter.small > .viewpane-filter-controls > .viewpane-filter-badge {
+  display: none;
+}
+
+.panel > .title .monaco-action-bar .action-item.viewpane-filter-container {
+  max-width: 200px;
+  min-width: 150px;
+  margin-right: 10px;
+}
+
+.panel
+  > .title
+  .monaco-action-bar
+  .action-item.viewpane-filter-container:has(
+    .monaco-inputbox .input:focus,
+    .viewpane-filter-controls :focus
+  ) {
+  max-width: 400px;
+}
+
+.pane-body .viewpane-filter-container:not(:empty) {
+  flex: 1;
+  margin: 10px 20px;
+  height: initial;
+}
+
+.pane-body
+  .viewpane-filter-container
+  > .viewpane-filter
+  > .viewpane-filter-controls
+  .monaco-action-bar
+  .action-item {
+  margin-right: 4px;
+}
+
+.viewpane-filter > .viewpane-filter-controls .monaco-action-bar .action-label {
+  padding: 2px;
+}
+
+.viewpane-filter
+  > .viewpane-filter-controls
+  .monaco-action-bar
+  .monaco-dropdown
+  .action-label.codicon.codicon-filter.checked {
+  color: var(--vscode-inputOption-activeForeground);
+  background-color: var(--vscode-inputOption-activeBackground);
+  border: 1px solid var(--vscode-inputOption-activeBorder);
+  padding: 1px;
+}

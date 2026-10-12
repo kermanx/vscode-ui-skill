@@ -1,0 +1,92 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+/* Symbol icon colours scoped to themed surfaces.
+ *
+ * The original scopes the coloured variant to the workbench shell
+ * (`.monaco-workbench .codicon-colored.codicon.codicon-symbol-*`). A host application embeds this
+ * component without that shell, so the shell ancestor is aliased to the replica theme root
+ * `.vc-theme`, exactly like iconLabelTheme.css aliases the workbench theme class. Requiring
+ * `.vc-theme` keeps the rule inside the themed surface: unlike dropping the ancestor entirely, it
+ * cannot repaint a host's own `codicon-colored` markup that lives outside the replica.
+ *
+ * Only the `codicon-colored` combination is painted - the classes the workbench's
+ * renderIcon(icon, true) coloured variant produces. A plain `codicon-symbol-*` icon keeps the
+ * default icon colour from src/theme/theme.css. The `.monaco-editor` context rules are kept
+ * verbatim because they belong to the same source file (the breadcrumbs copy keeps them too).
+ *
+ * The `symbolIcon.*` variables resolve from src/theme/tokens.css; outside a theme scope they are
+ * undefined and the declaration falls back to the inherited colour, as in the original. */
+
+/* stylelint-disable layer-checker */
+
+.monaco-editor .codicon.codicon-symbol-array,
+.vc-theme .codicon-colored.codicon.codicon-symbol-array { color: var(--vscode-symbolIcon-arrayForeground); }
+.monaco-editor .codicon.codicon-symbol-boolean,
+.vc-theme .codicon-colored.codicon.codicon-symbol-boolean { color: var(--vscode-symbolIcon-booleanForeground); }
+.monaco-editor .codicon.codicon-symbol-class,
+.vc-theme .codicon-colored.codicon.codicon-symbol-class { color: var(--vscode-symbolIcon-classForeground); }
+.monaco-editor .codicon.codicon-symbol-method,
+.vc-theme .codicon-colored.codicon.codicon-symbol-method { color: var(--vscode-symbolIcon-methodForeground); }
+.monaco-editor .codicon.codicon-symbol-color,
+.vc-theme .codicon-colored.codicon.codicon-symbol-color { color: var(--vscode-symbolIcon-colorForeground); }
+.monaco-editor .codicon.codicon-symbol-constant,
+.vc-theme .codicon-colored.codicon.codicon-symbol-constant { color: var(--vscode-symbolIcon-constantForeground); }
+.monaco-editor .codicon.codicon-symbol-constructor,
+.vc-theme .codicon-colored.codicon.codicon-symbol-constructor { color: var(--vscode-symbolIcon-constructorForeground); }
+.monaco-editor .codicon.codicon-symbol-value,
+.vc-theme .codicon-colored.codicon.codicon-symbol-value,
+.monaco-editor .codicon.codicon-symbol-enum,
+.vc-theme .codicon-colored.codicon.codicon-symbol-enum { color: var(--vscode-symbolIcon-enumeratorForeground); }
+.monaco-editor .codicon.codicon-symbol-enum-member,
+.vc-theme .codicon-colored.codicon.codicon-symbol-enum-member { color: var(--vscode-symbolIcon-enumeratorMemberForeground); }
+.monaco-editor .codicon.codicon-symbol-event,
+.vc-theme .codicon-colored.codicon.codicon-symbol-event { color: var(--vscode-symbolIcon-eventForeground); }
+.monaco-editor .codicon.codicon-symbol-field,
+.vc-theme .codicon-colored.codicon.codicon-symbol-field { color: var(--vscode-symbolIcon-fieldForeground); }
+.monaco-editor .codicon.codicon-symbol-file,
+.vc-theme .codicon-colored.codicon.codicon-symbol-file { color: var(--vscode-symbolIcon-fileForeground); }
+.monaco-editor .codicon.codicon-symbol-folder,
+.vc-theme .codicon-colored.codicon.codicon-symbol-folder { color: var(--vscode-symbolIcon-folderForeground); }
+.monaco-editor .codicon.codicon-symbol-function,
+.vc-theme .codicon-colored.codicon.codicon-symbol-function { color: var(--vscode-symbolIcon-functionForeground); }
+.monaco-editor .codicon.codicon-symbol-interface,
+.vc-theme .codicon-colored.codicon.codicon-symbol-interface { color: var(--vscode-symbolIcon-interfaceForeground); }
+.monaco-editor .codicon.codicon-symbol-key,
+.vc-theme .codicon-colored.codicon.codicon-symbol-key { color: var(--vscode-symbolIcon-keyForeground); }
+.monaco-editor .codicon.codicon-symbol-keyword,
+.vc-theme .codicon-colored.codicon.codicon-symbol-keyword { color: var(--vscode-symbolIcon-keywordForeground); }
+.monaco-editor .codicon.codicon-symbol-module,
+.vc-theme .codicon-colored.codicon.codicon-symbol-module { color: var(--vscode-symbolIcon-moduleForeground); }
+.monaco-editor .codicon.codicon-symbol-namespace,
+.vc-theme .codicon-colored.codicon.codicon-symbol-namespace { color: var(--vscode-symbolIcon-namespaceForeground); }
+.monaco-editor .codicon.codicon-symbol-null,
+.vc-theme .codicon-colored.codicon.codicon-symbol-null { color: var(--vscode-symbolIcon-nullForeground); }
+.monaco-editor .codicon.codicon-symbol-number,
+.vc-theme .codicon-colored.codicon.codicon-symbol-number { color: var(--vscode-symbolIcon-numberForeground); }
+.monaco-editor .codicon.codicon-symbol-object,
+.vc-theme .codicon-colored.codicon.codicon-symbol-object { color: var(--vscode-symbolIcon-objectForeground); }
+.monaco-editor .codicon.codicon-symbol-operator,
+.vc-theme .codicon-colored.codicon.codicon-symbol-operator { color: var(--vscode-symbolIcon-operatorForeground); }
+.monaco-editor .codicon.codicon-symbol-package,
+.vc-theme .codicon-colored.codicon.codicon-symbol-package { color: var(--vscode-symbolIcon-packageForeground); }
+.monaco-editor .codicon.codicon-symbol-property,
+.vc-theme .codicon-colored.codicon.codicon-symbol-property { color: var(--vscode-symbolIcon-propertyForeground); }
+.monaco-editor .codicon.codicon-symbol-reference,
+.vc-theme .codicon-colored.codicon.codicon-symbol-reference { color: var(--vscode-symbolIcon-referenceForeground); }
+.monaco-editor .codicon.codicon-symbol-snippet,
+.vc-theme .codicon-colored.codicon.codicon-symbol-snippet { color: var(--vscode-symbolIcon-snippetForeground); }
+.monaco-editor .codicon.codicon-symbol-string,
+.vc-theme .codicon-colored.codicon.codicon-symbol-string { color: var(--vscode-symbolIcon-stringForeground); }
+.monaco-editor .codicon.codicon-symbol-struct,
+.vc-theme .codicon-colored.codicon.codicon-symbol-struct { color: var(--vscode-symbolIcon-structForeground); }
+.monaco-editor .codicon.codicon-symbol-text,
+.vc-theme .codicon-colored.codicon.codicon-symbol-text { color: var(--vscode-symbolIcon-textForeground); }
+.monaco-editor .codicon.codicon-symbol-type-parameter,
+.vc-theme .codicon-colored.codicon.codicon-symbol-type-parameter { color: var(--vscode-symbolIcon-typeParameterForeground); }
+.monaco-editor .codicon.codicon-symbol-unit,
+.vc-theme .codicon-colored.codicon.codicon-symbol-unit { color: var(--vscode-symbolIcon-unitForeground); }
+.monaco-editor .codicon.codicon-symbol-variable,
+.vc-theme .codicon-colored.codicon.codicon-symbol-variable { color: var(--vscode-symbolIcon-variableForeground); }

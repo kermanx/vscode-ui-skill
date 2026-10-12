@@ -1,3 +1,5 @@
+@import '../action-bar/actionbar.css';
+
 /*---------------------------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
@@ -324,8 +326,6 @@
 .monaco-menu .action-item {
 	cursor: default;
 }
-.vc-dropdown-menu { position: fixed; z-index: 2500; }
-.vc-dropdown-menu .context-view-block { position: fixed; cursor: initial; inset: 0; z-index: -1; }
 .vc-theme .context-view.monaco-menu-container :focus { outline: 0; }
 .vc-theme[data-theme="hcDark"] .context-view.monaco-menu-container,
 .vc-theme[data-theme="hcLight"] .context-view.monaco-menu-container { box-shadow: none; }
@@ -334,3 +334,88 @@
   outline: 1px solid var(--vscode-menu-selectionBorder) !important;
   outline-offset: -1px !important;
 }
+
+.vc-menu-root { position: relative; }
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+/* Arrows */
+.vc-menu-scrollable > .scrollbar > .scra {
+	cursor: pointer;
+	font-size: 11px !important;
+}
+
+.vc-menu-scrollable > .visible {
+	opacity: 1;
+
+	/* Background rule added for IE9 - to allow clicks on dom node */
+	background:rgba(0,0,0,0);
+
+	transition: opacity 100ms linear;
+	/* In front of peek view */
+	z-index: 11;
+}
+.vc-menu-scrollable > .invisible {
+	opacity: 0;
+	pointer-events: none;
+}
+.vc-menu-scrollable > .invisible.fade {
+	transition: opacity 800ms linear;
+}
+
+.disable-animations .vc-menu-scrollable > .visible,
+.disable-animations .vc-menu-scrollable > .invisible.fade {
+	transition: none;
+}
+
+/* Scrollable Content Inset Shadow */
+.vc-menu-scrollable > .shadow {
+	position: absolute;
+	display: none;
+}
+.vc-menu-scrollable > .shadow.top {
+	display: block;
+	top: 0;
+	left: 3px;
+	height: 3px;
+	width: 100%;
+	box-shadow: var(--vscode-scrollbar-shadow) 0 6px 6px -6px inset;
+}
+.vc-menu-scrollable > .shadow.left {
+	display: block;
+	top: 3px;
+	left: 0;
+	height: 100%;
+	width: 3px;
+	box-shadow: var(--vscode-scrollbar-shadow) 6px 0 6px -6px inset;
+}
+.vc-menu-scrollable > .shadow.top-left-corner {
+	display: block;
+	top: 0;
+	left: 0;
+	height: 3px;
+	width: 3px;
+}
+.vc-menu-scrollable > .shadow.top.left {
+	box-shadow: var(--vscode-scrollbar-shadow) 6px 0 6px -6px inset;
+}
+
+.vc-menu-scrollable > .scrollbar {
+	background: var(--vscode-scrollbar-background);
+}
+
+.vc-menu-scrollable > .scrollbar > .slider {
+	background: var(--vscode-scrollbarSlider-background);
+}
+
+.vc-menu-scrollable > .scrollbar > .slider:hover {
+	background: var(--vscode-scrollbarSlider-hoverBackground);
+}
+
+.vc-menu-scrollable > .scrollbar > .slider.active {
+	background: var(--vscode-scrollbarSlider-activeBackground);
+}
+
+.codicon-menu-submenu::before { content: '\eab6'; }

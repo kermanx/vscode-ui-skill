@@ -1,0 +1,18 @@
+/* Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. */
+.vc-notifications-list .monaco-list-rows { background: var(--vscode-notifications-background); transform: translate3d(0, 0, 0); contain: strict; overflow: hidden; }
+.vc-notifications-list .monaco-list-row.focused { color: var(--vscode-list-inactiveFocusForeground); }
+.vc-notifications-list .monaco-list-row.focused .codicon { color: var(--vscode-list-inactiveSelectionIconForeground); }
+.vc-notifications-list:not(.drop-target):not(.dragging) .monaco-list-row:hover:not(.focused) { background-color: var(--vscode-list-hoverBackground); color: var(--vscode-list-hoverForeground); }
+.vc-notifications-list:focus .monaco-list-row.focused { background-color: var(--vscode-list-focusBackground); color: var(--vscode-list-focusForeground); outline: 1px solid var(--vscode-list-focusOutline); outline-offset: -1px; }
+.vc-notifications-list .monaco-list-row:hover { outline: 1px dashed var(--vscode-contrastActiveBorder); outline-offset: -1px; }
+.vc-notifications-list .monaco-list-row.focused { outline-color: var(--vscode-list-inactiveFocusOutline); }
+
+/* Workbench link reset and notification icon registrations. */
+.vc-notifications-workbench a { text-decoration: none; }
+
+/* Workbench list focus reset and high-contrast empty-focus outline. */
+.monaco-workbench .vc-notifications-list:focus { outline: 0 !important; }
+.vc-theme:is([data-theme="hcDark"], [data-theme="hcLight"]) .vc-notifications-list:not(.element-focused):not(:active):focus::before {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15;
+  content: ""; pointer-events: none; outline: 1px solid var(--vscode-focusBorder); outline-offset: -1px;
+}

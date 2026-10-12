@@ -42,13 +42,13 @@ test('Imported theme updates scoped component colors and file includes', async (
   await expect(page.getByRole('alert')).toContainText('Missing included theme');
 });
 
-test('Storybook toolbar switches both reference and Vue themes without reloading', async ({ page }) => {
+for (const component of ['tree-view', 'action-bar', 'menu', 'dropdown', 'codicon', 'keybinding-label', 'progress-bar', 'count-badge', 'toolbar', 'scrollable-element', 'context-menu', 'breadcrumbs']) test(`Storybook toolbar switches both reference and Vue themes / ${component}`, async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 1000 });
-  await page.goto('/?path=/story/components-tree-view--review&globals=theme:dark');
+  await page.goto(`/?path=/story/components-${component}--review&globals=theme:dark`);
   const story = page.frameLocator('#storybook-preview-iframe');
   const replica = story.frameLocator('iframe[title="Vue replica"]');
   const original = story.frameLocator('iframe[title="VS Code original"]');
-  await replica.getByRole('tree').waitFor();
+  await replica.locator('.fixture-root').waitFor();
   await page.getByText('Dark+（深色）', { exact: true }).click();
   await page.getByText('Light+（浅色）', { exact: true }).click();
   await expect(story.locator('.gallery-root')).toHaveAttribute('data-theme', 'light');

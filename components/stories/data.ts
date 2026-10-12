@@ -29,7 +29,7 @@ export const largeNodes: TreeNode[] = Array.from({ length: 100 }, (_, group) => 
   })),
 }));
 export const buttons = [
-  { label: 'Primary Button' }, { label: 'Secondary Button', secondary: true },
+  { label: 'Primary Button', title: true }, { label: 'Secondary Button', secondary: true, title: 'Additional actions' },
   { label: 'Add Item', icon: 'add' }, { label: 'Small Button', small: true },
   { label: 'Disabled', disabled: true }, { label: 'Disabled Secondary', secondary: true, disabled: true },
 ];

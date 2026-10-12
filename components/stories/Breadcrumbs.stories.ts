@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import Breadcrumbs from '../src/components/breadcrumbs/Breadcrumbs.vue';
+import BreadcrumbsSpecimen from './BreadcrumbsSpecimen.vue';
+import Compare from './Compare.vue';
+import { breadcrumbExamples } from './BreadcrumbsData';
+const meta = { title:'Components/Breadcrumbs',component:Breadcrumbs,args:{ items:breadcrumbExamples[1].items, disabled:false,scrollbarVisibility:'auto',scrollbarSize:'default' },argTypes:{scrollbarVisibility:{control:'select',options:['auto','visible','hidden']},scrollbarSize:{control:'select',options:['default','large']}} } satisfies Meta<typeof Breadcrumbs>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Review: Story = {parameters:{controls:{disable:true}},render:(_,context)=>({components:{Compare},setup:()=>({globals:context.globals}),template:'<Compare kind="breadcrumbs" :theme="globals.theme" />'})};
+export const Playground: Story = {tags:['autodocs'],render:args=>({components:{Breadcrumbs},setup:()=>({args}),template:'<div class="playground"><div style="width:300px"><Breadcrumbs v-bind="args" /></div></div>'}),parameters:{docs:{description:{story:'文件与符号路径，包含焦点、选择、横向滚动及 reveal API。左右键移动焦点，Enter/Down 发出 pick，Space 发出 reveal，Escape 清空状态并通知宿主。Home/End 在原始命令中未绑定。disabled 遵循原始 widget：禁用点击，程序化焦点与宿主键盘命令仍可用。picker 和文件系统数据由宿主提供；不模拟工作台服务。'}}}};
+export const Specimen: Story = {parameters:{controls:{disable:true}},render:(_,context)=>({components:{BreadcrumbsSpecimen},setup:()=>({globals:context.globals}),template:'<BreadcrumbsSpecimen :theme="globals.theme" />'})};

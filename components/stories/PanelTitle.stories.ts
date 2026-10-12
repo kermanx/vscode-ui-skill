@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import {ref} from 'vue';
+import PanelTitle from '../src/components/panel-title/PanelTitle.vue';
+import PanelTitleSpecimen from './PanelTitleSpecimen.vue';
+import {panelTitleItems,panelTitlePrimary,panelTitleSecondary} from './PanelTitleData';
+import Compare from './Compare.vue';
+const meta={title:'Components/Panel Title',component:PanelTitle,args:{items:panelTitleItems(),primary:panelTitlePrimary,secondary:panelTitleSecondary,icons:false}} satisfies Meta<typeof PanelTitle>;
+export default meta;type Story=StoryObj<typeof meta>;
+export const Review:Story={parameters:{controls:{disable:true}},render:(_,context)=>({components:{Compare},setup:()=>({globals:context.globals}),template:'<Compare kind="panel-title" :theme="globals.theme" />'})};
+export const Playground:Story={render:args=>({components:{PanelTitle},setup:()=>({args,activeId:ref('problems')}),template:'<div class="playground"><PanelTitle v-bind="args" v-model:active-id="activeId" /></div>'}),parameters:{docs:{description:{story:'经典底部面板35px标题：文本或图标页签、徽标、溢出、固定及右侧工具栏。全局面板布局命令和工作台拖放由宿主负责。'},source:{code:'<PanelTitle :items="panels" v-model:active-id="activePanel" :primary="actions" :secondary="moreActions" />'}}}};
+export const Specimen:Story={parameters:{controls:{disable:true}},render:(_,context)=>({components:{PanelTitleSpecimen},setup:()=>({globals:context.globals}),template:'<PanelTitleSpecimen :theme="globals.theme" />'})};

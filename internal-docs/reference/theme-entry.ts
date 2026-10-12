@@ -1,3 +1,12 @@
+import '../../vscode/src/vs/platform/theme/common/colors/searchColors.js';
+import '../../vscode/src/vs/platform/theme/common/colors/editorColors.js';
+import '../../vscode/src/vs/workbench/contrib/preferences/browser/preferencesIcons.js';
+import '../../vscode/src/vs/workbench/contrib/preferences/common/settingsEditorColorRegistry.js';
+import '../../vscode/src/vs/editor/contrib/symbolIcons/browser/symbolIcons.js';
+import '../../vscode/src/vs/workbench/contrib/notebook/browser/notebookIcons.js';
+import { getIconRegistry, IconContribution } from '../../vscode/src/vs/platform/theme/common/iconRegistry.js';
+import '../../vscode/src/vs/base/common/codicons.js';
+import { getCodiconFontCharacters } from '../../vscode/src/vs/base/common/codiconsUtil.js';
 import { getColorRegistry, registerColor } from '../../vscode/src/vs/platform/theme/common/colorRegistry.js';
 import { getSizeRegistry, sizeValueToCss } from '../../vscode/src/vs/platform/theme/common/sizeRegistry.js';
 import '../../vscode/src/vs/workbench/common/theme.js';
@@ -35,9 +44,18 @@ export function generateThemes(root: string) {
     themes[type] = {
       ...Object.fromEntries(registry.getColors().map(({ id }) => [id, theme.getColor(id)?.toString()]).filter(([, color]) => color)),
       ...Object.fromEntries(getSizeRegistry().getSizes()
-        .filter(({ id }) => ['cornerRadius.medium', 'cornerRadius.large', 'strokeThickness'].includes(id))
         .map(({ id }) => [id, sizeValueToCss(getSizeRegistry().resolveDefaultSize(id, theme)!)])),
     };
   }
   return themes;
+}
+
+export function generateIconGlyphs() {
+  const glyphs = { ...getCodiconFontCharacters() };
+  const registry = getIconRegistry();
+  for (const icon of registry.getIcons()) {
+    const definition = IconContribution.getDefinition(icon, registry);
+    if (definition && !definition.font && /^\\[a-f0-9]+$/i.test(definition.fontCharacter)) glyphs[icon.id] = parseInt(definition.fontCharacter.slice(1), 16);
+  }
+  return glyphs;
 }

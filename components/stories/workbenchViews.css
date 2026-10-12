@@ -1,0 +1,4 @@
+.workbench-sidebar-view { background:var(--vscode-sideBar-background);color:var(--vscode-sideBar-foreground,var(--vscode-foreground)); }
+.workbench-view-input { box-sizing:border-box;height:42px;padding:8px 12px; }
+.workbench-view-input.has-button { height:78px; }
+.workbench-view-input > .monaco-button { box-sizing:border-box;margin-top:8px;width:100%; }

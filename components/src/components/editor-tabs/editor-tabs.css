@@ -1,0 +1,14 @@
+/* Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. */
+.monaco-workbench .predefined-file-icon[class*='codicon-']::before {
+  width: 16px;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+.predefined-file-icon::before {
+  font-family: 'codicon';
+}
+.monaco-workbench:not(.file-icons-enabled) .predefined-file-icon[class*='codicon-']::before {
+  content: unset !important;
+}
+
+.vc-editor-tab-preview span.codicon { margin-bottom: 2px; }

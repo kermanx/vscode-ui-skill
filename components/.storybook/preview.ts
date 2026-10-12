@@ -1,4 +1,6 @@
 import type { Preview } from '@storybook/vue3-vite';
+import '../src/components/action-bar/actionbar.css';
+import '../src/theme/platform';
 import 'virtual:uno.css';
 import '../src/theme/theme.css';
 import '../stories/gallery.css';
@@ -7,7 +9,7 @@ const preview: Preview = {
   parameters: {
     layout: 'fullscreen',
     controls: { expanded: true },
-    options: { storySort: { order: ['Start here', 'Components', 'Themes'] } },
+    options: { storySort: { order: ['Start here', 'Compositions', 'Components', 'Themes'] } },
   },
   globalTypes: {
     theme: {

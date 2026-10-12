@@ -1,0 +1,7 @@
+/*
+ * Geometry of the command-list context both pages render (keybinding editor / menu rows).
+ * Not part of the component: the upstream CSS only styles the label itself.
+ */
+.keybinding-list { width: 260px; }
+.keybinding-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 22px; }
+.keybinding-row > .keybinding-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
