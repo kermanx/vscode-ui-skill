@@ -6,15 +6,19 @@ interface ButtonBarBaseItem {
   disabled?: boolean;
   ariaLabel?: string;
 }
-export type ButtonBarItem = ButtonBarBaseItem & ({
-  icon?: string;
-  small?: boolean;
-  description?: string;
-  actions?: never;
-} | {
-  actions: readonly DropdownAction[];
-  includePrimary?: boolean;
-  icon?: never;
-  small?: never;
-  description?: never;
-});
+export type ButtonBarItem = ButtonBarBaseItem &
+  (
+    | {
+        icon?: string;
+        small?: boolean;
+        description?: string;
+        actions?: never;
+      }
+    | {
+        actions: readonly DropdownAction[];
+        includePrimary?: boolean;
+        icon?: never;
+        small?: never;
+        description?: never;
+      }
+  );

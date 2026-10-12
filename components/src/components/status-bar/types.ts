@@ -1,6 +1,11 @@
-export type StatusBarAlignment = "left" | "right";
+export type StatusBarAlignment = 'left' | 'right';
 export type StatusBarEntryKind =
-  "standard" | "warning" | "error" | "prominent" | "remote" | "offline";
+  | 'standard'
+  | 'warning'
+  | 'error'
+  | 'prominent'
+  | 'remote'
+  | 'offline';
 export interface StatusBarLocation {
   location: { id: string; priority: number };
   alignment: StatusBarAlignment;
@@ -31,14 +36,14 @@ export interface StatusBarEntry {
   command?: string | StatusBarCommand;
   kind?: StatusBarEntryKind;
   showBeak?: boolean;
-  showProgress?: boolean | "loading" | "syncing";
+  showProgress?: boolean | 'loading' | 'syncing';
 }
 /** Special entry commands are objects, like ordinary command descriptors. */
 export const StatusBarShowTooltipCommand: StatusBarCommand = {
-  id: "statusBar.entry.showTooltip",
-  title: "",
+  id: 'statusBar.entry.showTooltip',
+  title: '',
 };
 export const StatusBarToggleTooltipCommand: StatusBarCommand = {
-  id: "statusBar.entry.toggleTooltip",
-  title: "",
+  id: 'statusBar.entry.toggleTooltip',
+  title: '',
 };

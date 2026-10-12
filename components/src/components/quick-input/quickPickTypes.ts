@@ -29,6 +29,7 @@ export interface QuickPickItem {
   buttons?: readonly QuickPickItemButton[];
   disabled?: boolean;
   alwaysShow?: boolean;
+  /** In multi-select, false creates an action row: no checkbox, click accepts it. */
   pickable?: boolean;
 }
 export interface QuickPickSeparator {
@@ -57,6 +58,7 @@ export interface QuickPickProps extends Omit<QuickInputProps, 'password'> {
   /** Transform only the filter text, preserving the displayed input (for Quick Access prefixes). */
   filterValue?: (value: string) => string;
   canSelectMany?: boolean;
+  /** Allows acceptance with inBackground=true; the caller handles its effect. */
   canAcceptInBackground?: boolean;
   matchOnLabel?: boolean;
   matchOnLabelMode?: 'fuzzy' | 'contiguous';
@@ -82,6 +84,7 @@ export interface QuickPickAcceptEvent {
   keyMods: QuickPickKeyMods;
 }
 export interface QuickPickWillAcceptEvent {
+  /** Must be called synchronously by the willAccept listener. */
   veto(): void;
 }
 export interface QuickPickItemButtonEvent {

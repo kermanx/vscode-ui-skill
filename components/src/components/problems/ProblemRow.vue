@@ -1,15 +1,15 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from "vue";
-import HighlightedLabel from "../highlighted-label/HighlightedLabel.vue";
-import IconLabel from "../icon-label/IconLabel.vue";
-import { fileIconClasses } from "../explorer/explorerModel";
-import CountBadge from "../count-badge/CountBadge.vue";
-import ActionBar from "../action-bar/ActionBar.vue";
-import ContextMenu from "../context-menu/ContextMenu.vue";
-import DelayedTooltip from "../tooltip/DelayedTooltip.vue";
-import type { ProblemNode } from "./model";
-import { basename, lines } from "./model";
+import { computed, nextTick, ref, watch } from 'vue';
+import HighlightedLabel from '../highlighted-label/HighlightedLabel.vue';
+import IconLabel from '../icon-label/IconLabel.vue';
+import { fileIconClasses } from '../explorer/explorerModel';
+import CountBadge from '../count-badge/CountBadge.vue';
+import ActionBar from '../action-bar/ActionBar.vue';
+import ContextMenu from '../context-menu/ContextMenu.vue';
+import DelayedTooltip from '../tooltip/DelayedTooltip.vue';
+import type { ProblemNode } from './model';
+import { basename, lines } from './model';
 const props = defineProps<{ node: ProblemNode; multiline: boolean }>();
 const emit = defineEmits<{
   multiline: [];
@@ -24,38 +24,38 @@ watch(
   () =>
     nextTick(() =>
       multilineElement.value?.[0]
-        ?.querySelector(".action-item")
-        ?.setAttribute("aria-expanded", String(props.multiline))
+        ?.querySelector('.action-item')
+        ?.setAttribute('aria-expanded', String(props.multiline)),
     ),
-  { immediate: true }
+  { immediate: true },
 );
 const message = ref<HTMLElement>(),
   fixes = ref<InstanceType<typeof ContextMenu>>();
 const messageLines = computed(() =>
   props.node.item
     ? lines(props.node.item.message).slice(0, props.multiline ? undefined : 1)
-    : []
+    : [],
 );
 const quickFixActions = computed(() => [
   {
-    id: "fix",
-    label: "Show fixes",
-    icon: "light-bulb",
+    id: 'fix',
+    label: 'Show fixes',
+    icon: 'light-bulb',
     disabled: !props.node.item?.quickFixes?.length,
   },
 ]);
 const multilineActions = computed(() => [
   {
-    id: "multiline",
+    id: 'multiline',
     label: props.multiline
-      ? "Show message in single line"
-      : "Show message in multiple lines",
-    icon: props.multiline ? "chevron-up" : "chevron-down",
-    disabled: lines(props.node.item?.message || "").length < 2,
+      ? 'Show message in single line'
+      : 'Show message in multiple lines',
+    icon: props.multiline ? 'chevron-up' : 'chevron-down',
+    disabled: lines(props.node.item?.message || '').length < 2,
   },
 ]);
 function showFix(_id: string, event: Event) {
-  const target = (event.target as HTMLElement).closest(".action-item")!;
+  const target = (event.target as HTMLElement).closest('.action-item')!;
   const rect = target.getBoundingClientRect();
   fixes.value?.show({ x: rect.left + 10, y: rect.top + rect.height + 4 });
 }
@@ -134,8 +134,7 @@ function showFix(_id: string, event: Event) {
               ><div class="marker-code">
                 <HighlightedLabel
                   :text="node.item.code.value"
-                  :highlights="node.codeMatches"
-                /></div
+                  :highlights="node.codeMatches" /></div
             ></a>
           </template>
           <span class="marker-line"

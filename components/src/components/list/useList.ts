@@ -2,8 +2,8 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { computed, onBeforeUnmount, ref, watch, type ModelRef } from "vue";
-import type { ListItem } from "./types";
+import { computed, onBeforeUnmount, ref, watch, type ModelRef } from 'vue';
+import type { ListItem } from './types';
 
 export function useList(
   props: { items: readonly ListItem[]; multiple: boolean },
@@ -15,7 +15,7 @@ export function useList(
   const focused = ref<string>();
   const ids = computed(() => props.items.map((item) => item.id));
   let anchor: string | undefined;
-  let typed = "";
+  let typed = '';
   let timer: ReturnType<typeof setTimeout>;
   function focus(id?: string, scroll = false) {
     if (focused.value !== id) {
@@ -77,8 +77,8 @@ export function useList(
     const index = ids.value.indexOf(focused.value!);
     let handled = true;
     switch (event.key) {
-      case "ArrowDown":
-      case "ArrowUp": {
+      case 'ArrowDown':
+      case 'ArrowUp': {
         const previous = focused.value;
         const next =
           index < 0
@@ -87,7 +87,7 @@ export function useList(
                 0,
                 Math.min(
                   ids.value.length - 1,
-                  index + (event.key === "ArrowDown" ? 1 : -1),
+                  index + (event.key === 'ArrowDown' ? 1 : -1),
                 ),
               );
         if (ids.value[next] !== undefined) focus(ids.value[next], true);
@@ -105,27 +105,27 @@ export function useList(
         } else anchor = focused.value;
         break;
       }
-      case "Home":
-      case "End":
+      case 'Home':
+      case 'End':
         if (event.shiftKey || event.ctrlKey || event.metaKey) {
           handled = false;
           break;
         }
-        focus(event.key === "Home" ? ids.value[0] : ids.value.at(-1), true);
+        focus(event.key === 'Home' ? ids.value[0] : ids.value.at(-1), true);
         anchor = focused.value;
         break;
-      case "Enter":
+      case 'Enter':
         selected.value = focused.value === undefined ? [] : [focused.value];
         break;
-      case "Escape":
+      case 'Escape':
         if (selected.value.length) {
           selected.value = [];
           anchor = undefined;
         } else handled = false;
         break;
-      case "PageDown":
-      case "PageUp": {
-        const down = event.key === "PageDown";
+      case 'PageDown':
+      case 'PageUp': {
+        const down = event.key === 'PageDown';
         let top = scrollTop;
         let edge = down
           ? Math.max(0, Math.floor((top + height) / rowHeight()) - 1)
@@ -149,7 +149,7 @@ export function useList(
       }
       default:
         if (
-          event.key.toLowerCase() === "a" &&
+          event.key.toLowerCase() === 'a' &&
           singleModifier(event) &&
           props.multiple
         ) {
@@ -157,7 +157,7 @@ export function useList(
           anchor = undefined;
         } else if (
           event.key.length === 1 &&
-          event.key !== " " &&
+          event.key !== ' ' &&
           !event.ctrlKey &&
           !event.metaKey &&
           !event.altKey
@@ -166,7 +166,7 @@ export function useList(
           typed += event.key.toLocaleLowerCase();
           clearTimeout(timer);
           timer = setTimeout(() => {
-            typed = "";
+            typed = '';
           }, 800);
           for (let i = 0; i < props.items.length; i++) {
             const candidate =

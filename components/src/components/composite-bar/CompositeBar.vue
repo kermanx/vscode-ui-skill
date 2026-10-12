@@ -8,27 +8,27 @@ import {
   provide,
   ref,
   watch,
-} from "vue";
-import ContextMenu from "../context-menu/ContextMenu.vue";
-import Hover from "../hover/Hover.vue";
-import { instantHoverKey } from "../tooltip/delegate";
-import type { MenuEntry } from "../menu/types";
-import type { ContextMenuAnchor } from "../context-menu/types";
-import type { CompositeItem } from "./types";
-import { badgeText, fitItems, title, visibleBadges } from "./model";
-import "../action-bar/actionbar.css";
-import "./panecomposite.css";
-import "./progressbadge.css";
+} from 'vue';
+import ContextMenu from '../context-menu/ContextMenu.vue';
+import Hover from '../hover/Hover.vue';
+import { instantHoverKey } from '../tooltip/delegate';
+import type { MenuEntry } from '../menu/types';
+import type { ContextMenuAnchor } from '../context-menu/types';
+import type { CompositeItem } from './types';
+import { badgeText, fitItems, title, visibleBadges } from './model';
+import '../action-bar/actionbar.css';
+import './panecomposite.css';
+import './progressbadge.css';
 const props = withDefaults(
   defineProps<{
     items: readonly CompositeItem[];
     activeId?: string;
-    orientation?: "horizontal" | "vertical";
+    orientation?: 'horizontal' | 'vertical';
     icons?: boolean;
     availableSize?: number;
-    side?: "left" | "right";
+    side?: 'left' | 'right';
   }>(),
-  { orientation: "vertical", icons: true, side: "left" },
+  { orientation: 'vertical', icons: true, side: 'left' },
 );
 const emit = defineEmits<{
   open: [id: string, focus: boolean];
@@ -50,7 +50,7 @@ const items = computed(() =>
     badgesEnabled: badgeEnabled.value.get(item.id) ?? item.badgesEnabled,
   })),
 );
-const vertical = computed(() => props.orientation === "vertical");
+const vertical = computed(() => props.orientation === 'vertical');
 const dimension = ref(Infinity),
   sizes = ref(new Map<string, number>());
 const fitted = computed(() =>
@@ -65,15 +65,19 @@ const fitted = computed(() =>
   ),
 );
 const overflowItem: CompositeItem = {
-  id: "additionalComposites.action",
-  label: "Additional Views",
-  icon: "more",
+  id: 'additionalComposites.action',
+  label: 'Additional Views',
+  icon: 'more',
 };
 const measuring = ref(!vertical.value);
-const shown = computed(() => measuring.value ? items.value.filter(item => item.visible !== false) : [
-  ...fitted.value.shown,
-  ...(fitted.value.overflow.length ? [overflowItem] : []),
-]);
+const shown = computed(() =>
+  measuring.value
+    ? items.value.filter((item) => item.visible !== false)
+    : [
+        ...fitted.value.shown,
+        ...(fitted.value.overflow.length ? [overflowItem] : []),
+      ],
+);
 const tabStops = ref(new Set<string>()),
   focusClass = ref(new Set<string>());
 let focused: string | undefined, previous: string | undefined;
@@ -144,13 +148,13 @@ function move(delta: number, wrap = !vertical.value) {
 function keyboard(event: KeyboardEvent) {
   if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
   let handled = true;
-  if (event.key === (vertical.value ? "ArrowDown" : "ArrowRight"))
+  if (event.key === (vertical.value ? 'ArrowDown' : 'ArrowRight'))
     handled = move(1);
-  else if (event.key === (vertical.value ? "ArrowUp" : "ArrowLeft"))
+  else if (event.key === (vertical.value ? 'ArrowUp' : 'ArrowLeft'))
     handled = move(-1);
-  else if (event.key === "Home") focus(0);
-  else if (event.key === "End") focus(shown.value.length - 1);
-  else if (event.key === "Enter" || event.key === " ") {
+  else if (event.key === 'Home') focus(0);
+  else if (event.key === 'End') focus(shown.value.length - 1);
+  else if (event.key === 'Enter' || event.key === ' ') {
     if (focused) run(focused);
   } else handled = false;
   if (handled) {
@@ -168,27 +172,27 @@ function run(id: string) {
     last = lastRuns.get(id) || 0;
   if (now > last && now - last < 300) return;
   lastRuns.set(id, now);
-  emit("open", id, true);
+  emit('open', id, true);
 }
 function pin(id: string, value = true, open = false) {
   if ((items.value.find((item) => item.id === id)?.pinned !== false) === value)
     return;
   pinned.value.set(id, value);
-  emit("pin", id, value);
-  if (value && open) emit("open", id, true);
+  emit('pin', id, value);
+  if (value && open) emit('open', id, true);
   else if (!value && props.activeId === id) {
     const fallback = items.value.find(
       (item) =>
         item.id !== id && item.visible !== false && item.pinned !== false,
     );
-    if (fallback) emit("open", fallback.id, fallback.id !== items.value[0]?.id);
+    if (fallback) emit('open', fallback.id, fallback.id !== items.value[0]?.id);
   }
 }
 function toggleBadge(id: string) {
   const enabled =
     items.value.find((item) => item.id === id)?.badgesEnabled === false;
   badgeEnabled.value.set(id, enabled);
-  emit("badge", id, enabled);
+  emit('badge', id, enabled);
 }
 const menuActions = ref<MenuEntry[]>([]),
   handlers = new Map<string, () => void>();
@@ -203,12 +207,21 @@ function action(
   return { id, label, checked, disabled };
 }
 function pinActions() {
-  const count = items.value.filter(item => item.visible !== false && item.pinned !== false).length;
-  return items.value.filter(item => item.visible !== false).map(item => {
-    const entry = action(item.label, () => pin(item.id, item.pinned === false, true), item.pinned !== false, item.pinned !== false && count <= 1);
-    if (!('separator' in entry)) entry.keybinding = item.keybinding;
-    return entry;
-  });
+  const count = items.value.filter(
+    (item) => item.visible !== false && item.pinned !== false,
+  ).length;
+  return items.value
+    .filter((item) => item.visible !== false)
+    .map((item) => {
+      const entry = action(
+        item.label,
+        () => pin(item.id, item.pinned === false, true),
+        item.pinned !== false,
+        item.pinned !== false && count <= 1,
+      );
+      if (!('separator' in entry)) entry.keybinding = item.keybinding;
+      return entry;
+    });
 }
 async function menu(at: ContextMenuAnchor, entries: MenuEntry[]) {
   menuActions.value = entries;
@@ -217,8 +230,12 @@ async function menu(at: ContextMenuAnchor, entries: MenuEntry[]) {
 }
 async function overflowMenu() {
   handlers.clear();
-  const entries = fitted.value.overflow.map(item => {
-    const entry = action(item.label, () => run(item.id), item.id === props.activeId);
+  const entries = fitted.value.overflow.map((item) => {
+    const entry = action(
+      item.label,
+      () => run(item.id),
+      item.id === props.activeId,
+    );
     if (!('separator' in entry)) entry.keybinding = item.keybinding;
     return entry;
   });
@@ -234,10 +251,10 @@ async function showContext(event: MouseEvent, selected?: CompositeItem) {
   if (selected && selected !== overflowItem) {
     if (selected.keybinding)
       actions.push(
-        action("Configure Keybinding", () =>
+        action('Configure Keybinding', () =>
           emit(
-            "command",
-            "workbench.action.openGlobalKeybindings",
+            'command',
+            'workbench.action.openGlobalKeybindings',
             `@command:${selected.id}`,
           ),
         ),
@@ -245,7 +262,7 @@ async function showContext(event: MouseEvent, selected?: CompositeItem) {
     const isPinned = selected.pinned !== false;
     actions.push(
       action(
-        `${isPinned ? "Hide" : "Keep"} '${selected.label}'`,
+        `${isPinned ? 'Hide' : 'Keep'} '${selected.label}'`,
         () => pin(selected.id, !isPinned),
         false,
         isPinned &&
@@ -254,7 +271,7 @@ async function showContext(event: MouseEvent, selected?: CompositeItem) {
     );
     actions.push(
       action(
-        `${selected.badgesEnabled !== false ? "Hide" : "Show"} Badge`,
+        `${selected.badgesEnabled !== false ? 'Hide' : 'Show'} Badge`,
         () => toggleBadge(selected.id),
         false,
       ),
@@ -273,7 +290,10 @@ const active = ref<string>(),
   clicked = ref(new Set<string>()),
   clickTimers = new Map<string, ReturnType<typeof setTimeout>>();
 function down(id: string, event: MouseEvent) {
-  if (id === overflowItem.id) { event.preventDefault(); event.stopPropagation(); }
+  if (id === overflowItem.id) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
   clearTimeout(hoverTimer);
   hoverTimer = undefined;
   hover.value?.hide();
@@ -304,7 +324,7 @@ function focusOut() {
 const hover = ref<InstanceType<typeof Hover>>(),
   hoverOpen = ref(false),
   hoverTarget = ref<HTMLElement>(),
-  hoverText = ref(""),
+  hoverText = ref(''),
   instant = ref(false);
 provide(instantHoverKey, instant);
 let hoverTimer: ReturnType<typeof setTimeout> | undefined;
@@ -326,7 +346,7 @@ function prepareHover(item: CompositeItem) {
       await nextTick();
       hoverOpen.value = true;
     },
-    instant.value ? 0 : navigator.platform.includes("Mac") ? 1500 : 500,
+    instant.value ? 0 : navigator.platform.includes('Mac') ? 1500 : 500,
   );
 }
 function leaveHover() {
@@ -339,22 +359,22 @@ function readColors() {
   const style = getComputedStyle(root.value);
   colors.value = Object.fromEntries(
     [
-      "activityBar.foreground",
-      "activityBar.inactiveForeground",
-      "activityBarBadge.background",
-      "activityBarBadge.foreground",
-      "activityBar.dropBorder",
-      "panelTitle.activeForeground",
-      "panelTitle.inactiveForeground",
-      "panelTitleBadge.background",
-      "panelTitleBadge.foreground",
-      "panel.dropBorder",
-      "badge.background",
-      "badge.foreground",
-      "contrastBorder",
+      'activityBar.foreground',
+      'activityBar.inactiveForeground',
+      'activityBarBadge.background',
+      'activityBarBadge.foreground',
+      'activityBar.dropBorder',
+      'panelTitle.activeForeground',
+      'panelTitle.inactiveForeground',
+      'panelTitleBadge.background',
+      'panelTitleBadge.foreground',
+      'panel.dropBorder',
+      'badge.background',
+      'badge.foreground',
+      'contrastBorder',
     ].map((id) => [
       id,
-      style.getPropertyValue(`--vscode-${id.replaceAll(".", "-")}`).trim(),
+      style.getPropertyValue(`--vscode-${id.replaceAll('.', '-')}`).trim(),
     ]),
   );
 }
@@ -362,40 +382,40 @@ function labelStyle(item: CompositeItem) {
   return {
     color:
       colors.value[
-        `${vertical.value ? "activityBar" : "panelTitle"}.${item.id === props.activeId ? (vertical.value ? "foreground" : "activeForeground") : "inactiveForeground"}`
+        `${vertical.value ? 'activityBar' : 'panelTitle'}.${item.id === props.activeId ? (vertical.value ? 'foreground' : 'activeForeground') : 'inactiveForeground'}`
       ],
     borderBottomColor:
       !vertical.value && item.id === props.activeId
-        ? "var(--vscode-panelTitle-activeBorder)"
+        ? 'var(--vscode-panelTitle-activeBorder)'
         : undefined,
   };
 }
 const badgeStyle = computed(() => ({
   color:
     colors.value[
-      `${vertical.value ? "activityBarBadge" : "panelTitleBadge"}.foreground`
-    ] || colors.value["badge.foreground"],
+      `${vertical.value ? 'activityBarBadge' : 'panelTitleBadge'}.foreground`
+    ] || colors.value['badge.foreground'],
   backgroundColor:
     colors.value[
-      `${vertical.value ? "activityBarBadge" : "panelTitleBadge"}.background`
-    ] || colors.value["badge.background"],
+      `${vertical.value ? 'activityBarBadge' : 'panelTitleBadge'}.background`
+    ] || colors.value['badge.background'],
   borderColor: colors.value.contrastBorder,
-  borderWidth: colors.value.contrastBorder ? "1px" : undefined,
+  borderWidth: colors.value.contrastBorder ? '1px' : undefined,
   borderStyle:
-    colors.value.contrastBorder && vertical.value ? "solid" : undefined,
+    colors.value.contrastBorder && vertical.value ? 'solid' : undefined,
 }));
 function badgeVisible(item: CompositeItem) {
   const badges = visibleBadges(item);
   return (
     item.badgesEnabled !== false &&
     !!badges.type &&
-    (badges.type !== "number" || !!badgeText(item))
+    (badges.type !== 'number' || !!badgeText(item))
   );
 }
 function badgeIcon(item: CompositeItem) {
   if (item.badgesEnabled === false) return undefined;
   const badge = visibleBadges(item).badges[0];
-  return badge?.type === "icon"
+  return badge?.type === 'icon'
     ? `icon-overlay codicon codicon-${badge.icon}`
     : undefined;
 }
@@ -405,10 +425,21 @@ async function measure() {
   if (vertical.value) return;
   measuring.value = true;
   await nextTick();
-  sizes.value = new Map(items.value.map(item => [item.id, elements.get(item.id)?.clientWidth || 0]));
+  sizes.value = new Map(
+    items.value.map((item) => [
+      item.id,
+      elements.get(item.id)?.clientWidth || 0,
+    ]),
+  );
   measuring.value = false;
 }
-watch(() => props.items.map(item => `${item.id}:${item.label}:${item.icon}`).join("|"), measure);
+watch(
+  () =>
+    props.items
+      .map((item) => `${item.id}:${item.label}:${item.icon}`)
+      .join('|'),
+  measure,
+);
 watch(() => props.icons, measure);
 function layout() {
   if (!root.value) return;
@@ -416,25 +447,30 @@ function layout() {
     ? root.value.parentElement!.clientHeight
     : root.value.parentElement!.clientWidth;
 }
-function backgroundContext(event: MouseEvent) { void showContext(event); }
+function backgroundContext(event: MouseEvent) {
+  void showContext(event);
+}
 onMounted(() => {
-  root.value?.parentElement?.addEventListener("contextmenu", backgroundContext);
+  root.value?.parentElement?.addEventListener('contextmenu', backgroundContext);
   readColors();
   layout();
   void document.fonts.ready.then(measure);
   observer = new ResizeObserver(layout);
   observer.observe(root.value!.parentElement!);
-  const theme = root.value!.closest(".vc-theme");
+  const theme = root.value!.closest('.vc-theme');
   if (theme) {
     themeObserver = new MutationObserver(readColors);
     themeObserver.observe(theme, {
       attributes: true,
-      attributeFilter: ["data-theme", "style"],
+      attributeFilter: ['data-theme', 'style'],
     });
   }
 });
 onBeforeUnmount(() => {
-  root.value?.parentElement?.removeEventListener("contextmenu", backgroundContext);
+  root.value?.parentElement?.removeEventListener(
+    'contextmenu',
+    backgroundContext,
+  );
   observer?.disconnect();
   themeObserver?.disconnect();
   clearTimeout(blurTimer);
@@ -514,15 +550,25 @@ defineExpose({
             "
             :aria-label="title(item)"
             :style="labelStyle(item)"
-            >{{ !icons && item !== overflowItem ? item.label : "" }}</a
+            >{{ !icons && item !== overflowItem ? item.label : '' }}</a
           >
           <div
             class="badge"
             :class="{
-              'progress-badge': item.badgesEnabled !== false && visibleBadges(item).type === 'progress',
-              'icon-badge': item.badgesEnabled !== false && visibleBadges(item).type === 'icon',
-              compact: item.badgesEnabled !== false && !vertical && !!visibleBadges(item).type,
-              'compact-content': item.badgesEnabled !== false && !vertical && badgeText(item).length >= 3,
+              'progress-badge':
+                item.badgesEnabled !== false &&
+                visibleBadges(item).type === 'progress',
+              'icon-badge':
+                item.badgesEnabled !== false &&
+                visibleBadges(item).type === 'icon',
+              compact:
+                item.badgesEnabled !== false &&
+                !vertical &&
+                !!visibleBadges(item).type,
+              'compact-content':
+                item.badgesEnabled !== false &&
+                !vertical &&
+                badgeText(item).length >= 3,
             }"
             :style="{ display: badgeVisible(item) ? undefined : 'none' }"
             :aria-hidden="badgeVisible(item) ? undefined : true"

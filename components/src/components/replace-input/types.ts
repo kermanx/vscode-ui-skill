@@ -1,1 +1,3 @@
-export interface ReplaceInputOptionsState { preserveCase: boolean }
+export interface ReplaceInputOptionsState {
+  preserveCase: boolean;
+}

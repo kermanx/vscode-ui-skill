@@ -33,6 +33,7 @@ export interface ExplorerOpenEvent {
   source: 'files' | 'editors';
   groupId?: string;
   pinned: boolean;
+  /** Keep focus in the originating view; otherwise the host focuses editor content. */
   preserveFocus: boolean;
   sideBySide: boolean;
 }

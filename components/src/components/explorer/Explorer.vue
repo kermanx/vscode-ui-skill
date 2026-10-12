@@ -66,12 +66,31 @@ const listHeight = computed(
   () => Math.min(Math.max(props.visibleEditors, 1), rows.value.length) * 22,
 );
 const paneExpanded = computed({
-  get: () => ({editors:openExpanded.value,files:foldersExpanded.value}),
-  set: value => {openExpanded.value=value.editors;foldersExpanded.value=value.files;},
+  get: () => ({ editors: openExpanded.value, files: foldersExpanded.value }),
+  set: (value) => {
+    openExpanded.value = value.editors;
+    foldersExpanded.value = value.files;
+  },
 });
 const paneItems = computed(() => [
-  ...(props.showOpenEditors ? [{id:'editors',size:22+listHeight.value,minimumBodySize:listHeight.value,maximumBodySize:rows.value.length*22}] : []),
-  {id:'files',size:Math.max(142,props.height-35-(props.showOpenEditors?22+listHeight.value:0)),minimumBodySize:120},
+  ...(props.showOpenEditors
+    ? [
+        {
+          id: 'editors',
+          size: 22 + listHeight.value,
+          minimumBodySize: listHeight.value,
+          maximumBodySize: rows.value.length * 22,
+        },
+      ]
+    : []),
+  {
+    id: 'files',
+    size: Math.max(
+      142,
+      props.height - 35 - (props.showOpenEditors ? 22 + listHeight.value : 0),
+    ),
+    minimumBodySize: 120,
+  },
 ]);
 const title = computed(
   () =>
@@ -181,102 +200,107 @@ defineExpose({
       ]"
       @action="toolbarAction"
     />
-    <div class="content composite explorer-viewlet" :style="{height:`${height-35}px`}">
+    <div
+      class="content composite explorer-viewlet"
+      :style="{ height: `${height - 35}px` }"
+    >
       <PaneView :panes="paneItems" v-model:expanded="paneExpanded">
-      <template #editors="{bodySize,expanded:sectionExpanded,setExpanded}">
-      <Pane
-        v-if="showOpenEditors"
-        :expanded="sectionExpanded"
-        @update:expanded="setExpanded"
-        title="Open Editors"
-        :actions="editorActions(editorGroups.length > 1)"
-        @action="toolbarAction"
-        @change-expansion="
-          emit('expansion', { section: 'editors', expanded: $event })
-        "
-      >
-        <template #title
-          ><h3 class="title">Open Editors</h3>
-          <div class="open-editors-dirty-count-container">
-            <div
-              ref="dirtyBadge"
-              class="dirty-count monaco-count-badge long"
-              :class="{ hidden: !dirtyCount }"
-              tabindex="0"
-              role="button"
-              :aria-label="`${dirtyCount} unsaved, open unsaved editor`"
-              style="
-                background-color: var(--vscode-badge-background);
-                color: var(--vscode-badge-foreground);
-                border: 1px solid var(--vscode-contrastBorder);
-              "
-              @click.stop.prevent="unsaved"
-              @keydown.enter.stop.prevent="unsaved"
-              @keydown.space.stop.prevent="unsaved"
-            >
-              {{ dirtyCount ? `${dirtyCount} unsaved` : '' }}
-            </div>
-          </div></template
+        <template
+          #editors="{ bodySize, expanded: sectionExpanded, setExpanded }"
         >
-        <div
-          class="open-editors show-file-icons"
-          @click="editorMouse"
-          @dblclick="editorDouble"
-          @auxclick="editorMiddle"
-          @keydown.capture="editorKey"
-        >
-          <ListBase
-            ref="list"
-            v-model:selected-ids="editorSelected"
-            :items="rows"
-            :height="bodySize"
-            aria-label="Open Editors"
-            @focus-change="
-              editorFocused = $event;
-              emit('editorFocus', $event);
+          <Pane
+            v-if="showOpenEditors"
+            :expanded="sectionExpanded"
+            @update:expanded="setExpanded"
+            title="Open Editors"
+            :actions="editorActions(editorGroups.length > 1)"
+            @action="toolbarAction"
+            @change-expansion="
+              emit('expansion', { section: 'editors', expanded: $event })
             "
-            ><template #default="{ item }"
-              ><ExplorerEditorRowView
-                :row="item as ExplorerEditorRow"
-                :has-dirty="dirtyCount > 0"
-                @action="
-                  rowAction($event, item as ExplorerEditorRow)
-                " /></template
-          ></ListBase>
-        </div>
-      </Pane>
-      </template>
-      <template #files="{bodySize,expanded:sectionExpanded,setExpanded}">
-      <Pane
-        :expanded="sectionExpanded"
-        @update:expanded="setExpanded"
-        :title="title"
-        :actions="folderActions"
-        @action="toolbarAction"
-        @change-expansion="
-          emit('expansion', { section: 'files', expanded: $event })
-        "
-        ><ExplorerTree
-          ref="tree"
-          v-model:expanded-ids="expanded"
-          v-model:selected-ids="selected"
-          :nodes="nodes"
-          :height="bodySize"
-          aria-label="Files Explorer"
-          @focus-change="emit('fileFocus', $event)"
-          @open="
-            (id, pinned, preserveFocus, sideBySide) =>
-              emit('open', {
-                id,
-                source: 'files',
-                pinned,
-                preserveFocus,
-                sideBySide,
-              })
-          "
-          @contextmenu="context"
-      /></Pane>
-      </template>
+          >
+            <template #title
+              ><h3 class="title">Open Editors</h3>
+              <div class="open-editors-dirty-count-container">
+                <div
+                  ref="dirtyBadge"
+                  class="dirty-count monaco-count-badge long"
+                  :class="{ hidden: !dirtyCount }"
+                  tabindex="0"
+                  role="button"
+                  :aria-label="`${dirtyCount} unsaved, open unsaved editor`"
+                  style="
+                    background-color: var(--vscode-badge-background);
+                    color: var(--vscode-badge-foreground);
+                    border: 1px solid var(--vscode-contrastBorder);
+                  "
+                  @click.stop.prevent="unsaved"
+                  @keydown.enter.stop.prevent="unsaved"
+                  @keydown.space.stop.prevent="unsaved"
+                >
+                  {{ dirtyCount ? `${dirtyCount} unsaved` : '' }}
+                </div>
+              </div></template
+            >
+            <div
+              class="open-editors show-file-icons"
+              @click="editorMouse"
+              @dblclick="editorDouble"
+              @auxclick="editorMiddle"
+              @keydown.capture="editorKey"
+            >
+              <ListBase
+                ref="list"
+                v-model:selected-ids="editorSelected"
+                :items="rows"
+                :height="bodySize"
+                aria-label="Open Editors"
+                @focus-change="
+                  editorFocused = $event;
+                  emit('editorFocus', $event);
+                "
+                ><template #default="{ item }"
+                  ><ExplorerEditorRowView
+                    :row="item as ExplorerEditorRow"
+                    :has-dirty="dirtyCount > 0"
+                    @action="
+                      rowAction($event, item as ExplorerEditorRow)
+                    " /></template
+              ></ListBase>
+            </div>
+          </Pane>
+        </template>
+        <template #files="{ bodySize, expanded: sectionExpanded, setExpanded }">
+          <Pane
+            :expanded="sectionExpanded"
+            @update:expanded="setExpanded"
+            :title="title"
+            :actions="folderActions"
+            @action="toolbarAction"
+            @change-expansion="
+              emit('expansion', { section: 'files', expanded: $event })
+            "
+            ><ExplorerTree
+              ref="tree"
+              v-model:expanded-ids="expanded"
+              v-model:selected-ids="selected"
+              :nodes="nodes"
+              :height="bodySize"
+              aria-label="Files Explorer"
+              @focus-change="emit('fileFocus', $event)"
+              @open="
+                (id, pinned, preserveFocus, sideBySide) =>
+                  emit('open', {
+                    id,
+                    source: 'files',
+                    pinned,
+                    preserveFocus,
+                    sideBySide,
+                  })
+              "
+              @contextmenu="context"
+          /></Pane>
+        </template>
       </PaneView>
     </div>
     <ContextMenu ref="menu" :actions="contextActions" @action="toolbarAction" />

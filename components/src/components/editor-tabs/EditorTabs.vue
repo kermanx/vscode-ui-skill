@@ -9,47 +9,49 @@ import {
   reactive,
   ref,
   watch,
-} from "vue";
-import ActionBar from "../action-bar/ActionBar.vue";
-import IconLabel from "../icon-label/IconLabel.vue";
-import Tooltip from "../tooltip/Tooltip.vue";
-import TabsScrollArea from "./TabsScrollArea.vue";
-import type { EditorTab, EditorTabsProps } from "./types";
-import { editorTabsTheme } from "./theme";
-import { shorten } from "./shorten";
-import "./editorgroupview.css";
-import "./editor-tabs.css";
-import "./editortabscontrol.css";
-import "./multieditortabscontrol.css";
+} from 'vue';
+import ActionBar from '../action-bar/ActionBar.vue';
+import IconLabel from '../icon-label/IconLabel.vue';
+import Tooltip from '../tooltip/Tooltip.vue';
+import TabsScrollArea from './TabsScrollArea.vue';
+import type { EditorTab, EditorTabsProps } from './types';
+import { editorTabsTheme } from './theme';
+import { shorten } from './shorten';
+import './editorgroupview.css';
+import './editor-tabs.css';
+import './editortabscontrol.css';
+import './multieditortabscontrol.css';
 const props = withDefaults(defineProps<EditorTabsProps>(), {
   active: true,
   compact: false,
   showIcons: true,
   showIndex: false,
   highlightModifiedTabs: false,
-  sizing: "fit",
+  sizing: 'fit',
   fixedMinWidth: 50,
   fixedMaxWidth: 160,
-  stickySizing: "normal",
-  actionLocation: "right",
+  stickySizing: 'normal',
+  actionLocation: 'right',
   reserveActionSpace: true,
   showClose: true,
   showUnpin: true,
-  scrollbar: "auto",
-  scrollbarSize: "default",
-  preventStickyClose: "keyboardAndMouse",
-  doubleClickAction: "expand",
+  scrollbar: 'auto',
+  scrollbarSize: 'default',
+  preventStickyClose: 'keyboardAndMouse',
+  doubleClickAction: 'expand',
 });
-const activeId = defineModel<string>("activeId");
-const selectedIds = defineModel<readonly string[]>("selectedIds", {
+const activeId = defineModel<string>('activeId');
+const selectedIds = defineModel<readonly string[]>('selectedIds', {
   default: () => [],
 });
 const emit = defineEmits<{
+  /** The host opens content and focuses it only when preserveFocus is false. */
   activate: [id: string, preserveFocus: boolean];
+  /** Request only: the host removes items and chooses the next active editor. */
   close: [ids: string[]];
   pin: [id: string];
   unpin: [id: string];
-  toggleGroupSize: [action: "expand" | "maximize"];
+  toggleGroupSize: [action: 'expand' | 'maximize'];
   contextmenu: [event: MouseEvent | KeyboardEvent, item: EditorTab];
   configurePreview: [];
 }>();
@@ -83,79 +85,79 @@ const themeRules = computed(() =>
 );
 let themeObserver: MutationObserver, resizeObserver: ResizeObserver;
 const isMac =
-  typeof navigator !== "undefined" && /Mac/.test(navigator.platform);
+  typeof navigator !== 'undefined' && /Mac/.test(navigator.platform);
 function refreshTheme() {
   if (!root.value) return;
   const style = getComputedStyle(root.value);
   const ids = [
-    "contrastBorder",
-    "contrastActiveBorder",
-    "editorGroupHeader.tabsBorder",
-    "tab.border",
-    "tab.lastPinnedBorder",
-    "tab.activeBorder",
-    "tab.unfocusedActiveBorder",
-    "tab.activeBorderTop",
-    "tab.unfocusedActiveBorderTop",
-    "tab.selectedBorderTop",
-    "tab.activeModifiedBorder",
-    "tab.inactiveModifiedBorder",
-    "tab.unfocusedActiveModifiedBorder",
-    "tab.unfocusedInactiveModifiedBorder",
-    "editor.background",
-    "editorGroup.dropBackground",
-    "editorGroupHeader.tabsBackground",
-    "tab.activeBackground",
-    "tab.inactiveBackground",
-    "tab.unfocusedActiveBackground",
-    "tab.unfocusedInactiveBackground",
-    "tab.hoverBackground",
-    "tab.unfocusedHoverBackground",
-    "tab.hoverForeground",
-    "tab.unfocusedHoverForeground",
-    "tab.hoverBorder",
-    "tab.unfocusedHoverBorder",
+    'contrastBorder',
+    'contrastActiveBorder',
+    'editorGroupHeader.tabsBorder',
+    'tab.border',
+    'tab.lastPinnedBorder',
+    'tab.activeBorder',
+    'tab.unfocusedActiveBorder',
+    'tab.activeBorderTop',
+    'tab.unfocusedActiveBorderTop',
+    'tab.selectedBorderTop',
+    'tab.activeModifiedBorder',
+    'tab.inactiveModifiedBorder',
+    'tab.unfocusedActiveModifiedBorder',
+    'tab.unfocusedInactiveModifiedBorder',
+    'editor.background',
+    'editorGroup.dropBackground',
+    'editorGroupHeader.tabsBackground',
+    'tab.activeBackground',
+    'tab.inactiveBackground',
+    'tab.unfocusedActiveBackground',
+    'tab.unfocusedInactiveBackground',
+    'tab.hoverBackground',
+    'tab.unfocusedHoverBackground',
+    'tab.hoverForeground',
+    'tab.unfocusedHoverForeground',
+    'tab.hoverBorder',
+    'tab.unfocusedHoverBorder',
   ];
-  const theme = root.value.closest(".vc-theme");
-  highContrast.value = !!theme?.matches(".hc-black,.hc-light");
-  light.value = !!theme?.matches(".vs,.hc-light");
+  const theme = root.value.closest('.vc-theme');
+  highContrast.value = !!theme?.matches('.hc-black,.hc-light');
+  light.value = !!theme?.matches('.vs,.hc-light');
   colors.value = Object.fromEntries(
     ids.map((id) => [
       id,
-      style.getPropertyValue(`--vscode-${id.replaceAll(".", "-")}`).trim(),
+      style.getPropertyValue(`--vscode-${id.replaceAll('.', '-')}`).trim(),
     ]),
   );
 }
 const bottomBorder = computed(
   () =>
-    colors.value["editorGroupHeader.tabsBorder"] ||
-    (root.value?.closest(".hc-black,.hc-light")
-      ? colors.value["tab.border"] || colors.value.contrastBorder
-      : ""),
+    colors.value['editorGroupHeader.tabsBorder'] ||
+    (root.value?.closest('.hc-black,.hc-light')
+      ? colors.value['tab.border'] || colors.value.contrastBorder
+      : ''),
 );
 function topBorder(item: EditorTab) {
-  if (props.highlightModifiedTabs && item.dirty) return "";
+  if (props.highlightModifiedTabs && item.dirty) return '';
   return (
     (item.id === activeId.value
       ? colors.value[
-          props.active ? "tab.activeBorderTop" : "tab.unfocusedActiveBorderTop"
+          props.active ? 'tab.activeBorderTop' : 'tab.unfocusedActiveBorderTop'
         ]
-      : "") ||
-    (selected.value.has(item.id) ? colors.value["tab.selectedBorderTop"] : "")
+      : '') ||
+    (selected.value.has(item.id) ? colors.value['tab.selectedBorderTop'] : '')
   );
 }
 function modifiedBorder(item: EditorTab) {
-  if (!props.highlightModifiedTabs || !item.dirty) return "";
+  if (!props.highlightModifiedTabs || !item.dirty) return '';
   return colors.value[
-    `tab.${props.active ? "" : "unfocused"}${props.active ? (item.id === activeId.value ? "active" : "inactive") : item.id === activeId.value ? "Active" : "Inactive"}ModifiedBorder`
+    `tab.${props.active ? '' : 'unfocused'}${props.active ? (item.id === activeId.value ? 'active' : 'inactive') : item.id === activeId.value ? 'Active' : 'Inactive'}ModifiedBorder`
   ];
 }
 function activeBorder(item: EditorTab) {
   return item.id === activeId.value
     ? colors.value[
-        props.active ? "tab.activeBorder" : "tab.unfocusedActiveBorder"
+        props.active ? 'tab.activeBorder' : 'tab.unfocusedActiveBorder'
       ]
-    : "";
+    : '';
 }
 function tabStyle(item: EditorTab, index: number) {
   const stickyCount = items.value.filter((item) => item.sticky).length;
@@ -163,31 +165,31 @@ function tabStyle(item: EditorTab, index: number) {
     (item.sticky &&
     index === stickyCount - 1 &&
     stickyCount !== items.value.length
-      ? colors.value["tab.lastPinnedBorder"]
-      : "") ||
-    colors.value["tab.border"] ||
+      ? colors.value['tab.lastPinnedBorder']
+      : '') ||
+    colors.value['tab.border'] ||
     colors.value.contrastBorder;
   return {
     left: item.sticky
-      ? `${index * (props.stickySizing === "compact" ? 38 : props.stickySizing === "shrink" ? 80 : 0)}px`
-      : "auto",
+      ? `${index * (props.stickySizing === 'compact' ? 38 : props.stickySizing === 'shrink' ? 80 : 0)}px`
+      : 'auto',
     borderRight: border ? `1px solid ${border}` : undefined,
     outlineColor: colors.value.contrastActiveBorder,
-    "--tab-border-top-color": topBorder(item),
-    "--tab-border-bottom-color": activeBorder(item),
-    "--tab-dirty-border-top-color": modifiedBorder(item),
+    '--tab-border-top-color': topBorder(item),
+    '--tab-border-bottom-color': activeBorder(item),
+    '--tab-dirty-border-top-color': modifiedBorder(item),
   };
 }
 function actionKind(item: EditorTab) {
-  if (item.sticky && props.showUnpin) return "unpin";
+  if (item.sticky && props.showUnpin) return 'unpin';
   if (
     !item.cannotClose &&
     props.showClose &&
     alt.value &&
     hovered.value === item.id
   )
-    return "closeOthers";
-  return item.sticky && !props.showClose ? "unpin" : "close";
+    return 'closeOthers';
+  return item.sticky && !props.showClose ? 'unpin' : 'close';
 }
 function actionVisible(item: EditorTab) {
   return (
@@ -200,50 +202,50 @@ function action(item: EditorTab) {
     {
       id: kind,
       label:
-        kind === "unpin"
-          ? "Unpin Editor"
-          : kind === "closeOthers"
-            ? "Close Others"
-            : "Close",
+        kind === 'unpin'
+          ? 'Unpin Editor'
+          : kind === 'closeOthers'
+            ? 'Close Others'
+            : 'Close',
       icon:
-        kind === "unpin"
-          ? "pinned"
-          : kind === "closeOthers"
-            ? "close-all"
-            : "close-small",
-      disabled: kind === "closeOthers" && items.value.length <= 1,
+        kind === 'unpin'
+          ? 'pinned'
+          : kind === 'closeOthers'
+            ? 'close-all'
+            : 'close-small',
+      disabled: kind === 'closeOthers' && items.value.length <= 1,
       keybinding:
-        kind === "closeOthers" ? (isMac ? "⌥+Click" : "Alt+Click") : undefined,
+        kind === 'closeOthers' ? (isMac ? '⌥+Click' : 'Alt+Click') : undefined,
     },
   ];
 }
 function classes(item: EditorTab) {
   return [
-    `sizing-${item.sticky && props.stickySizing === "shrink" ? "shrink" : props.sizing}`,
+    `sizing-${item.sticky && props.stickySizing === 'shrink' ? 'shrink' : props.sizing}`,
     item.sticky && `sticky-${props.stickySizing}`,
     actionVisible(item) && `tab-actions-${props.actionLocation}`,
     {
       active: item.id === activeId.value,
       selected: selected.value.has(item.id),
-      "multi-selected": selected.value.has(item.id) && selected.value.size > 1,
+      'multi-selected': selected.value.has(item.id) && selected.value.size > 1,
       sticky: item.sticky,
       dirty: item.dirty,
-      "has-icon": props.showIcons,
-      "cannot-close": item.cannotClose,
-      "pinned-action-off": item.sticky && !props.showUnpin,
-      "close-action-off":
+      'has-icon': props.showIcons,
+      'cannot-close': item.cannotClose,
+      'pinned-action-off': item.sticky && !props.showUnpin,
+      'close-action-off':
         !(item.sticky && props.showUnpin) &&
         !(!item.cannotClose && props.showClose),
-      "tab-border-top": !!topBorder(item),
-      "tab-border-bottom": !!activeBorder(item),
-      "dirty-border-top": !!modifiedBorder(item),
+      'tab-border-top': !!topBorder(item),
+      'tab-border-bottom': !!activeBorder(item),
+      'dirty-border-top': !!modifiedBorder(item),
     },
   ];
 }
 function label(item: EditorTab, index: number) {
-  if (item.sticky && props.stickySizing === "compact")
-    return props.showIcons ? "" : item.label.charAt(0).toUpperCase();
-  return `${props.showIndex ? `${index + 1}: ` : ""}${item.label}`;
+  if (item.sticky && props.stickySizing === 'compact')
+    return props.showIcons ? '' : item.label.charAt(0).toUpperCase();
+  return `${props.showIndex ? `${index + 1}: ` : ''}${item.label}`;
 }
 const descriptions = computed(() => {
   const result = new Map<string, string | undefined>();
@@ -254,14 +256,14 @@ const descriptions = computed(() => {
     groups.set(item.label, group);
   }
   for (const group of groups.values()) {
-    const values = [...new Set(group.map((item) => item.description || ""))];
+    const values = [...new Set(group.map((item) => item.description || ''))];
     const labels = values.length > 1 ? shorten(values) : values;
     for (const item of group)
       result.set(
         item.id,
         values.length === 1 && !item.forceDescription
-          ? ""
-          : labels[values.indexOf(item.description || "")],
+          ? ''
+          : labels[values.indexOf(item.description || '')],
       );
   }
   return result;
@@ -270,7 +272,7 @@ function description(item: EditorTab) {
   return descriptions.value.get(item.id);
 }
 function ariaLabel(item: EditorTab) {
-  return `${item.title || item.label}${item.preview ? ", preview" : ""}${item.sticky ? ", pinned" : ""}`;
+  return `${item.title || item.label}${item.preview ? ', preview' : ''}${item.sticky ? ', pinned' : ''}`;
 }
 function setNode(id: string, value: unknown) {
   if (value) nodes.set(id, value as HTMLElement);
@@ -301,7 +303,7 @@ function remember(id: string | undefined) {
       ),
     ];
 }
-watch(activeId, remember, { flush: "sync" });
+watch(activeId, remember, { flush: 'sync' });
 function select(
   id: string,
   additional: readonly string[] = [],
@@ -312,7 +314,7 @@ function select(
   selectedIds.value = items.value
     .filter((item) => item.id === id || additional.includes(item.id))
     .map((item) => item.id);
-  emit("activate", id, preserveFocus);
+  emit('activate', id, preserveFocus);
   nextTick(() => {
     updateFocusability();
     layout(true);
@@ -324,7 +326,7 @@ function down(event: MouseEvent, item: EditorTab) {
   if (
     event.button !== 0 ||
     (isMac && event.ctrlKey) ||
-    (event.target as Element).closest(".tab-actions")
+    (event.target as Element).closest('.tab-actions')
   ) {
     if (event.button === 1) event.preventDefault();
     return;
@@ -382,7 +384,7 @@ function up(event: MouseEvent, item: EditorTab) {
   if (
     event.button !== 0 ||
     (isMac && event.ctrlKey) ||
-    (event.target as Element).closest(".tab-actions")
+    (event.target as Element).closest('.tab-actions')
   )
     return;
   if (
@@ -394,36 +396,36 @@ function up(event: MouseEvent, item: EditorTab) {
 }
 function beforeClose(id: string) {
   const viewport = scrollArea.value?.viewport;
-  if (props.sizing !== "fixed" || !viewport?.matches(":hover")) return;
+  if (props.sizing !== 'fixed' || !viewport?.matches(':hover')) return;
   const fixed = items.value.at(-1)?.id !== id;
   for (const node of nodes.values()) {
     if (fixed)
       node.style.setProperty(
-        "--tab-sizing-current-width",
+        '--tab-sizing-current-width',
         `${node.getBoundingClientRect().width}px`,
       );
-    else node.style.removeProperty("--tab-sizing-current-width");
+    else node.style.removeProperty('--tab-sizing-current-width');
   }
 }
 function clearFixedWidths() {
   for (const node of nodes.values())
-    node.style.removeProperty("--tab-sizing-current-width");
+    node.style.removeProperty('--tab-sizing-current-width');
 }
 watch(
   () => props.sizing,
   (value) => {
-    if (value !== "fixed") clearFixedWidths();
+    if (value !== 'fixed') clearFixedWidths();
   },
 );
 function runAction(item: EditorTab) {
   const kind = actionKind(item);
-  if (kind === "unpin") emit("unpin", item.id);
+  if (kind === 'unpin') emit('unpin', item.id);
   else {
     beforeClose(item.id);
     blockReveal = true;
     emit(
-      "close",
-      kind === "closeOthers"
+      'close',
+      kind === 'closeOthers'
         ? items.value
             .filter((entry) => !entry.sticky && entry.id !== item.id)
             .map((entry) => entry.id)
@@ -442,13 +444,13 @@ function auxiliary(event: MouseEvent, item: EditorTab) {
   if (
     item.cannotClose ||
     (item.sticky &&
-      ["keyboardAndMouse", "mouse"].includes(props.preventStickyClose))
+      ['keyboardAndMouse', 'mouse'].includes(props.preventStickyClose))
   )
     return;
   beforeClose(item.id);
   blockReveal = true;
   emit(
-    "close",
+    'close',
     selected.value.has(item.id)
       ? items.value
           .filter((entry) => selected.value.has(entry.id))
@@ -466,13 +468,13 @@ function keyup(event: KeyboardEvent, item: EditorTab) {
   )
     return;
   const index = items.value.findIndex((entry) => entry.id === item.id);
-  const offset = ["ArrowLeft", "ArrowUp"].includes(event.key)
+  const offset = ['ArrowLeft', 'ArrowUp'].includes(event.key)
     ? index - 1
-    : ["ArrowRight", "ArrowDown"].includes(event.key)
+    : ['ArrowRight', 'ArrowDown'].includes(event.key)
       ? index + 1
-      : event.key === "Home"
+      : event.key === 'Home'
         ? 0
-        : event.key === "End"
+        : event.key === 'End'
           ? items.value.length - 1
           : undefined;
   if (offset !== undefined) {
@@ -480,7 +482,7 @@ function keyup(event: KeyboardEvent, item: EditorTab) {
     if (!target) return;
     select(target.id, [], true);
     nextTick(() => nodes.get(target.id)?.focus());
-  } else if (event.key === "Enter" || event.key === " ") {
+  } else if (event.key === 'Enter' || event.key === ' ') {
     select(item.id);
     nodes.get(item.id)?.blur();
   } else return;
@@ -490,17 +492,17 @@ function keyup(event: KeyboardEvent, item: EditorTab) {
 function doubleClick(event: MouseEvent, item: EditorTab) {
   event.preventDefault();
   event.stopPropagation();
-  if (item.preview) emit("pin", item.id);
-  else if (props.doubleClickAction !== "off")
-    emit("toggleGroupSize", props.doubleClickAction);
+  if (item.preview) emit('pin', item.id);
+  else if (props.doubleClickAction !== 'off')
+    emit('toggleGroupSize', props.doubleClickAction);
 }
 function context(event: MouseEvent | KeyboardEvent, item: EditorTab) {
   event.preventDefault();
   event.stopPropagation();
-  emit("contextmenu", event, item);
+  emit('contextmenu', event, item);
 }
 function keydown(event: KeyboardEvent, item: EditorTab) {
-  if (event.shiftKey && event.key === "F10") context(event, item);
+  if (event.shiftKey && event.key === 'F10') context(event, item);
 }
 function layout(force = false) {
   const area = scrollArea.value,
@@ -511,26 +513,26 @@ function layout(force = false) {
   const count = items.value.filter((item) => item.sticky).length;
   const width =
     count *
-    (props.stickySizing === "compact"
+    (props.stickySizing === 'compact'
       ? 38
-      : props.stickySizing === "shrink"
+      : props.stickySizing === 'shrink'
         ? 80
         : 0);
   disableSticky.value = count > 0 && viewport.clientWidth - width < 120;
-  viewport.classList.toggle("disable-sticky-tabs", disableSticky.value);
+  viewport.classList.toggle('disable-sticky-tabs', disableSticky.value);
   viewport.style.setProperty(
-    "--tab-sizing-fixed-min-width",
+    '--tab-sizing-fixed-min-width',
     `${props.fixedMinWidth}px`,
   );
   viewport.style.setProperty(
-    "--tab-sizing-fixed-max-width",
+    '--tab-sizing-fixed-max-width',
     `${props.fixedMaxWidth}px`,
   );
   stickyWidth.value = disableSticky.value ? 0 : width;
   const tab = activeId.value && nodes.get(activeId.value);
   const staticTab =
     !disableSticky.value &&
-    props.stickySizing !== "normal" &&
+    props.stickySizing !== 'normal' &&
     items.value.find((item) => item.id === activeId.value)?.sticky;
   if (blockReveal) {
     blockReveal = false;
@@ -590,21 +592,21 @@ onMounted(async () => {
   updateFocusability();
   layout(true);
   themeObserver = new MutationObserver(refreshTheme);
-  const theme = root.value?.closest(".vc-theme");
+  const theme = root.value?.closest('.vc-theme');
   if (theme) themeObserver.observe(theme, { attributes: true });
   resizeObserver = new ResizeObserver(() => layout());
   if (root.value) resizeObserver.observe(root.value);
-  scrollArea.value?.viewport?.addEventListener("mouseleave", clearFixedWidths);
-  document.addEventListener("keydown", modifiers);
-  document.addEventListener("keyup", modifiers);
-  window.addEventListener("blur", blur);
+  scrollArea.value?.viewport?.addEventListener('mouseleave', clearFixedWidths);
+  document.addEventListener('keydown', modifiers);
+  document.addEventListener('keyup', modifiers);
+  window.addEventListener('blur', blur);
 });
 onBeforeUnmount(() => {
   themeObserver?.disconnect();
   resizeObserver?.disconnect();
-  document.removeEventListener("keydown", modifiers);
-  document.removeEventListener("keyup", modifiers);
-  window.removeEventListener("blur", blur);
+  document.removeEventListener('keydown', modifiers);
+  document.removeEventListener('keyup', modifiers);
+  window.removeEventListener('blur', blur);
 });
 defineExpose({
   focus: (id = activeId.value) => id && nodes.get(id)?.focus(),
@@ -624,8 +626,14 @@ defineExpose({
     class="monaco-workbench file-icons-enabled vc-editor-tabs"
     :style="$slots.content ? { height: '100%' } : undefined"
   >
-    <div class="part editor editor-tabs-multiple" :style="$slots.content ? { height: '100%' } : undefined">
-      <div class="content" :style="$slots.content ? { height: '100%' } : undefined">
+    <div
+      class="part editor editor-tabs-multiple"
+      :style="$slots.content ? { height: '100%' } : undefined"
+    >
+      <div
+        class="content"
+        :style="$slots.content ? { height: '100%' } : undefined"
+      >
         <div class="editor-group-container" :class="{ active }">
           <div
             class="title tabs"
@@ -739,7 +747,7 @@ defineExpose({
       ><template v-if="item.preview" #content
         ><div class="rendered-markdown vc-editor-tab-preview">
           <p>
-            {{ item.title || item.label }} (<em>preview</em>{{ " " }}
+            {{ item.title || item.label }} (<em>preview</em>{{ ' ' }}
             <a
               href=""
               draggable="false"

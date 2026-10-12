@@ -36,7 +36,12 @@ export function equals(one: unknown, other: unknown): boolean {
   if (one === other) {
     return true;
   }
-  if (one === null || one === undefined || other === null || other === undefined) {
+  if (
+    one === null ||
+    one === undefined ||
+    other === null ||
+    other === undefined
+  ) {
     return false;
   }
   if (typeof one !== typeof other) {
@@ -69,7 +74,12 @@ export function equals(one: unknown, other: unknown): boolean {
   if (!equals(oneKeys, otherKeys)) {
     return false;
   }
-  return oneKeys.every(key => equals((one as Record<string, unknown>)[key], (other as Record<string, unknown>)[key]));
+  return oneKeys.every((key) =>
+    equals(
+      (one as Record<string, unknown>)[key],
+      (other as Record<string, unknown>)[key],
+    ),
+  );
 }
 
 /**
@@ -77,7 +87,11 @@ export function equals(one: unknown, other: unknown): boolean {
  * string `id` is a ThemeIcon, anything else (a URI) takes the background-image branch.
  */
 export function isThemeIcon(iconPath: IconPath): iconPath is ThemeIconLike {
-  return !!iconPath && typeof iconPath === 'object' && typeof (iconPath as ThemeIconLike).id === 'string';
+  return (
+    !!iconPath &&
+    typeof iconPath === 'object' &&
+    typeof (iconPath as ThemeIconLike).id === 'string'
+  );
 }
 
 /**
@@ -99,20 +113,27 @@ export function escapeNewLines(text: string): string {
  * `<label><separator><label>` text, into one range list per label. Ranges are clipped to the label
  * they overlap and rebased onto it; the separator's own length advances the running offset.
  */
-export function splitMatches(labels: readonly string[], separator: string, matches: readonly Match[] | undefined): Match[][] | undefined {
+export function splitMatches(
+  labels: readonly string[],
+  separator: string,
+  matches: readonly Match[] | undefined,
+): Match[][] | undefined {
   if (!matches) {
     return undefined;
   }
 
   let labelStart = 0;
 
-  return labels.map(label => {
+  return labels.map((label) => {
     const labelRange = { start: labelStart, end: labelStart + label.length };
 
     const result = matches
-      .map(match => intersect(labelRange, match))
-      .filter(range => !isEmpty(range))
-      .map(({ start, end }) => ({ start: start - labelStart, end: end - labelStart }));
+      .map((match) => intersect(labelRange, match))
+      .filter((range) => !isEmpty(range))
+      .map(({ start, end }) => ({
+        start: start - labelStart,
+        end: end - labelStart,
+      }));
 
     labelStart = labelRange.end + separator.length;
     return result;

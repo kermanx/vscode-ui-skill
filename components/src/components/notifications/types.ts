@@ -1,7 +1,8 @@
-export type NotificationSeverity = "info" | "warning" | "error";
-export type NotificationPosition = "bottom-right" | "bottom-left" | "top-right";
+export type NotificationSeverity = 'info' | 'warning' | 'error';
+export type NotificationPosition = 'bottom-right' | 'bottom-left' | 'top-right';
 export type NotificationTextPart =
-  string | { label: string; href: string; title?: string };
+  | string
+  | { label: string; href: string; title?: string };
 export interface NotificationAction {
   id: string;
   label: string;
@@ -25,7 +26,7 @@ export interface NotificationItem {
   };
   progress?: NotificationProgress;
   sticky?: boolean;
-  priority?: "default" | "optional" | "silent" | "urgent";
+  priority?: 'default' | 'optional' | 'silent' | 'urgent';
 }
 export interface NotificationsListHandle {
   focusFirst(): void;

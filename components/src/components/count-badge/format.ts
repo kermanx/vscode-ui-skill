@@ -11,11 +11,13 @@ const formatRegexp = /{(\d+)}/g;
  * placeholder without a matching argument is left in the text as it was written.
  */
 export function format(value: string, ...args: unknown[]): string {
-	if (args.length === 0) {
-		return value;
-	}
-	return value.replace(formatRegexp, function (match, group: string) {
-		const index = parseInt(group, 10);
-		return isNaN(index) || index < 0 || index >= args.length ? match : String(args[index]);
-	});
+  if (args.length === 0) {
+    return value;
+  }
+  return value.replace(formatRegexp, function (match, group: string) {
+    const index = parseInt(group, 10);
+    return isNaN(index) || index < 0 || index >= args.length
+      ? match
+      : String(args[index]);
+  });
 }

@@ -1,14 +1,14 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
 <script setup lang="ts">
-import { computed, ref, toRaw } from "vue";
-import { splitLabelWithIcons, asClassNameArray } from "../codicon/icons";
-import StatusBarTooltip from "./StatusBarTooltip.vue";
+import { computed, ref, toRaw } from 'vue';
+import { splitLabelWithIcons, asClassNameArray } from '../codicon/icons';
+import StatusBarTooltip from './StatusBarTooltip.vue';
 import {
   StatusBarShowTooltipCommand,
   StatusBarToggleTooltipCommand,
   type StatusBarCommand,
   type StatusBarEntry,
-} from "./types";
+} from './types';
 const props = defineProps<{
   entry: StatusBarEntry;
   itemClasses?: readonly string[];
@@ -25,13 +25,13 @@ const element = ref<HTMLElement>(),
   tooltip = ref<InstanceType<typeof StatusBarTooltip>>();
 const parts = computed(() =>
   splitLabelWithIcons(
-    `${props.entry.showProgress && props.entry.text ? "\u00a0" : ""}${props.entry.text}`,
+    `${props.entry.showProgress && props.entry.text ? '\u00a0' : ''}${props.entry.text}`,
   ),
 );
 let pinnedOnPointerDown: boolean | undefined;
 function run(command: string | StatusBarCommand | undefined, pointer = false) {
   if (!command) return;
-  command = typeof command === "object" ? toRaw(command) : command;
+  command = typeof command === 'object' ? toRaw(command) : command;
   if (
     command === StatusBarShowTooltipCommand ||
     command === StatusBarToggleTooltipCommand
@@ -42,7 +42,7 @@ function run(command: string | StatusBarCommand | undefined, pointer = false) {
     )
       tooltip.value?.hide();
     else void tooltip.value?.show(true);
-  } else emit("command", command);
+  } else emit('command', command);
   pinnedOnPointerDown = undefined;
 }
 function keydown(event: KeyboardEvent) {
@@ -54,11 +54,11 @@ function keydown(event: KeyboardEvent) {
     event.shiftKey
   )
     return;
-  if (event.key === " " || event.key === "Enter") {
+  if (event.key === ' ' || event.key === 'Enter') {
     event.preventDefault();
     event.stopPropagation();
     run(props.entry.command);
-  } else if (["Escape", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+  } else if (['Escape', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
     event.preventDefault();
     event.stopPropagation();
     tooltip.value?.hide();
@@ -120,7 +120,7 @@ defineExpose({
         ><span
           v-if="'icon' in part"
           :class="asClassNameArray({ id: part.icon })"
-        />{{ "text" in part ? part.text : "" }}</template
+        />{{ 'text' in part ? part.text : '' }}</template
       ></a
     >
     <div class="status-bar-item-beak-container" />

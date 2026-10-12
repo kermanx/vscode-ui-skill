@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
-import { Color } from "../../internal/color";
+import { Color } from '../../internal/color';
 export function editorTabsTheme(
   colors: Record<string, string>,
   highContrast: boolean,
@@ -10,15 +10,17 @@ export function editorTabsTheme(
   const collector = { addRule: (rule: string) => rules.push(rule) };
   const theme = {
     getColor: (id: string) =>
-      colors[id] ? Color.Format.CSS.parse(colors[id].replace(/([,(]\s*)\./g, "$10.")) : undefined,
+      colors[id]
+        ? Color.Format.CSS.parse(colors[id].replace(/([,(]\s*)\./g, '$10.'))
+        : undefined,
   };
   const isSafari =
-    typeof navigator !== "undefined" &&
+    typeof navigator !== 'undefined' &&
     /Safari/.test(navigator.userAgent) &&
     !/Chrome|Chromium/.test(navigator.userAgent);
 
   // Add bottom border to tabs when wrapping
-  const borderColor = theme.getColor("tab.border");
+  const borderColor = theme.getColor('tab.border');
   if (borderColor) {
     collector.addRule(`
 			.monaco-workbench .part.editor > .content .editor-group-container > .title > .tabs-and-actions-container.wrapping .tabs-container > .tab {
@@ -28,7 +30,7 @@ export function editorTabsTheme(
   }
 
   // Styling with Outline color (e.g. high contrast theme)
-  const activeContrastBorderColor = theme.getColor("contrastActiveBorder");
+  const activeContrastBorderColor = theme.getColor('contrastActiveBorder');
   if (activeContrastBorderColor) {
     collector.addRule(`
 			.monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > .tab.active,
@@ -67,7 +69,7 @@ export function editorTabsTheme(
   }
 
   // High Contrast Border Color for Editor Actions
-  const contrastBorderColor = theme.getColor("contrastBorder");
+  const contrastBorderColor = theme.getColor('contrastBorder');
   if (contrastBorderColor) {
     collector.addRule(`
 			.monaco-workbench .part.editor > .content .editor-group-container > .title .editor-actions {
@@ -77,7 +79,7 @@ export function editorTabsTheme(
   }
 
   // Hover Background
-  const tabHoverBackground = theme.getColor("tab.hoverBackground");
+  const tabHoverBackground = theme.getColor('tab.hoverBackground');
   if (tabHoverBackground) {
     collector.addRule(`
 			.monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > .tab:not(.selected):hover {
@@ -87,7 +89,7 @@ export function editorTabsTheme(
   }
 
   const tabUnfocusedHoverBackground = theme.getColor(
-    "tab.unfocusedHoverBackground",
+    'tab.unfocusedHoverBackground',
   );
   if (tabUnfocusedHoverBackground) {
     collector.addRule(`
@@ -98,7 +100,7 @@ export function editorTabsTheme(
   }
 
   // Hover Foreground
-  const tabHoverForeground = theme.getColor("tab.hoverForeground");
+  const tabHoverForeground = theme.getColor('tab.hoverForeground');
   if (tabHoverForeground) {
     collector.addRule(`
 			.monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > .tab:not(.selected):hover  {
@@ -108,7 +110,7 @@ export function editorTabsTheme(
   }
 
   const tabUnfocusedHoverForeground = theme.getColor(
-    "tab.unfocusedHoverForeground",
+    'tab.unfocusedHoverForeground',
   );
   if (tabUnfocusedHoverForeground) {
     collector.addRule(`
@@ -123,7 +125,7 @@ export function editorTabsTheme(
   // Unfortunately we need to copy a lot of CSS over from the
   // the base tab rules because we want to reuse the same
   // styles we already have for the normal bottom-border.
-  const tabHoverBorder = theme.getColor("tab.hoverBorder");
+  const tabHoverBorder = theme.getColor('tab.hoverBorder');
   if (tabHoverBorder) {
     collector.addRule(`
 			.monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > .tab:hover > .tab-border-bottom-container {
@@ -140,7 +142,7 @@ export function editorTabsTheme(
 		`);
   }
 
-  const tabUnfocusedHoverBorder = theme.getColor("tab.unfocusedHoverBorder");
+  const tabUnfocusedHoverBorder = theme.getColor('tab.unfocusedHoverBorder');
   if (tabUnfocusedHoverBorder) {
     collector.addRule(`
 			.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab:hover > .tab-border-bottom-container  {
@@ -163,13 +165,13 @@ export function editorTabsTheme(
   // - if we have a contrast border (which draws an outline - https://github.com/microsoft/vscode/issues/109117)
   // - on Safari (https://github.com/microsoft/vscode/issues/108996)
   if (!highContrast && !isSafari && !activeContrastBorderColor) {
-    const workbenchBackground = Color.fromHex(light ? "#f3f3f3" : "#252526");
-    const editorBackgroundColor = theme.getColor("editor.background");
+    const workbenchBackground = Color.fromHex(light ? '#f3f3f3' : '#252526');
+    const editorBackgroundColor = theme.getColor('editor.background');
     const editorGroupHeaderTabsBackground = theme.getColor(
-      "editorGroupHeader.tabsBackground",
+      'editorGroupHeader.tabsBackground',
     );
     const editorDragAndDropBackground = theme.getColor(
-      "editorGroup.dropBackground",
+      'editorGroup.dropBackground',
     );
 
     let adjustedTabBackground: Color | undefined;
@@ -202,13 +204,13 @@ export function editorTabsTheme(
       colorDrag: Color,
       hasFocus = false,
     ) => `
-			.monaco-workbench .part.editor > .content:not(.dragged-over) .editor-group-container${hasFocus ? ".active" : ""} > .title .tabs-container > .tab.sizing-shrink:not(.dragged):not(.sticky-compact):hover > .tab-label > .monaco-icon-label-container::after,
-			.monaco-workbench .part.editor > .content:not(.dragged-over) .editor-group-container${hasFocus ? ".active" : ""} > .title .tabs-container > .tab.sizing-fixed:not(.dragged):not(.sticky-compact):hover > .tab-label > .monaco-icon-label-container::after {
+			.monaco-workbench .part.editor > .content:not(.dragged-over) .editor-group-container${hasFocus ? '.active' : ''} > .title .tabs-container > .tab.sizing-shrink:not(.dragged):not(.sticky-compact):hover > .tab-label > .monaco-icon-label-container::after,
+			.monaco-workbench .part.editor > .content:not(.dragged-over) .editor-group-container${hasFocus ? '.active' : ''} > .title .tabs-container > .tab.sizing-fixed:not(.dragged):not(.sticky-compact):hover > .tab-label > .monaco-icon-label-container::after {
 				background: linear-gradient(to left, ${color}, transparent) !important;
 			}
 
-			.monaco-workbench .part.editor > .content.dragged-over .editor-group-container${hasFocus ? ".active" : ""} > .title .tabs-container > .tab.sizing-shrink:not(.dragged):not(.sticky-compact):hover > .tab-label > .monaco-icon-label-container::after,
-			.monaco-workbench .part.editor > .content.dragged-over .editor-group-container${hasFocus ? ".active" : ""} > .title .tabs-container > .tab.sizing-fixed:not(.dragged):not(.sticky-compact):hover > .tab-label > .monaco-icon-label-container::after {
+			.monaco-workbench .part.editor > .content.dragged-over .editor-group-container${hasFocus ? '.active' : ''} > .title .tabs-container > .tab.sizing-shrink:not(.dragged):not(.sticky-compact):hover > .tab-label > .monaco-icon-label-container::after,
+			.monaco-workbench .part.editor > .content.dragged-over .editor-group-container${hasFocus ? '.active' : ''} > .title .tabs-container > .tab.sizing-fixed:not(.dragged):not(.sticky-compact):hover > .tab-label > .monaco-icon-label-container::after {
 				background: linear-gradient(to left, ${colorDrag}, transparent) !important;
 			}
 		`;
@@ -266,19 +268,19 @@ export function editorTabsTheme(
       focused: boolean,
       active: boolean,
     ) => `
-				.monaco-workbench .part.editor > .content:not(.dragged-over) .editor-group-container${focused ? ".active" : ":not(.active)"} > .title .tabs-container > .tab.sizing-shrink${active ? ".active" : ""}:not(.dragged):not(.sticky-compact) > .tab-label > .monaco-icon-label-container::after,
-				.monaco-workbench .part.editor > .content:not(.dragged-over) .editor-group-container${focused ? ".active" : ":not(.active)"} > .title .tabs-container > .tab.sizing-fixed${active ? ".active" : ""}:not(.dragged):not(.sticky-compact) > .tab-label > .monaco-icon-label-container::after {
+				.monaco-workbench .part.editor > .content:not(.dragged-over) .editor-group-container${focused ? '.active' : ':not(.active)'} > .title .tabs-container > .tab.sizing-shrink${active ? '.active' : ''}:not(.dragged):not(.sticky-compact) > .tab-label > .monaco-icon-label-container::after,
+				.monaco-workbench .part.editor > .content:not(.dragged-over) .editor-group-container${focused ? '.active' : ':not(.active)'} > .title .tabs-container > .tab.sizing-fixed${active ? '.active' : ''}:not(.dragged):not(.sticky-compact) > .tab-label > .monaco-icon-label-container::after {
 					background: linear-gradient(to left, ${color}, transparent);
 				}
 
-				.monaco-workbench .part.editor > .content.dragged-over .editor-group-container${focused ? ".active" : ":not(.active)"} > .title .tabs-container > .tab.sizing-shrink${active ? ".active" : ""}:not(.dragged):not(.sticky-compact) > .tab-label > .monaco-icon-label-container::after,
-				.monaco-workbench .part.editor > .content.dragged-over .editor-group-container${focused ? ".active" : ":not(.active)"} > .title .tabs-container > .tab.sizing-fixed${active ? ".active" : ""}:not(.dragged):not(.sticky-compact) > .tab-label > .monaco-icon-label-container::after {
+				.monaco-workbench .part.editor > .content.dragged-over .editor-group-container${focused ? '.active' : ':not(.active)'} > .title .tabs-container > .tab.sizing-shrink${active ? '.active' : ''}:not(.dragged):not(.sticky-compact) > .tab-label > .monaco-icon-label-container::after,
+				.monaco-workbench .part.editor > .content.dragged-over .editor-group-container${focused ? '.active' : ':not(.active)'} > .title .tabs-container > .tab.sizing-fixed${active ? '.active' : ''}:not(.dragged):not(.sticky-compact) > .tab-label > .monaco-icon-label-container::after {
 					background: linear-gradient(to left, ${colorDrag}, transparent);
 				}
 		`;
 
     // Adjust gradient for focused active tab background
-    const tabActiveBackground = theme.getColor("tab.activeBackground");
+    const tabActiveBackground = theme.getColor('tab.activeBackground');
     if (
       tabActiveBackground &&
       adjustedTabBackground &&
@@ -295,7 +297,7 @@ export function editorTabsTheme(
 
     // Adjust gradient for unfocused active tab background
     const tabUnfocusedActiveBackground = theme.getColor(
-      "tab.unfocusedActiveBackground",
+      'tab.unfocusedActiveBackground',
     );
     if (
       tabUnfocusedActiveBackground &&
@@ -314,7 +316,7 @@ export function editorTabsTheme(
     }
 
     // Adjust gradient for focused inactive tab background
-    const tabInactiveBackground = theme.getColor("tab.inactiveBackground");
+    const tabInactiveBackground = theme.getColor('tab.inactiveBackground');
     if (
       tabInactiveBackground &&
       adjustedTabBackground &&
@@ -333,7 +335,7 @@ export function editorTabsTheme(
 
     // Adjust gradient for unfocused inactive tab background
     const tabUnfocusedInactiveBackground = theme.getColor(
-      "tab.unfocusedInactiveBackground",
+      'tab.unfocusedInactiveBackground',
     );
     if (
       tabUnfocusedInactiveBackground &&
@@ -351,5 +353,5 @@ export function editorTabsTheme(
       );
     }
   }
-  return rules.join("\n").replaceAll(".monaco-workbench", scope);
+  return rules.join('\n').replaceAll('.monaco-workbench', scope);
 }

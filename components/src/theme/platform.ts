@@ -8,5 +8,8 @@ if (typeof document !== 'undefined' && typeof navigator !== 'undefined') {
     : agent.includes('Windows')
       ? 'Consolas, "Courier New", monospace'
       : '"Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace';
-  document.documentElement.style.setProperty('--vc-platform-monospace-font', font);
+  document.documentElement.style.setProperty(
+    '--vc-platform-monospace-font',
+    font,
+  );
 }

@@ -7,6 +7,7 @@ const props = withDefaults(defineProps<QuickInputProps>(), { enabled: true });
 const open = defineModel<boolean>('open', { default: false });
 const value = defineModel<string>('value', { default: '' });
 const emit = defineEmits<{
+  /** Request only: validate/execute in the caller, then set open=false to close. */
   accept: [value: string];
   hide: [reason: QuickInputHideReason];
   button: [id: string];

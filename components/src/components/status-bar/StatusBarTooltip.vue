@@ -8,10 +8,10 @@ import {
   provide,
   ref,
   watch,
-} from "vue";
-import Hover from "../hover/Hover.vue";
-import { hoverDelegateKey, instantHoverKey } from "../tooltip/delegate";
-import type { StatusBarCommand, StatusBarTooltip } from "./types";
+} from 'vue';
+import Hover from '../hover/Hover.vue';
+import { hoverDelegateKey, instantHoverKey } from '../tooltip/delegate';
+import type { StatusBarCommand, StatusBarTooltip } from './types';
 const props = defineProps<{
   target?: HTMLElement;
   tooltip?: string | StatusBarTooltip;
@@ -24,13 +24,13 @@ const hover = ref<InstanceType<typeof Hover>>(),
   open = ref(false),
   sticky = ref(false);
 const content = computed(() =>
-  typeof props.tooltip === "string" ? props.tooltip : props.tooltip?.content,
+  typeof props.tooltip === 'string' ? props.tooltip : props.tooltip?.content,
 );
 const actions = computed(() =>
-  typeof props.tooltip === "object"
+  typeof props.tooltip === 'object'
     ? props.tooltip.commands.map((command) => ({
         id: command.id,
-        label: command.title || "",
+        label: command.title || '',
       }))
     : [],
 );
@@ -64,7 +64,7 @@ function prepare(event: Event) {
   if (
     event instanceof FocusEvent &&
     (!event.relatedTarget ||
-      (event.relatedTarget as HTMLElement).closest?.(".monaco-hover"))
+      (event.relatedTarget as HTMLElement).closest?.('.monaco-hover'))
   )
     return;
   instant.value = Date.now() - delegate.lastHideTime < 200;
@@ -74,7 +74,7 @@ function prepare(event: Event) {
       sticky.value = false;
       open.value = true;
     },
-    instant.value ? 0 : navigator.platform.includes("Mac") ? 1500 : 500,
+    instant.value ? 0 : navigator.platform.includes('Mac') ? 1500 : 500,
   );
 }
 watch(
@@ -83,7 +83,7 @@ watch(
     cleanup();
     hide();
     if (!target) return;
-    target.setAttribute("custom-hover", "true");
+    target.setAttribute('custom-hover', 'true');
     const leave = () => {
       mouseDown = false;
       markHidden();
@@ -99,38 +99,38 @@ watch(
     const blur = (event: FocusEvent) => {
       if (
         !(event.relatedTarget as HTMLElement)?.closest(
-          ".workbench-hover-container",
+          '.workbench-hover-container',
         )
       )
         hide();
     };
     const key = (event: KeyboardEvent) => {
-      if (event.key === "Escape") hide();
+      if (event.key === 'Escape') hide();
     };
-    target.addEventListener("mouseover", prepare, true);
-    target.addEventListener("focus", prepare, true);
-    target.addEventListener("mouseleave", leave, true);
-    target.addEventListener("mousedown", down, true);
-    target.addEventListener("mouseup", up, true);
-    target.addEventListener("blur", blur, true);
-    target.addEventListener("keydown", key);
+    target.addEventListener('mouseover', prepare, true);
+    target.addEventListener('focus', prepare, true);
+    target.addEventListener('mouseleave', leave, true);
+    target.addEventListener('mousedown', down, true);
+    target.addEventListener('mouseup', up, true);
+    target.addEventListener('blur', blur, true);
+    target.addEventListener('keydown', key);
     cleanup = () => {
-      target.removeEventListener("mouseover", prepare, true);
-      target.removeEventListener("focus", prepare, true);
-      target.removeEventListener("mouseleave", leave, true);
-      target.removeEventListener("mousedown", down, true);
-      target.removeEventListener("mouseup", up, true);
-      target.removeEventListener("blur", blur, true);
-      target.removeEventListener("keydown", key);
+      target.removeEventListener('mouseover', prepare, true);
+      target.removeEventListener('focus', prepare, true);
+      target.removeEventListener('mouseleave', leave, true);
+      target.removeEventListener('mousedown', down, true);
+      target.removeEventListener('mouseup', up, true);
+      target.removeEventListener('blur', blur, true);
+      target.removeEventListener('keydown', key);
     };
   },
   { immediate: true },
 );
 function action(id: string) {
   const command =
-    typeof props.tooltip === "object" &&
+    typeof props.tooltip === 'object' &&
     props.tooltip.commands.find((command) => command.id === id);
-  if (command) emit("command", command);
+  if (command) emit('command', command);
 }
 onBeforeUnmount(() => {
   markHidden();

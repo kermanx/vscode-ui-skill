@@ -6,8 +6,8 @@ import {
   watch,
   type ModelRef,
   type Ref,
-} from "vue";
-import type { ProblemNode as TreeNode } from "./model";
+} from 'vue';
+import type { ProblemNode as TreeNode } from './model';
 interface TreeRow {
   node: TreeNode;
   depth: number;
@@ -28,11 +28,11 @@ export function useProblemTree(
   element: Ref<HTMLElement | undefined>,
   reveal: (index: number) => void,
   onFocus: (id: string | undefined) => void,
-  rowHeight: (node: TreeNode) => number
+  rowHeight: (node: TreeNode) => number,
 ) {
   const focused = ref<string>();
   let anchor: string | undefined;
-  let typed = "";
+  let typed = '';
   let typingTimer: ReturnType<typeof setTimeout>;
   const all = computed(() => {
     const map = new Map<string, TreeRow>();
@@ -55,8 +55,8 @@ export function useProblemTree(
   const expandedSet = computed(() => new Set(expanded.value));
   const rows = computed(() =>
     [...all.value.values()].filter((row) =>
-      row.ancestors.every((id) => expandedSet.value.has(id))
-    )
+      row.ancestors.every((id) => expandedSet.value.has(id)),
+    ),
   );
   const activeGuides = computed(() => {
     const guides = new Set<string>();
@@ -109,7 +109,7 @@ export function useProblemTree(
       while (first > 0 && previous.has(ids[first - 1])) first--;
       while (last + 1 < ids.length && previous.has(ids[last + 1])) last++;
       const keep = selected.value.filter(
-        (key) => !ids.slice(first, last + 1).includes(key)
+        (key) => !ids.slice(first, last + 1).includes(key),
       );
       selected.value = [
         ...new Set([...keep, ...ids.slice(Math.min(a, b), Math.max(a, b) + 1)]),
@@ -127,7 +127,7 @@ export function useProblemTree(
     }
     if (
       twistie ||
-      (props.expandOnLabel && row.node.kind === "resource") ||
+      (props.expandOnLabel && row.node.kind === 'resource') ||
       event.detail === 2
     ) {
       if (row.node.children?.length) {
@@ -150,50 +150,50 @@ export function useProblemTree(
     event: KeyboardEvent,
     scrollTop: number,
     height: number,
-    setScroll: (top: number) => void
+    setScroll: (top: number) => void,
   ) {
     const index = rows.value.findIndex((row) => row.node.id === focused.value);
     const row = rows.value[index];
     let handled = true;
     switch (event.key) {
-      case "ArrowDown":
-      case "ArrowUp": {
+      case 'ArrowDown':
+      case 'ArrowUp': {
         const next =
-          index < 0 ? 0 : index + (event.key === "ArrowDown" ? 1 : -1);
+          index < 0 ? 0 : index + (event.key === 'ArrowDown' ? 1 : -1);
         if (rows.value[next]) focus(rows.value[next].node.id, true);
         anchor = focused.value;
         break;
       }
-      case "ArrowLeft":
+      case 'ArrowLeft':
         if (row && !toggle(row, false, false) && row.parent)
           focus(row.parent, true);
         break;
-      case "ArrowRight":
+      case 'ArrowRight':
         if (row && !toggle(row, false, true) && row.node.children?.length)
           focus(row.node.children[0].id, true);
         break;
-      case " ":
+      case ' ':
         if (row) toggle(row, event.altKey);
         break;
-      case "Enter":
+      case 'Enter':
         selected.value = focused.value ? [focused.value] : [];
         break;
-      case "Escape":
+      case 'Escape':
         if (selected.value.length) {
           selected.value = [];
           anchor = undefined;
         } else handled = false;
         break;
-      case "Home":
-      case "End": {
-        const target = event.key === "Home" ? rows.value[0] : rows.value.at(-1);
+      case 'Home':
+      case 'End': {
+        const target = event.key === 'Home' ? rows.value[0] : rows.value.at(-1);
         if (target) focus(target.node.id, true);
         anchor = focused.value;
         break;
       }
-      case "PageDown":
-      case "PageUp": {
-        const down = event.key === "PageDown";
+      case 'PageDown':
+      case 'PageUp': {
+        const down = event.key === 'PageDown';
         const offsets: number[] = [];
         let total = 0;
         for (const row of rows.value) {
@@ -207,18 +207,18 @@ export function useProblemTree(
                 0,
                 offsets.reduce(
                   (last, value, index) => (value < top + height ? index : last),
-                  -1
-                )
+                  -1,
+                ),
               )
             : Math.max(
                 0,
-                offsets.findIndex((value) => value >= top)
+                offsets.findIndex((value) => value >= top),
               );
         let edge = edgeAt();
         if (index === edge || (down ? index > edge : index < edge)) {
           top = Math.max(
             0,
-            Math.min(total - height, top + (down ? height : -height))
+            Math.min(total - height, top + (down ? height : -height)),
           );
           setScroll(top);
           edge = edgeAt();
@@ -229,7 +229,7 @@ export function useProblemTree(
       }
       default:
         if (
-          event.key.toLowerCase() === "a" &&
+          event.key.toLowerCase() === 'a' &&
           singleModifier(event) &&
           props.multiple
         ) {
@@ -245,7 +245,7 @@ export function useProblemTree(
           typed += event.key.toLocaleLowerCase();
           clearTimeout(typingTimer);
           typingTimer = setTimeout(() => {
-            typed = "";
+            typed = '';
           }, 800);
           for (let i = 0; i < rows.value.length; i++) {
             const candidate =

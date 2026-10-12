@@ -144,7 +144,11 @@ onBeforeUnmount(() => themeObserver?.disconnect());
           />
           <div class="quick-input-list-entry-keybinding">
             <!-- Native QuickInputList uses KeybindingLabel without a foreground override. -->
-            <KeybindingLabel :chords="item?.keybinding" :os="os" style="color: inherit" />
+            <KeybindingLabel
+              :chords="item?.keybinding"
+              :os="os"
+              style="color: inherit"
+            />
           </div>
         </div>
         <div class="quick-input-list-row">
@@ -178,5 +182,7 @@ onBeforeUnmount(() => themeObserver?.disconnect());
 
 <style>
 /* QuickInputController applies the default foreground to keys, while focused keys inherit the row. */
-.quick-input-list .monaco-keybinding > .monaco-keybinding-key { color:var(--vscode-keybindingLabel-foreground); }
+.quick-input-list .monaco-keybinding > .monaco-keybinding-key {
+  color: var(--vscode-keybindingLabel-foreground);
+}
 </style>

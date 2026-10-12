@@ -8,23 +8,23 @@ import {
   provide,
   ref,
   watch,
-} from "vue";
-import ActionBar from "../action-bar/ActionBar.vue";
-import type { ActionBarEntry } from "../action-bar/types";
-import type { MenuEntry } from "../menu/types";
-import { dropdownPopupHost } from "../dropdown/popupHost";
-import NotificationsList from "./NotificationsList.vue";
-import NotificationMenuAction from "./NotificationMenuAction.vue";
-import { notificationKeyboard } from "./notificationKeyboard";
-import { notificationFilters } from "./notificationFilters";
-import { hasActiveProgress } from "./notificationState";
+} from 'vue';
+import ActionBar from '../action-bar/ActionBar.vue';
+import type { ActionBarEntry } from '../action-bar/types';
+import type { MenuEntry } from '../menu/types';
+import { dropdownPopupHost } from '../dropdown/popupHost';
+import NotificationsList from './NotificationsList.vue';
+import NotificationMenuAction from './NotificationMenuAction.vue';
+import { notificationKeyboard } from './notificationKeyboard';
+import { notificationFilters } from './notificationFilters';
+import { hasActiveProgress } from './notificationState';
 import type {
   NotificationItem,
   NotificationPosition,
   NotificationSource,
   NotificationsListHandle,
-} from "./types";
-import "./notificationsCenter.css";
+} from './types';
+import './notificationsCenter.css';
 const props = withDefaults(
   defineProps<{
     sources?: readonly NotificationSource[];
@@ -33,18 +33,18 @@ const props = withDefaults(
   }>(),
   { statusBarVisible: true, titleBarVisible: false },
 );
-const open = defineModel<boolean>("open", { default: false });
-const items = defineModel<readonly NotificationItem[]>("items", {
+const open = defineModel<boolean>('open', { default: false });
+const items = defineModel<readonly NotificationItem[]>('items', {
   default: () => [],
 });
-const expandedIds = defineModel<readonly string[]>("expandedIds", {
+const expandedIds = defineModel<readonly string[]>('expandedIds', {
   default: () => [],
 });
-const position = defineModel<NotificationPosition>("position", {
-  default: "bottom-right",
+const position = defineModel<NotificationPosition>('position', {
+  default: 'bottom-right',
 });
-const doNotDisturb = defineModel<boolean>("doNotDisturb", { default: false });
-const mutedSourceIds = defineModel<readonly string[]>("mutedSourceIds", {
+const doNotDisturb = defineModel<boolean>('doNotDisturb', { default: false });
+const mutedSourceIds = defineModel<readonly string[]>('mutedSourceIds', {
   default: () => [],
 });
 const emit = defineEmits<{
@@ -73,7 +73,7 @@ provide(
 );
 provide(notificationKeyboard, (event) => {
   if (
-    event.key !== "Escape" ||
+    event.key !== 'Escape' ||
     event.altKey ||
     event.ctrlKey ||
     event.metaKey ||
@@ -88,7 +88,7 @@ const sources = computed(
     props.sources || [
       ...new Map(
         items.value.flatMap((item) =>
-          typeof item.source === "object"
+          typeof item.source === 'object'
             ? [[item.source.id, item.source] as const]
             : [],
         ),
@@ -97,43 +97,43 @@ const sources = computed(
 );
 const toolbar = computed<ActionBarEntry[]>(() => [
   {
-    id: "clear",
-    label: "Clear All Notifications",
-    icon: "notifications-clear-all",
+    id: 'clear',
+    label: 'Clear All Notifications',
+    icon: 'notifications-clear-all',
     disabled: !items.value.some((item) => !hasActiveProgress(item)),
   },
   {
-    id: "disturb",
-    label: "Configure Do Not Disturb...",
-    icon: "notifications-do-not-disturb",
+    id: 'disturb',
+    label: 'Configure Do Not Disturb...',
+    icon: 'notifications-do-not-disturb',
   },
   {
-    id: "position",
-    label: "Configure Notifications Position...",
-    icon: "notifications-position",
+    id: 'position',
+    label: 'Configure Notifications Position...',
+    icon: 'notifications-position',
   },
   {
-    id: "hide",
-    label: "Hide Notifications",
+    id: 'hide',
+    label: 'Hide Notifications',
     icon:
-      position.value === "top-right"
-        ? "notifications-hide-up"
-        : "notifications-hide",
+      position.value === 'top-right'
+        ? 'notifications-hide-up'
+        : 'notifications-hide',
   },
 ]);
-const positions = ["bottom-right", "bottom-left", "top-right"] as const;
+const positions = ['bottom-right', 'bottom-left', 'top-right'] as const;
 const positionActions = computed<MenuEntry[]>(() =>
   positions.map((id, index) => ({
     id,
-    label: ["Bottom Right", "Bottom Left", "Top Right"][index],
+    label: ['Bottom Right', 'Bottom Left', 'Top Right'][index],
     checked: position.value === id,
   })),
 );
 const disturbActions = computed<MenuEntry[]>(() => {
   const entries: MenuEntry[] = [
     {
-      id: "__toggle",
-      label: `${doNotDisturb.value ? "Disable" : "Enable"} Do Not Disturb Mode`,
+      id: '__toggle',
+      label: `${doNotDisturb.value ? 'Disable' : 'Enable'} Do Not Disturb Mode`,
     },
   ];
   const sorted = [...sources.value].sort((a, b) =>
@@ -148,7 +148,7 @@ const disturbActions = computed<MenuEntry[]>(() => {
     })),
   );
   if (sorted.length > 10)
-    entries.push({ separator: true }, { id: "__more", label: "More…" });
+    entries.push({ separator: true }, { id: '__more', label: 'More…' });
   return entries;
 });
 function layout() {
@@ -171,7 +171,7 @@ function hide() {
   const focused = center.value?.contains(document.activeElement);
   closing = true;
   open.value = false;
-  if (focused) emit("restoreFocus");
+  if (focused) emit('restoreFocus');
 }
 async function show() {
   open.value = true;
@@ -185,29 +185,29 @@ function clearAll() {
   hide();
   const removed = items.value.filter((item) => !hasActiveProgress(item));
   items.value = items.value.filter(hasActiveProgress);
-  for (const item of removed) emit("close", item.id);
+  for (const item of removed) emit('close', item.id);
 }
 function filter(sourceId: string, filtered: boolean) {
   mutedSourceIds.value = filtered
     ? [...mutedSourceIds.value.filter((id) => id !== sourceId), sourceId]
     : mutedSourceIds.value.filter((id) => id !== sourceId);
-  emit("filter", sourceId, filtered);
+  emit('filter', sourceId, filtered);
 }
 function runDisturb(id: string) {
-  if (id === "__toggle") doNotDisturb.value = !doNotDisturb.value;
-  else if (id === "__more") emit("manageSources");
+  if (id === '__toggle') doNotDisturb.value = !doNotDisturb.value;
+  else if (id === '__more') emit('manageSources');
   else filter(id, !mutedSourceIds.value.includes(id));
 }
 function runToolbar(id: string) {
-  if (id === "clear") clearAll();
-  else if (id === "hide") hide();
-  else if (id === "disturb") disturbMenu.value?.show();
+  if (id === 'clear') clearAll();
+  else if (id === 'hide') hide();
+  else if (id === 'disturb') disturbMenu.value?.show();
   else positionMenu.value?.show();
 }
 function keydown(event: KeyboardEvent) {
   if (
     open.value &&
-    event.key === "Escape" &&
+    event.key === 'Escape' &&
     !event.altKey &&
     !event.ctrlKey &&
     !event.metaKey &&
@@ -228,11 +228,11 @@ watch(
         previous &&
         center.value?.contains(document.activeElement)
       )
-        emit("restoreFocus");
+        emit('restoreFocus');
       closing = false;
     }
   },
-  { immediate: true, flush: "sync" },
+  { immediate: true, flush: 'sync' },
 );
 watch(doNotDisturb, (value) => {
   if (value) hide();
@@ -244,20 +244,20 @@ watch(
     const focused = center.value?.contains(document.activeElement);
     hide();
     // The center's removal handler restores focus after hide() as well.
-    if (focused) emit("restoreFocus");
+    if (focused) emit('restoreFocus');
   },
-  { flush: "sync" },
+  { flush: 'sync' },
 );
 watch(() => [props.statusBarVisible, props.titleBarVisible], layout);
 onMounted(() => {
   layout();
   observer = new ResizeObserver(layout);
   observer.observe(root.value!);
-  window.addEventListener("keydown", keydown);
+  window.addEventListener('keydown', keydown);
 });
 onBeforeUnmount(() => {
   observer?.disconnect();
-  window.removeEventListener("keydown", keydown);
+  window.removeEventListener('keydown', keydown);
 });
 defineExpose({ show, hide, clearAll, focus: () => list.value?.focusFirst() });
 </script>
@@ -287,7 +287,7 @@ defineExpose({ show, hide, clearAll, focus: () => list.value?.focusFirst() });
         "
       >
         <span class="notifications-center-header-title">{{
-          items.length ? "Notifications" : "No new notifications"
+          items.length ? 'Notifications' : 'No new notifications'
         }}</span>
         <div class="notifications-center-header-toolbar">
           <ActionBar

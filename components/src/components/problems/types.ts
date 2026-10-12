@@ -1,4 +1,4 @@
-export type ProblemSeverity = "error" | "warning" | "info";
+export type ProblemSeverity = 'error' | 'warning' | 'info';
 export interface ProblemLocation {
   /** File path used to group diagnostics and identify their opening location. */
   resource: string;

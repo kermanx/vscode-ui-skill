@@ -8,13 +8,13 @@ import {
   onBeforeUnmount,
   ref,
   watch,
-} from "vue";
-import ActionBar from "../action-bar/ActionBar.vue";
-import Tooltip from "../tooltip/Tooltip.vue";
-import type { BannerAction, BannerItem } from "./types";
-import "./bannerpart.css";
+} from 'vue';
+import ActionBar from '../action-bar/ActionBar.vue';
+import Tooltip from '../tooltip/Tooltip.vue';
+import type { BannerAction, BannerItem } from './types';
+import './bannerpart.css';
 
-const items = defineModel<readonly BannerItem[]>("items", {
+const items = defineModel<readonly BannerItem[]>('items', {
   default: () => [],
 });
 const emit = defineEmits<{
@@ -42,9 +42,9 @@ const item = computed(() => {
 });
 const closeActions = computed(() => [
   {
-    id: "banner.close",
-    label: item.value?.closeLabel ?? "Close Banner",
-    icon: "widget-close",
+    id: 'banner.close',
+    label: item.value?.closeLabel ?? 'Close Banner',
+    icon: 'widget-close',
   },
 ]);
 
@@ -71,7 +71,7 @@ function close() {
   const current = item.value;
   if (!current) return;
   hide(current.id);
-  emit("close", current.id);
+  emit('close', current.id);
 }
 function focus() {
   focusedActionIndex = -1;
@@ -101,23 +101,23 @@ function keydown(event: KeyboardEvent) {
   if (!(event.target instanceof Node) || !element.value?.contains(event.target))
     return;
   if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-  if (event.key === "Escape") focus();
-  else if (event.key === "ArrowRight" || event.key === "ArrowDown")
+  if (event.key === 'Escape') focus();
+  else if (event.key === 'ArrowRight' || event.key === 'ArrowDown')
     focusNextAction();
-  else if (event.key === "ArrowLeft" || event.key === "ArrowUp")
+  else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp')
     focusPreviousAction();
   else return;
   event.preventDefault();
 }
-onMounted(() => window.addEventListener("keydown", keydown));
-onBeforeUnmount(() => window.removeEventListener("keydown", keydown));
+onMounted(() => window.addEventListener('keydown', keydown));
+onBeforeUnmount(() => window.removeEventListener('keydown', keydown));
 function open(action: BannerAction, event: Event) {
   event.preventDefault();
   event.stopPropagation();
-  if (item.value) emit("action", item.value.id, action.href);
+  if (item.value) emit('action', item.value.id, action.href);
 }
 function linkKeydown(action: BannerAction, event: KeyboardEvent) {
-  if (event.key === "Enter" || event.key === " ") open(action, event);
+  if (event.key === 'Enter' || event.key === ' ') open(action, event);
 }
 defineExpose({
   show,

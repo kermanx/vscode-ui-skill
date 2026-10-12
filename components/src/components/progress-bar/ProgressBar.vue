@@ -34,20 +34,23 @@ const NLS_PROGRESS_LABEL = 'Progress';
  */
 const LONG_RUNNING_INFINITE_THRESHOLD = 10000;
 
-const props = withDefaults(defineProps<{
-  /** Total number of work units; enables discrete progress and sets `aria-valuemax`. */
-  total?: number;
-  /** Absolute amount of work done (like `setWorked`): 0–100 without a total, otherwise clamped to it. */
-  worked?: number;
-  /** Indeterminate progress. Running longer than 10s switches to the throttled animation. */
-  infinite?: boolean;
-  /** Visibility of the container; `false` hides it immediately, `true` shows it again (`show(showDelay)`). */
-  visible?: boolean;
-  /** Delay in milliseconds used when the bar is shown again (`show(delay)`). */
-  showDelay?: number;
-  /** Accessible name; empty or whitespace-only falls back to "Progress". */
-  ariaLabel?: string;
-}>(), { infinite: false, visible: true });
+const props = withDefaults(
+  defineProps<{
+    /** Total number of work units; enables discrete progress and sets `aria-valuemax`. */
+    total?: number;
+    /** Absolute amount of work done (like `setWorked`): 0–100 without a total, otherwise clamped to it. */
+    worked?: number;
+    /** Indeterminate progress. Running longer than 10s switches to the throttled animation. */
+    infinite?: boolean;
+    /** Visibility of the container; `false` hides it immediately, `true` shows it again (`show(showDelay)`). */
+    visible?: boolean;
+    /** Delay in milliseconds used when the bar is shown again (`show(delay)`). */
+    showDelay?: number;
+    /** Accessible name; empty or whitespace-only falls back to "Progress". */
+    ariaLabel?: string;
+  }>(),
+  { infinite: false, visible: true },
+);
 
 const element = ref<HTMLElement>();
 const bit = ref<HTMLElement>();
@@ -86,13 +89,21 @@ function off(): void {
   if (!container || !bit.value) return;
   bit.value.style.width = 'inherit';
   bit.value.style.opacity = '1';
-  container.classList.remove(CSS_ACTIVE, CSS_INFINITE, CSS_INFINITE_LONG_RUNNING, CSS_DISCRETE);
+  container.classList.remove(
+    CSS_ACTIVE,
+    CSS_INFINITE,
+    CSS_INFINITE_LONG_RUNNING,
+    CSS_DISCRETE,
+  );
 
   workedVal = 0;
   totalWork = undefined;
 
   // this.longRunningScheduler.cancel();
-  if (longRunningToken !== undefined) { clearTimeout(longRunningToken); longRunningToken = undefined; }
+  if (longRunningToken !== undefined) {
+    clearTimeout(longRunningToken);
+    longRunningToken = undefined;
+  }
 }
 
 /** Indicates to the progress bar that all work is done. */
@@ -122,7 +133,10 @@ function doDone(delayed: boolean): ProgressBarApi {
   }
 
   if (delayed) {
-    const token = window.setTimeout(() => { doneTokens.delete(token); off(); }, 200);
+    const token = window.setTimeout(() => {
+      doneTokens.delete(token);
+      off();
+    }, 200);
     doneTokens.add(token);
   } else {
     off();
@@ -144,7 +158,10 @@ function infinite(): ProgressBarApi {
 
   // this.longRunningScheduler.schedule();
   if (longRunningToken !== undefined) clearTimeout(longRunningToken);
-  longRunningToken = window.setTimeout(() => { longRunningToken = undefined; infiniteLongRunning(); }, LONG_RUNNING_INFINITE_THRESHOLD);
+  longRunningToken = window.setTimeout(() => {
+    longRunningToken = undefined;
+    infiniteLongRunning();
+  }, LONG_RUNNING_INFINITE_THRESHOLD);
 
   return api;
 }
@@ -197,7 +214,7 @@ function doSetWorked(value: number): ProgressBarApi {
   container.classList.add(CSS_ACTIVE, CSS_DISCRETE);
   container.setAttribute('aria-valuenow', value.toString());
 
-  bit.value.style.width = 100 * (workedVal / (work)) + '%';
+  bit.value.style.width = 100 * (workedVal / work) + '%';
 
   return api;
 }
@@ -208,11 +225,17 @@ function getContainer(): HTMLElement | undefined {
 
 function show(delay?: number): void {
   // this.showDelayedScheduler.cancel();
-  if (showDelayedToken !== undefined) { clearTimeout(showDelayedToken); showDelayedToken = undefined; }
+  if (showDelayedToken !== undefined) {
+    clearTimeout(showDelayedToken);
+    showDelayedToken = undefined;
+  }
 
   if (typeof delay === 'number') {
     // RunOnceScheduler: the delayed show runs on a timer, `show()` without delay is immediate.
-    showDelayedToken = window.setTimeout(() => { showDelayedToken = undefined; showElement(); }, delay);
+    showDelayedToken = window.setTimeout(() => {
+      showDelayedToken = undefined;
+      showElement();
+    }, delay);
   } else {
     showElement();
   }
@@ -222,10 +245,24 @@ function hide(): void {
   hideElement();
 
   // this.showDelayedScheduler.cancel();
-  if (showDelayedToken !== undefined) { clearTimeout(showDelayedToken); showDelayedToken = undefined; }
+  if (showDelayedToken !== undefined) {
+    clearTimeout(showDelayedToken);
+    showDelayedToken = undefined;
+  }
 }
 
-const api: ProgressBarApi = { show, hide, infinite, total, worked, setWorked, done, stop, hasTotal, getContainer };
+const api: ProgressBarApi = {
+  show,
+  hide,
+  infinite,
+  total,
+  worked,
+  setWorked,
+  done,
+  stop,
+  hasTotal,
+  getContainer,
+};
 
 /** Apply work, mode and visibility in that order. */
 function applyProps(): void {
@@ -238,12 +275,28 @@ function applyProps(): void {
 
 onMounted(applyProps);
 
-watch(() => [props.total, props.worked, props.infinite, props.visible, props.showDelay] as const,
+watch(
+  () =>
+    [
+      props.total,
+      props.worked,
+      props.infinite,
+      props.visible,
+      props.showDelay,
+    ] as const,
   ([, , isInfinite], [, , wasInfinite]) => {
     // Ending indeterminate progress without a known total or amount of work is `stop()`.
-    if (wasInfinite && !isInfinite && props.total === undefined && props.worked === undefined) { stop(); }
+    if (
+      wasInfinite &&
+      !isInfinite &&
+      props.total === undefined &&
+      props.worked === undefined
+    ) {
+      stop();
+    }
     applyProps();
-  });
+  },
+);
 
 onBeforeUnmount(() => {
   // The two schedulers are disposables upstream, but the 200ms `done()` timer is not tracked;
@@ -259,9 +312,20 @@ defineExpose(api);
 </script>
 
 <template>
-  <div ref="element" class="monaco-progress-container" role="progressbar" aria-valuemin="0"
-    :aria-label="ariaLabel && ariaLabel.trim() ? ariaLabel : NLS_PROGRESS_LABEL">
-    <div ref="bit" class="progress-bit" :style="{ backgroundColor: 'var(--vscode-progressBar-background, #0E70C0)' }" />
+  <div
+    ref="element"
+    class="monaco-progress-container"
+    role="progressbar"
+    aria-valuemin="0"
+    :aria-label="ariaLabel && ariaLabel.trim() ? ariaLabel : NLS_PROGRESS_LABEL"
+  >
+    <div
+      ref="bit"
+      class="progress-bit"
+      :style="{
+        backgroundColor: 'var(--vscode-progressBar-background, #0E70C0)',
+      }"
+    />
   </div>
 </template>
 

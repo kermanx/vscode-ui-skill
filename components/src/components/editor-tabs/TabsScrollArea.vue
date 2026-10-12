@@ -10,21 +10,21 @@ import {
   onMounted,
   ref,
   watch,
-} from "vue";
+} from 'vue';
 import {
   StandardWheelEvent,
   type IMouseWheelEvent,
-} from "../../internal/standardWheelEvent";
-import { Scrollable } from "../scrollable-element/scrollable";
-import { MouseWheelClassifier } from "../scrollable-element/mouseWheelClassifier";
-import { ScrollbarState } from "../scrollable-element/scrollbarState";
-import { useScrollbarVisibility } from "../scrollable-element/useScrollbarVisibility";
+} from '../../internal/standardWheelEvent';
+import { Scrollable } from '../scrollable-element/scrollable';
+import { MouseWheelClassifier } from '../scrollable-element/mouseWheelClassifier';
+import { ScrollbarState } from '../scrollable-element/scrollbarState';
+import { useScrollbarVisibility } from '../scrollable-element/useScrollbarVisibility';
 import type {
   ScrollbarVisibility,
   ScrollPosition,
   ScrollDimensions,
   ScrollableEvent,
-} from "../scrollable-element/types";
+} from '../scrollable-element/types';
 const props = withDefaults(
   defineProps<{
     height?: number;
@@ -41,8 +41,8 @@ const props = withDefaults(
     scrollByPage?: boolean;
   }>(),
   {
-    horizontal: "auto",
-    vertical: "hidden",
+    horizontal: 'auto',
+    vertical: 'hidden',
     shadows: false,
     containWheel: false,
     scrollByPage: false,
@@ -50,8 +50,8 @@ const props = withDefaults(
     stickyWidth: 0,
   },
 );
-const scrollTop = defineModel<number>("scrollTop", { default: 0 });
-const scrollLeft = defineModel<number>("scrollLeft", { default: 0 });
+const scrollTop = defineModel<number>('scrollTop', { default: 0 });
+const scrollLeft = defineModel<number>('scrollLeft', { default: 0 });
 const emit = defineEmits<{ scroll: [event: ScrollableEvent] }>();
 const viewport = ref<HTMLElement>();
 const content = viewport;
@@ -72,11 +72,11 @@ const smoothState = new Scrollable({
 });
 smoothState.onScroll = (event) =>
   changed({ scrollTop: event.scrollTop, scrollLeft: event.scrollLeft });
-const isMac = navigator.platform.includes("Mac");
-const isWindows = navigator.platform.includes("Win");
-const size = (mode: ScrollbarVisibility) => (mode === "hidden" ? 0 : 10);
+const isMac = navigator.platform.includes('Mac');
+const isWindows = navigator.platform.includes('Win');
+const size = (mode: ScrollbarVisibility) => (mode === 'hidden' ? 0 : 10);
 const horizontalSize = () =>
-  props.horizontal === "hidden" ? 0 : props.scrollbarSize;
+  props.horizontal === 'hidden' ? 0 : props.scrollbarSize;
 const horizontalState = new ScrollbarState(
   0,
   horizontalSize(),
@@ -97,7 +97,7 @@ function geometry(state: ScrollbarState) {
 }
 const horizontalGeometry = ref(geometry(horizontalState));
 const verticalGeometry = ref(geometry(verticalState));
-const dragging = ref<"horizontal" | "vertical">();
+const dragging = ref<'horizontal' | 'vertical'>();
 const rawVisible = ref(false);
 let mouseOver = false;
 let hideTimer: ReturnType<typeof setTimeout>;
@@ -172,7 +172,7 @@ function changed(next: ScrollPosition, dimensionChanged = false) {
   if (topChanged || leftChanged || dimensionChanged) {
     renderScrollbars();
     reveal();
-    emit("scroll", { ...dimensions.value, ...next });
+    emit('scroll', { ...dimensions.value, ...next });
   }
 }
 function setScrollPosition(update: Partial<ScrollPosition>) {
@@ -282,20 +282,20 @@ function wheel(event: WheelEvent) {
   }
 }
 let stopDragging: (() => void) | undefined;
-function pointerDown(event: PointerEvent, axis: "horizontal" | "vertical") {
+function pointerDown(event: PointerEvent, axis: 'horizontal' | 'vertical') {
   const track = event.currentTarget as HTMLElement;
-  const onSlider = (event.target as HTMLElement).classList.contains("slider");
-  const state = axis === "horizontal" ? horizontalState : verticalState;
+  const onSlider = (event.target as HTMLElement).classList.contains('slider');
+  const state = axis === 'horizontal' ? horizontalState : verticalState;
   const writePosition = (value: number) =>
     setScrollPosition(
-      axis === "horizontal" ? { scrollLeft: value } : { scrollTop: value },
+      axis === 'horizontal' ? { scrollLeft: value } : { scrollTop: value },
     );
   const pointerPosition = (e: PointerEvent) =>
-    axis === "horizontal" ? e.pageX : e.pageY;
+    axis === 'horizontal' ? e.pageX : e.pageY;
   const orthogonalPosition = (e: PointerEvent) =>
-    axis === "horizontal" ? e.pageY : e.pageX;
-  if (!onSlider && (event.button === 0 || event.pointerType !== "mouse")) {
-    const offset = axis === "horizontal" ? event.offsetX : event.offsetY;
+    axis === 'horizontal' ? e.pageY : e.pageX;
+  if (!onSlider && (event.button === 0 || event.pointerType !== 'mouse')) {
+    const offset = axis === 'horizontal' ? event.offsetX : event.offsetY;
     writePosition(
       props.scrollByPage
         ? state.getDesiredScrollPositionFromOffsetPaged(offset)
@@ -331,9 +331,9 @@ function pointerDown(event: PointerEvent, axis: "horizontal" | "vertical") {
   };
   const up = () => stopDragging?.();
   stopDragging = () => {
-    source.removeEventListener("pointermove", move);
-    source.removeEventListener("pointerup", up);
-    source.removeEventListener("pointercancel", up);
+    source.removeEventListener('pointermove', move);
+    source.removeEventListener('pointerup', up);
+    source.removeEventListener('pointercancel', up);
     try {
       target.releasePointerCapture(event.pointerId);
     } catch {
@@ -343,9 +343,9 @@ function pointerDown(event: PointerEvent, axis: "horizontal" | "vertical") {
     dragging.value = undefined;
     hide();
   };
-  source.addEventListener("pointermove", move);
-  source.addEventListener("pointerup", up);
-  source.addEventListener("pointercancel", up);
+  source.addEventListener('pointermove', move);
+  source.addEventListener('pointerup', up);
+  source.addEventListener('pointercancel', up);
   dragging.value = axis;
   reveal();
 }

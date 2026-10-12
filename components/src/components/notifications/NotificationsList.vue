@@ -10,49 +10,49 @@ import {
   onMounted,
   ref,
   watch,
-} from "vue";
-import ScrollableElement from "../scrollable-element/ScrollableElement.vue";
-import ContextMenu from "../context-menu/ContextMenu.vue";
-import { dropdownPopupHost } from "../dropdown/popupHost";
-import { notificationKeyboard } from "./notificationKeyboard";
-import { notificationFilters } from "./notificationFilters";
-import NotificationRow from "./NotificationRow.vue";
-import { RangeMap } from "./rangeMap";
+} from 'vue';
+import ScrollableElement from '../scrollable-element/ScrollableElement.vue';
+import ContextMenu from '../context-menu/ContextMenu.vue';
+import { dropdownPopupHost } from '../dropdown/popupHost';
+import { notificationKeyboard } from './notificationKeyboard';
+import { notificationFilters } from './notificationFilters';
+import NotificationRow from './NotificationRow.vue';
+import { RangeMap } from './rangeMap';
 import {
   ariaLabel as ariaLabelFor,
   hasActiveProgress,
   hasPrimaryActions,
   notificationHeight,
   rawMessage,
-} from "./notificationState";
+} from './notificationState';
 import type {
   NotificationAction,
   NotificationItem,
   NotificationPosition,
-} from "./types";
-import "../list/upstream/list.css";
-import "./notificationsList.css";
-import "./notificationsActions.css";
-import "./notificationsLayout.css";
-import "./notificationIcons.css";
+} from './types';
+import '../list/upstream/list.css';
+import './notificationsList.css';
+import './notificationsActions.css';
+import './notificationsLayout.css';
+import './notificationIcons.css';
 
 const props = withDefaults(
   defineProps<{
     maxHeight?: number;
     ariaLabel?: string;
     position?: NotificationPosition;
-    scrollbar?: "auto" | "hidden";
+    scrollbar?: 'auto' | 'hidden';
   }>(),
   {
-    ariaLabel: "Notifications List",
-    position: "bottom-right",
-    scrollbar: "auto",
+    ariaLabel: 'Notifications List',
+    position: 'bottom-right',
+    scrollbar: 'auto',
   },
 );
-const items = defineModel<readonly NotificationItem[]>("items", {
+const items = defineModel<readonly NotificationItem[]>('items', {
   default: () => [],
 });
-const expandedIds = defineModel<readonly string[]>("expandedIds", {
+const expandedIds = defineModel<readonly string[]>('expandedIds', {
   default: () => [],
 });
 const emit = defineEmits<{
@@ -160,7 +160,7 @@ function measure(preserveFocus = false) {
 function setFocus(id?: string) {
   if (focused.value !== id) {
     focused.value = id;
-    emit("focusChange", id);
+    emit('focusChange', id);
   }
 }
 function setScroll(value: number) {
@@ -191,7 +191,7 @@ function focusFirst() {
 function close(item: NotificationItem) {
   if (hasActiveProgress(item)) return;
   items.value = items.value.filter((value) => value.id !== item.id);
-  emit("close", item.id);
+  emit('close', item.id);
 }
 function toggle(item: NotificationItem, value = !isExpanded(item)) {
   if (hasPrimaryActions(item)) return;
@@ -205,19 +205,19 @@ function runAction(
   action: NotificationAction,
   primary: boolean,
 ) {
-  emit("action", item.id, action.id);
+  emit('action', item.id, action.id);
   if (primary && !action.keepOpen) {
     items.value = items.value.filter((value) => value.id !== item.id);
-    emit("close", item.id);
+    emit('close', item.id);
   }
 }
 function filter(item: NotificationItem) {
-  if (typeof item.source !== "object") return;
+  if (typeof item.source !== 'object') return;
   const id = item.source.id,
     value = !filteredSources.value.has(id);
   if (value) filteredSources.value.add(id);
   else filteredSources.value.delete(id);
-  emit("filter", id, value);
+  emit('filter', id, value);
 }
 function context(event: MouseEvent, item: NotificationItem) {
   event.preventDefault();
@@ -227,12 +227,12 @@ function context(event: MouseEvent, item: NotificationItem) {
   contextMenu.value?.show(event);
 }
 function copy() {
-  if (contextItem) emit("copy", contextItem.id, rawMessage(contextItem));
+  if (contextItem) emit('copy', contextItem.id, rawMessage(contextItem));
 }
 function mousedown(event: MouseEvent) {
   if (
     !(event.target instanceof HTMLElement) ||
-    event.target.closest("input, textarea")
+    event.target.closest('input, textarea')
   )
     return;
   if (document.activeElement !== event.target) list.value?.focus();
@@ -281,7 +281,7 @@ function keydown(event: KeyboardEvent) {
     event.ctrlKey ||
     event.shiftKey ||
     (event.metaKey &&
-      !(navigator.platform.includes("Mac") && event.key === "Backspace"))
+      !(navigator.platform.includes('Mac') && event.key === 'Backspace'))
   )
     return;
   if (surfaceKeydown?.(event)) {
@@ -290,25 +290,25 @@ function keydown(event: KeyboardEvent) {
   }
   let index = items.value.findIndex((item) => item.id === focused.value);
   const item = items.value[index < 0 ? 0 : index];
-  if (event.key === "ArrowDown")
+  if (event.key === 'ArrowDown')
     focus(
       items.value[Math.min(items.value.length - 1, Math.max(0, index + 1))]?.id,
     );
-  else if (event.key === "ArrowUp")
+  else if (event.key === 'ArrowUp')
     focus(items.value[Math.max(0, index - 1)]?.id);
-  else if (event.key === "Home") focusFirst();
-  else if (event.key === "End") focus(items.value.at(-1)?.id);
-  else if (event.key === "PageDown" || event.key === "PageUp")
-    void pageFocus(event.key === "PageDown");
-  else if (item && event.key === "ArrowRight") toggle(item, true);
-  else if (item && event.key === "ArrowLeft") toggle(item, false);
-  else if (item && (event.key === "Enter" || event.key === " ")) toggle(item);
+  else if (event.key === 'Home') focusFirst();
+  else if (event.key === 'End') focus(items.value.at(-1)?.id);
+  else if (event.key === 'PageDown' || event.key === 'PageUp')
+    void pageFocus(event.key === 'PageDown');
+  else if (item && event.key === 'ArrowRight') toggle(item, true);
+  else if (item && event.key === 'ArrowLeft') toggle(item, false);
+  else if (item && (event.key === 'Enter' || event.key === ' ')) toggle(item);
   else if (
     item &&
-    ((event.key === "Delete" && !navigator.platform.includes("Mac")) ||
-      (event.key === "Backspace" &&
+    ((event.key === 'Delete' && !navigator.platform.includes('Mac')) ||
+      (event.key === 'Backspace' &&
         event.metaKey &&
-        navigator.platform.includes("Mac")))
+        navigator.platform.includes('Mac')))
   )
     close(item);
   else return;
@@ -316,7 +316,7 @@ function keydown(event: KeyboardEvent) {
 }
 function tab(event: KeyboardEvent) {
   if (
-    event.key !== "Tab" ||
+    event.key !== 'Tab' ||
     event.altKey ||
     event.ctrlKey ||
     event.metaKey ||
@@ -327,12 +327,12 @@ function tab(event: KeyboardEvent) {
     return;
   const target = document
     .getElementById(rowId(focused.value))
-    ?.querySelector<HTMLElement>("[tabindex]");
+    ?.querySelector<HTMLElement>('[tabindex]');
   if (
     target &&
     target.tabIndex !== -1 &&
-    getComputedStyle(target).visibility !== "hidden" &&
-    getComputedStyle(target).display !== "none"
+    getComputedStyle(target).visibility !== 'hidden' &&
+    getComputedStyle(target).display !== 'none'
   ) {
     event.preventDefault();
     event.stopPropagation();
@@ -368,18 +368,18 @@ watch(
 watch(expandedIds, () => measure(true), { deep: true });
 watch(height, (value) => {
   setScroll(scrollTop.value);
-  emit("layout", value);
+  emit('layout', value);
 });
 onMounted(() => {
   measure();
   observer = new ResizeObserver(() => measure());
   if (root.value) observer.observe(root.value);
-  window.addEventListener("keydown", keydown);
+  window.addEventListener('keydown', keydown);
 });
 onBeforeUnmount(() => {
   observer?.disconnect();
   clearTimeout(blurTimer);
-  window.removeEventListener("keydown", keydown);
+  window.removeEventListener('keydown', keydown);
 });
 defineExpose({
   focus,

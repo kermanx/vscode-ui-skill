@@ -8,4 +8,7 @@ export interface InputBoxAction {
   icon: string;
   disabled?: boolean;
 }
-export interface InputBoxSelection { start: number; end: number }
+export interface InputBoxSelection {
+  start: number;
+  end: number;
+}

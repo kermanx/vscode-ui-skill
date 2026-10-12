@@ -7,5 +7,10 @@ export interface ListItem {
   icon?: string;
   italic?: boolean;
   actions?: readonly ActionBarEntry[];
-  decoration?: { badge?: string; color?: string; tooltip?: string; strikethrough?: boolean };
+  decoration?: {
+    badge?: string;
+    color?: string;
+    tooltip?: string;
+    strikethrough?: boolean;
+  };
 }

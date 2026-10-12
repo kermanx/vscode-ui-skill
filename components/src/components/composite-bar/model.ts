@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
-import type { CompositeItem } from "./types";
+import type { CompositeItem } from './types';
 export function visibleBadges(item: CompositeItem) {
   const badges = item.badges || [];
-  for (const type of ["progress", "icon", "number"] as const) {
+  for (const type of ['progress', 'icon', 'number'] as const) {
     const matching = badges.filter((badge) => badge.type === type);
     if (matching.length) return { badges: matching, type };
   }
@@ -10,15 +10,15 @@ export function visibleBadges(item: CompositeItem) {
 }
 export function badgeText(item: CompositeItem) {
   const { badges, type } = visibleBadges(item);
-  if (type !== "number") return "";
+  if (type !== 'number') return '';
   const number = badges.reduce(
-    (sum, badge) => sum + (badge.type === "number" ? badge.value : 0),
+    (sum, badge) => sum + (badge.type === 'number' ? badge.value : 0),
     0,
   );
-  if (number <= 0) return "";
+  if (number <= 0) return '';
   if (number <= 999) return String(number);
   const thousands = number / 1000;
-  return `${Math.floor(thousands)}K${thousands > Math.floor(thousands) ? "+" : ""}`;
+  return `${Math.floor(thousands)}K${thousands > Math.floor(thousands) ? '+' : ''}`;
 }
 export function title(item: CompositeItem) {
   let result = item.keybinding

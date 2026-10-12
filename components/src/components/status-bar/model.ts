@@ -3,12 +3,12 @@ import type {
   StatusBarEntry,
   StatusBarPriority,
   StatusBarLocation,
-} from "./types";
+} from './types';
 export function priority(entry: StatusBarEntry): StatusBarPriority {
   if (
     entry.priority &&
-    typeof entry.priority === "object" &&
-    "primary" in entry.priority
+    typeof entry.priority === 'object' &&
+    'primary' in entry.priority
   )
     return entry.priority;
   let secondary = 149417;
@@ -18,7 +18,7 @@ export function priority(entry: StatusBarEntry): StatusBarPriority {
 }
 export function relative(entry: StatusBarEntry): StatusBarLocation | undefined {
   const value = priority(entry).primary;
-  return typeof value === "number" ? undefined : value;
+  return typeof value === 'number' ? undefined : value;
 }
 /** Numeric priorities descend within each alignment, then relative entries join their reference. */
 export function orderEntries(
@@ -46,16 +46,16 @@ export function orderEntries(
     }
   }
   numbered.sort((a, b) => {
-    if ((a.alignment || "left") !== (b.alignment || "left"))
-      return a.alignment === "right" ? 1 : -1;
+    if ((a.alignment || 'left') !== (b.alignment || 'left'))
+      return a.alignment === 'right' ? 1 : -1;
     const pa = priority(a),
       pb = priority(b);
     const primaryA =
-      typeof pa.primary === "number"
+      typeof pa.primary === 'number'
         ? pa.primary
         : pa.primary.location.priority;
     const primaryB =
-      typeof pb.primary === "number"
+      typeof pb.primary === 'number'
         ? pb.primary
         : pb.primary.location.priority;
     return primaryB - primaryA || pb.secondary - pa.secondary;
@@ -66,9 +66,9 @@ export function orderEntries(
       (a, b) => priority(b).secondary - priority(a).secondary,
     );
     result.push(
-      ...group.filter((item) => relative(item)?.alignment === "left"),
+      ...group.filter((item) => relative(item)?.alignment === 'left'),
       entry,
-      ...group.filter((item) => relative(item)?.alignment === "right"),
+      ...group.filter((item) => relative(item)?.alignment === 'right'),
     );
     relatives.delete(entry.id);
   }
@@ -111,39 +111,39 @@ export function compactGroups(
     group.add(reference.id);
     classes
       .get(entry)!
-      .add(at.alignment === "left" ? "compact-right" : "compact-left");
+      .add(at.alignment === 'left' ? 'compact-right' : 'compact-left');
     classes
       .get(reference)!
-      .add(at.alignment === "left" ? "compact-left" : "compact-right");
+      .add(at.alignment === 'left' ? 'compact-left' : 'compact-right');
   }
-  for (const alignment of ["left", "right"]) {
+  for (const alignment of ['left', 'right']) {
     const aligned = entries.filter(
-      (entry) => (entry.alignment || "left") === alignment,
+      (entry) => (entry.alignment || 'left') === alignment,
     );
     const shown = aligned.filter((entry) => !hidden.includes(entry.id));
     if (shown.length) {
-      classes.get(shown[0]!)!.add("first-visible-item");
-      classes.get(shown.at(-1)!)!.add("last-visible-item");
+      classes.get(shown[0]!)!.add('first-visible-item');
+      classes.get(shown.at(-1)!)!.add('last-visible-item');
     }
-    const neighbors = alignment === "left" ? shown : [...shown].reverse();
+    const neighbors = alignment === 'left' ? shown : [...shown].reverse();
     neighbors.forEach((entry, index) => {
       const previous = neighbors[index - 1];
       const isCompact =
         previous &&
         classes
           .get(previous)!
-          .has(alignment === "left" ? "compact-right" : "compact-left") &&
+          .has(alignment === 'left' ? 'compact-right' : 'compact-left') &&
         classes
           .get(entry)!
-          .has(alignment === "left" ? "compact-left" : "compact-right");
+          .has(alignment === 'left' ? 'compact-left' : 'compact-right');
       if (
         previous?.kind &&
-        previous.kind !== "standard" &&
+        previous.kind !== 'standard' &&
         entry.kind &&
-        entry.kind !== "standard" &&
+        entry.kind !== 'standard' &&
         !isCompact
       )
-        classes.get(entry)!.add("visible-background-color-neighbor");
+        classes.get(entry)!.add('visible-background-color-neighbor');
     });
   }
   return { groups: [...groups.values()], classes };

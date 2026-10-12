@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
-const ellipsis = "\u2026";
-const unc = "\\\\";
+const ellipsis = '\u2026';
+const unc = '\\\\';
 const urlSchemaRegexp = /^[^:/\\?#]+?:\/\//;
-const home = "~";
+const home = '~';
 export function shorten(
   paths: string[],
-  defaultPathSeparator: string = "/",
+  defaultPathSeparator: string = '/',
 ): string[] {
   const shortenedPaths: string[] = new Array(paths.length);
 
@@ -15,7 +15,7 @@ export function shorten(
     let pathSeparator = defaultPathSeparator;
     const originalPath = paths[pathIndex];
 
-    if (originalPath === "") {
+    if (originalPath === '') {
       shortenedPaths[pathIndex] = `.${pathSeparator}`;
       continue;
     }
@@ -28,12 +28,12 @@ export function shorten(
     match = true;
 
     // trim for now and concatenate unc path (e.g. \\network) or root path (/etc, ~/etc) later
-    let prefix = "";
+    let prefix = '';
     let trimmedPath = originalPath;
     if (urlSchemaRegexp.test(trimmedPath)) {
-      prefix = trimmedPath.substr(0, trimmedPath.indexOf("//") + 2);
-      trimmedPath = trimmedPath.substr(trimmedPath.indexOf("//") + 2);
-      pathSeparator = "/";
+      prefix = trimmedPath.substr(0, trimmedPath.indexOf('//') + 2);
+      trimmedPath = trimmedPath.substr(trimmedPath.indexOf('//') + 2);
+      pathSeparator = '/';
     } else if (trimmedPath.indexOf(unc) === 0) {
       prefix = trimmedPath.substr(0, trimmedPath.indexOf(unc) + unc.length);
       trimmedPath = trimmedPath.substr(trimmedPath.indexOf(unc) + unc.length);
@@ -97,10 +97,10 @@ export function shorten(
 
         // found unique subpath
         if (!match) {
-          let result = "";
+          let result = '';
 
           // preserve disk drive or root prefix
-          if (segments[0].endsWith(":") || prefix !== "") {
+          if (segments[0].endsWith(':') || prefix !== '') {
             if (start === 1) {
               // extend subpath to include disk drive prefix
               start = 0;
@@ -127,7 +127,7 @@ export function shorten(
             // If the last segment is empty, preserve the trailing slash.
             if (
               start + subpathLength === segments.length - 1 &&
-              segments[segments.length - 1] === ""
+              segments[segments.length - 1] === ''
             ) {
               result = result + pathSeparator;
             } else {

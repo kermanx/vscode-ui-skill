@@ -8,30 +8,30 @@ import {
   ref,
   useId,
   watch,
-} from "vue";
-import ScrollableElement from "../scrollable-element/ScrollableElement.vue";
-import ProblemsFilter from "./ProblemsFilter.vue";
-import ProblemRow from "./ProblemRow.vue";
-import { lines, problemTree, resourceId, type ProblemNode } from "./model";
-import { useProblemTree } from "./useProblemTree";
+} from 'vue';
+import ScrollableElement from '../scrollable-element/ScrollableElement.vue';
+import ProblemsFilter from './ProblemsFilter.vue';
+import ProblemRow from './ProblemRow.vue';
+import { lines, problemTree, resourceId, type ProblemNode } from './model';
+import { useProblemTree } from './useProblemTree';
 import type {
   ProblemItem,
   ProblemOpenEvent,
   ProblemSeverity,
   ProblemsHandle,
-} from "./types";
+} from './types';
 const props = withDefaults(
   defineProps<{ items: readonly ProblemItem[]; height?: number }>(),
-  { height: 320 }
+  { height: 320 },
 );
-const filter = defineModel<string>("filter", { default: "" });
-const severities = defineModel<ProblemSeverity[]>("severities", {
-  default: () => ["error", "warning", "info"],
+const filter = defineModel<string>('filter', { default: '' });
+const severities = defineModel<ProblemSeverity[]>('severities', {
+  default: () => ['error', 'warning', 'info'],
 });
 // Resource IDs are `resource:${filePath}`; marker and related IDs come from the items.
-const expanded = defineModel<string[]>("expandedIds", { default: () => [] });
-const selected = defineModel<string[]>("selectedIds", { default: () => [] });
-const collapsedMessages = defineModel<string[]>("collapsedMessageIds", {
+const expanded = defineModel<string[]>('expandedIds', { default: () => [] });
+const selected = defineModel<string[]>('selectedIds', { default: () => [] });
+const collapsedMessages = defineModel<string[]>('collapsedMessageIds', {
   default: () => [],
 });
 const emit = defineEmits<{
@@ -49,16 +49,16 @@ const width = ref(720),
   appliedFilter = ref(filter.value),
   filterHeight = ref(44);
 const nodes = computed(() =>
-  problemTree(props.items, appliedFilter.value, severities.value)
+  problemTree(props.items, appliedFilter.value, severities.value),
 );
 const count = computed(() =>
-  nodes.value.reduce((total, node) => total + (node.children?.length || 0), 0)
+  nodes.value.reduce((total, node) => total + (node.children?.length || 0), 0),
 );
 const bodyHeight = computed(() =>
-  Math.max(0, props.height - filterHeight.value)
+  Math.max(0, props.height - filterHeight.value),
 );
 const rowHeight = (node: ProblemNode) =>
-  node.kind === "marker" && !collapsedMessages.value.includes(node.id)
+  node.kind === 'marker' && !collapsedMessages.value.includes(node.id)
     ? lines(node.item!.message).length * 22
     : 22;
 const tree = useProblemTree(
@@ -73,8 +73,8 @@ const tree = useProblemTree(
   selected,
   element,
   revealIndex,
-  (id) => emit("focusChange", id),
-  rowHeight
+  (id) => emit('focusChange', id),
+  rowHeight,
 );
 const { rows, focused, expandedSet, activeGuides } = tree;
 const positioned = computed(() => {
@@ -87,21 +87,21 @@ const positioned = computed(() => {
   });
 });
 const totalHeight = computed(() =>
-  positioned.value.reduce((total, row) => total + row.height, 0)
+  positioned.value.reduce((total, row) => total + row.height, 0),
 );
 const rendered = computed(() =>
   positioned.value.filter(
     (row) =>
       row.top + row.height >= scrollTop.value - 22 &&
-      row.top <= scrollTop.value + bodyHeight.value + 22
-  )
+      row.top <= scrollTop.value + bodyHeight.value + 22,
+  ),
 );
 const instance = useId(),
   rowId = (id: string) => `${instance}-${encodeURIComponent(id)}`;
 function setScroll(top: number) {
   scrollTop.value = Math.max(
     0,
-    Math.min(totalHeight.value - bodyHeight.value, top)
+    Math.min(totalHeight.value - bodyHeight.value, top),
   );
 }
 function revealIndex(index: number) {
@@ -112,9 +112,9 @@ function revealIndex(index: number) {
     setScroll(row.top + row.height - bodyHeight.value);
 }
 function open(node: ProblemNode, event: MouseEvent | KeyboardEvent) {
-  if (node.kind === "resource") return;
+  if (node.kind === 'resource') return;
   const pointer = event instanceof MouseEvent;
-  emit("open", {
+  emit('open', {
     id: node.id,
     location: node.related || node.item!,
     preserveFocus: pointer && event.detail !== 2,
@@ -125,12 +125,12 @@ function open(node: ProblemNode, event: MouseEvent | KeyboardEvent) {
 function click(row: (typeof rows.value)[number], event: MouseEvent) {
   if (
     (event.target as HTMLElement).closest(
-      ".actions,.multiline-actions,.monaco-link"
+      '.actions,.multiline-actions,.monaco-link',
     )
   )
     return;
   const twistie = (event.target as HTMLElement).classList.contains(
-    "monaco-tl-twistie"
+    'monaco-tl-twistie',
   );
   tree.click(row, event, twistie);
   if (!twistie && !event.ctrlKey && !event.metaKey && !event.shiftKey)
@@ -138,12 +138,12 @@ function click(row: (typeof rows.value)[number], event: MouseEvent) {
 }
 function keydown(event: KeyboardEvent) {
   if (event.target !== element.value) return;
-  if (event.key === "Escape") {
+  if (event.key === 'Escape') {
     if (selected.value.length > 1) {
       selected.value = focused.value ? [focused.value] : [];
-      const node = tree.all.value.get(focused.value || "")?.node;
-      if (node && node.kind !== "resource")
-        emit("open", {
+      const node = tree.all.value.get(focused.value || '')?.node;
+      if (node && node.kind !== 'resource')
+        emit('open', {
           id: node.id,
           location: node.related || node.item!,
           preserveFocus: true,
@@ -160,32 +160,32 @@ function keydown(event: KeyboardEvent) {
   }
   const previous = focused.value,
     followSelection =
-      selected.value.length <= 1 && selected.value.join() === (previous || "");
+      selected.value.length <= 1 && selected.value.join() === (previous || '');
   tree.keydown(event, scrollTop.value, bodyHeight.value, setScroll);
-  const node = tree.all.value.get(focused.value || "")?.node;
-  if (event.key === "Enter") {
-    if (node?.kind === "resource") {
+  const node = tree.all.value.get(focused.value || '')?.node;
+  if (event.key === 'Enter') {
+    if (node?.kind === 'resource') {
       const row = tree.all.value.get(node.id);
       if (row) tree.toggle(row);
     }
     if (node) open(node, event);
   } else if (
     [
-      "ArrowDown",
-      "ArrowUp",
-      "ArrowLeft",
-      "ArrowRight",
-      "Home",
-      "End",
-      "PageDown",
-      "PageUp",
+      'ArrowDown',
+      'ArrowUp',
+      'ArrowLeft',
+      'ArrowRight',
+      'Home',
+      'End',
+      'PageDown',
+      'PageUp',
     ].includes(event.key) &&
     followSelection &&
     previous !== focused.value
   ) {
     selected.value = focused.value ? [focused.value] : [];
-    if (node && node.kind !== "resource")
-      emit("open", {
+    if (node && node.kind !== 'resource')
+      emit('open', {
         id: node.id,
         location: node.related || node.item!,
         preserveFocus: true,
@@ -200,23 +200,23 @@ function multiline(id: string) {
     : [...collapsedMessages.value, id];
 }
 function clearFilters() {
-  filter.value = "";
-  appliedFilter.value = "";
-  severities.value = ["error", "warning", "info"];
+  filter.value = '';
+  appliedFilter.value = '';
+  severities.value = ['error', 'warning', 'info'];
 }
 function aria(node: ProblemNode) {
-  if (node.kind === "resource")
+  if (node.kind === 'resource')
     return `${
       props.items.filter((item) => item.resource === node.resource).length
     } problems in file ${node.label} of folder ${node.resource.slice(
       0,
-      node.resource.lastIndexOf("/")
+      node.resource.lastIndexOf('/'),
     )}`;
   if (node.related)
     return `${node.related.message} at line ${
       node.related.line
     } and character ${node.related.column} in ${node.resource
-      .split("/")
+      .split('/')
       .at(-1)}`;
   const item = node.item!;
   return `${item.severity[0].toUpperCase() + item.severity.slice(1)}: ${
@@ -224,8 +224,8 @@ function aria(node: ProblemNode) {
   } at line ${item.line} and character ${item.column}.${
     item.relatedInformation?.length
       ? ` This problem has references to ${item.relatedInformation.length} locations.`
-      : ""
-  }${item.source ? ` generated by ${item.source}` : ""}`;
+      : ''
+  }${item.source ? ` generated by ${item.source}` : ''}`;
 }
 watch(
   () => props.items,
@@ -241,34 +241,34 @@ watch(
         item.id,
         resourceId(item.resource),
         ...(item.relatedInformation || []).map((info) => info.id),
-      ])
+      ]),
     );
     expanded.value = [...existing].filter((id) => valid.has(id));
     selected.value = selected.value.filter((id) => valid.has(id));
     collapsedMessages.value = collapsedMessages.value.filter((id) =>
-      valid.has(id)
+      valid.has(id),
     );
     if (focused.value && !valid.has(focused.value)) tree.focus();
   },
-  { deep: true }
+  { deep: true },
 );
 const seenResources = new Set(props.items.map((item) => item.resource));
 if (!expanded.value.length) expanded.value = [...seenResources].map(resourceId);
 watch([filter, severities], () => {
-  if (filter.value === "") appliedFilter.value = "";
+  if (filter.value === '') appliedFilter.value = '';
 });
 watch(totalHeight, () =>
   nextTick(() => {
     setScroll(scrollTop.value);
     scrollable.value?.scanDomNode();
-  })
+  }),
 );
 let observer: ResizeObserver;
 onMounted(() => {
   observer = new ResizeObserver(() => {
     width.value = root.value?.clientWidth || 720;
     const filter = root.value?.querySelector<HTMLElement>(
-      ".viewpane-filter-container"
+      '.viewpane-filter-container',
     );
     filterHeight.value = (filter?.offsetHeight || 24) + 20;
   });
@@ -334,7 +334,7 @@ defineExpose(handle);
           @keydown="keydown"
           @mousedown="
             !($event.target as HTMLElement).closest(
-              '.action-label,.monaco-link'
+              '.action-label,.monaco-link',
             ) && element?.focus()
           "
         >
@@ -408,8 +408,7 @@ defineExpose(handle);
                       @action="emit('action', $event, row.node.item!)"
                     />
                   </div>
-                </div>
-              </div></div
+                </div> </div></div
           ></ScrollableElement>
         </div>
       </div>

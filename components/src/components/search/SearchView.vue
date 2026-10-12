@@ -50,6 +50,7 @@ const useIgnoreFiles = defineModel<boolean>('useIgnoreFiles', {
 const expanded = defineModel<string[]>('expandedIds', { default: () => [] });
 const selected = defineModel<string[]>('selectedIds', { default: () => [] });
 const emit = defineEmits<{
+  /** The host runs the search and supplies results/searched/searching afterward. */
   submit: [event: SearchSubmitEvent];
   cancel: [focus: boolean];
   open: [
@@ -61,6 +62,7 @@ const emit = defineEmits<{
       sideBySide: boolean;
     },
   ];
+  /** Request only: the host performs replacements and refreshes results. */
   replace: [event: { scope: 'all' | 'file' | 'match'; id?: string }];
   dismiss: [id: string];
   action: [id: string];

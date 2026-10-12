@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /* Copyright (c) Microsoft Corporation. Licensed under the MIT License. */
-import { ref } from "vue";
-import "../action-bar/actionbar.css";
-import ListBase from "./ListBase.vue";
-import ActionBar from "../action-bar/ActionBar.vue";
-import type { ListItem } from "./types";
-import type { ContextMenuAnchor } from "../context-menu/types";
+import { ref } from 'vue';
+import '../action-bar/actionbar.css';
+import ListBase from './ListBase.vue';
+import ActionBar from '../action-bar/ActionBar.vue';
+import type { ListItem } from './types';
+import type { ContextMenuAnchor } from '../context-menu/types';
 const props = withDefaults(
   defineProps<{
     items: readonly ListItem[];
@@ -13,9 +13,9 @@ const props = withDefaults(
     height?: number;
     multiple?: boolean;
   }>(),
-  { ariaLabel: "List", height: 264, multiple: true },
+  { ariaLabel: 'List', height: 264, multiple: true },
 );
-const selected = defineModel<string[]>("selectedIds", { default: () => [] });
+const selected = defineModel<string[]>('selectedIds', { default: () => [] });
 const emit = defineEmits<{
   focusChange: [id: string | undefined];
   contextmenu: [

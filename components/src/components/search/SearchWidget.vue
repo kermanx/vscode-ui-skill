@@ -183,7 +183,8 @@ function replacementChanged() {
 onBeforeUnmount(() => clearTimeout(historyTimer));
 defineExpose({
   focus: (select = true, focusReplace = false) => {
-    const target = focusReplace && replaceShown.value ? replace.value : find.value;
+    const target =
+      focusReplace && replaceShown.value ? replace.value : find.value;
     target?.focus();
     if (select) target?.select();
   },

@@ -4,6 +4,12 @@ export function isContextMenuKey(event: KeyboardEvent): boolean {
   if (event.isComposing) return false;
   const agent = navigator.userAgent;
   // WebKit uses 93 for the right Command key on macOS.
-  const macMeta = agent.includes('Macintosh') && agent.includes('AppleWebKit') && !agent.includes('Firefox');
-  return (event.keyCode === 93 && !macMeta) || (event.shiftKey && event.keyCode === 121);
+  const macMeta =
+    agent.includes('Macintosh') &&
+    agent.includes('AppleWebKit') &&
+    !agent.includes('Firefox');
+  return (
+    (event.keyCode === 93 && !macMeta) ||
+    (event.shiftKey && event.keyCode === 121)
+  );
 }

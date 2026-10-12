@@ -343,8 +343,7 @@ defineExpose({
                   @checked="emit('checked', row.entry.id, $event)"
                   @button="emit('button', row, $event)"
                 />
-              </div>
-            </div></div
+              </div> </div></div
         ></template>
       </ScrollableElement>
     </div>

@@ -7,10 +7,26 @@
   Vue, so every optional node below is conditionally pushed instead.
 -->
 <script lang="ts">
-import { defineComponent, h, ref, shallowRef, watch, type PropType, type VNode } from 'vue';
+import {
+  defineComponent,
+  h,
+  ref,
+  shallowRef,
+  watch,
+  type PropType,
+  type VNode,
+} from 'vue';
 import HighlightedLabel from '../highlighted-label/HighlightedLabel.vue';
 import { asClassNameArray } from '../codicon/icons';
-import { asCssUrl, equals, escapeNewLines, isThemeIcon, splitMatches, type IconPath, type Match } from './iconLabel';
+import {
+  asCssUrl,
+  equals,
+  escapeNewLines,
+  isThemeIcon,
+  splitMatches,
+  type IconPath,
+  type Match,
+} from './iconLabel';
 export type { IconPath, Match, UriIconPath } from './iconLabel';
 
 /**
@@ -69,7 +85,10 @@ export default defineComponent({
   name: 'IconLabel',
   props: {
     /** Plain label, or the parts of a multi-part label (`a.label-name` per part). */
-    label: { type: [String, Array] as PropType<string | readonly string[]>, required: true },
+    label: {
+      type: [String, Array] as PropType<string | readonly string[]>,
+      required: true,
+    },
     /** Secondary text after the label, rendered at 0.9em and 0.7 opacity. */
     description: { type: String, default: undefined },
     /** Muted text between the name and the description containers. */
@@ -77,7 +96,10 @@ export default defineComponent({
     /** Ranges of `label` to wrap in `span.highlight`; needs `supportHighlights` or `supportIcons`. */
     matches: { type: Array as PropType<readonly Match[]>, default: undefined },
     /** Ranges of `description` to wrap in `span.highlight`; needs `supportDescriptionHighlights`. */
-    descriptionMatches: { type: Array as PropType<readonly Match[]>, default: undefined },
+    descriptionMatches: {
+      type: Array as PropType<readonly Match[]>,
+      default: undefined,
+    },
     /** Replaces CR/LF with `⏎`. Only the highlighted builders and the description escape. */
     labelEscapeNewLines: { type: Boolean, default: false },
     bold: { type: Boolean, default: false },
@@ -86,7 +108,10 @@ export default defineComponent({
     /** Adds `disabled` to the label container, which then uses `--vscode-disabledForeground`. */
     disabledCommand: { type: Boolean, default: false },
     /** Extra classes of the root, e.g. the tree row's `custom-view-tree-node-item-resourceLabel`. */
-    extraClasses: { type: Array as PropType<readonly string[]>, default: undefined },
+    extraClasses: {
+      type: Array as PropType<readonly string[]>,
+      default: undefined,
+    },
     /**
      * Leading icon: `{ id }` renders a codicon in the `monaco-icon-label-iconpath` slot, `{ uri }`
      * sets that slot's `background-image`. Unset removes the slot again.
@@ -106,7 +131,10 @@ export default defineComponent({
      * tooltip leaves the accessible name at the label. No tooltip is installed: the original uses a
      * managed hover, so neither page puts a `title` attribute on the DOM.
      */
-    title: { type: [String, Object] as PropType<string | MarkdownTitle>, default: undefined },
+    title: {
+      type: [String, Object] as PropType<string | MarkdownTitle>,
+      default: undefined,
+    },
     /** Creation option: build the name through `HighlightedLabel` (`span.highlight`, icons). */
     supportHighlights: { type: Boolean, default: false },
     /** Creation option: render `$(iconId)` markers in the name, and choose the highlighted builder. */
@@ -147,15 +175,26 @@ export default defineComponent({
     });
 
     /** The accessible name is `'' + label`, so a multi-part label joins with commas. */
-    const labelText = (label: string | readonly string[]): string => typeof label === 'string' ? label : Array.from(label).join(',');
+    const labelText = (label: string | readonly string[]): string =>
+      typeof label === 'string' ? label : Array.from(label).join(',');
 
     /** `LabelWithHighlights` is chosen when highlights or icons are supported, `Label` otherwise. */
-    const highlightedName = (): boolean => props.supportHighlights || props.supportIcons;
+    const highlightedName = (): boolean =>
+      props.supportHighlights || props.supportIcons;
 
-    function buildName(label: string | readonly string[], previous: NameState | undefined): NameState {
+    function buildName(
+      label: string | readonly string[],
+      previous: NameState | undefined,
+    ): NameState {
       const revision = (previous?.revision ?? 0) + 1;
       if (typeof label === 'string') {
-        return { multiple: false, revision, entries: [{ text: label, matches: props.matches ?? [], id: props.domId }] };
+        return {
+          multiple: false,
+          revision,
+          entries: [
+            { text: label, matches: props.matches ?? [], id: props.domId },
+          ],
+        };
       }
       const separator = props.separator || '/';
       const matches = splitMatches(label, separator, props.matches);
@@ -178,7 +217,12 @@ export default defineComponent({
       const label = props.label;
       const options = optionsSnapshot();
       const builder = highlightedName() ? 'highlights' : 'plain';
-      if (previous && appliedLabel === label && appliedBuilder === builder && equals(appliedOptions, options)) {
+      if (
+        previous &&
+        appliedLabel === label &&
+        appliedBuilder === builder &&
+        equals(appliedOptions, options)
+      ) {
         return previous;
       }
       appliedLabel = label;
@@ -194,23 +238,37 @@ export default defineComponent({
         return undefined;
       }
       if (isThemeIcon(iconPath)) {
-        return { classNames: ['monaco-icon-label-iconpath', ...asClassNameArray(iconPath)], url: '' };
+        return {
+          classNames: [
+            'monaco-icon-label-iconpath',
+            ...asClassNameArray(iconPath),
+          ],
+          url: '',
+        };
       }
       // The original only rewrites `className` for a ThemeIcon, so a URI keeps the codicon classes
       // of a ThemeIcon this label showed before.
-      return { classNames: previous?.classNames ?? ['monaco-icon-label-iconpath'], url: asCssUrl(iconPath.uri) };
+      return {
+        classNames: previous?.classNames ?? ['monaco-icon-label-iconpath'],
+        url: asCssUrl(iconPath.uri),
+      };
     }
 
     /** The description node is created once — a later `setLabel` without a description keeps it. */
-    function nextDescription(previous: DescriptionState | undefined): DescriptionState | undefined {
+    function nextDescription(
+      previous: DescriptionState | undefined,
+    ): DescriptionState | undefined {
       const description = props.description;
       if (!description && !previous) {
         return undefined;
       }
       return {
-        text: !props.supportDescriptionHighlights && description && props.labelEscapeNewLines
-          ? escapeNewLines(description)
-          : description ?? '',
+        text:
+          !props.supportDescriptionHighlights &&
+          description &&
+          props.labelEscapeNewLines
+            ? escapeNewLines(description)
+            : (description ?? ''),
         matches: props.descriptionMatches ?? [],
         escapeNewLines: props.labelEscapeNewLines,
         supportIcons: props.supportIcons,
@@ -219,7 +277,9 @@ export default defineComponent({
     }
 
     /** Same for the suffix container, which `dom.after` puts right behind the name container. */
-    function nextSuffix(previous: SuffixState | undefined): SuffixState | undefined {
+    function nextSuffix(
+      previous: SuffixState | undefined,
+    ): SuffixState | undefined {
       const suffix = props.suffix;
       if (!suffix && !previous) {
         return undefined;
@@ -250,7 +310,10 @@ export default defineComponent({
         containerClasses.push('disabled');
       }
       if (props.title) {
-        ariaLabel += typeof props.title === 'string' ? props.title : labelText(props.label);
+        ariaLabel +=
+          typeof props.title === 'string'
+            ? props.title
+            : labelText(props.label);
       }
 
       model.value = {
@@ -273,33 +336,57 @@ export default defineComponent({
       const highlighted = highlightedName();
       if (!name.multiple) {
         const entry = name.entries[0];
-        return [h('a', { class: 'label-name', id: entry.id, key: 'single' }, highlighted
-          ? [h(HighlightedLabel, {
-            text: entry.text, highlights: entry.matches,
-            escapeNewLines: props.labelEscapeNewLines, supportIcons: props.supportIcons,
-          })]
-          : entry.text)];
+        return [
+          h(
+            'a',
+            { class: 'label-name', id: entry.id, key: 'single' },
+            highlighted
+              ? [
+                  h(HighlightedLabel, {
+                    text: entry.text,
+                    highlights: entry.matches,
+                    escapeNewLines: props.labelEscapeNewLines,
+                    supportIcons: props.supportIcons,
+                  }),
+                ]
+              : entry.text,
+          ),
+        ];
       }
       const separator = props.separator || '/';
       const children: VNode[] = [];
       for (const [index, entry] of name.entries.entries()) {
         const last = index === name.entries.length - 1;
         const highlightedLabel = h(HighlightedLabel, {
-          text: entry.text, highlights: entry.matches,
-          escapeNewLines: props.labelEscapeNewLines, supportIcons: props.supportIcons,
+          text: entry.text,
+          highlights: entry.matches,
+          escapeNewLines: props.labelEscapeNewLines,
+          supportIcons: props.supportIcons,
         });
-        const separatorNode = h('span', { class: 'label-separator' }, separator);
-        children.push(h('a', {
-          class: 'label-name',
-          id: entry.id,
-          'data-icon-label-count': name.entries.length,
-          'data-icon-label-index': index,
-          role: 'treeitem',
-          // Every effective `setLabel` rebuilds the anchors upstream (`container.textContent = ''`).
-          key: `${name.revision}:${index}`,
-        }, highlighted
-          ? last ? [highlightedLabel] : [highlightedLabel, separatorNode]
-          : entry.text));
+        const separatorNode = h(
+          'span',
+          { class: 'label-separator' },
+          separator,
+        );
+        children.push(
+          h(
+            'a',
+            {
+              class: 'label-name',
+              id: entry.id,
+              'data-icon-label-count': name.entries.length,
+              'data-icon-label-index': index,
+              role: 'treeitem',
+              // Every effective `setLabel` rebuilds the anchors upstream (`container.textContent = ''`).
+              key: `${name.revision}:${index}`,
+            },
+            highlighted
+              ? last
+                ? [highlightedLabel]
+                : [highlightedLabel, separatorNode]
+              : entry.text,
+          ),
+        );
         if (!highlighted && !last) {
           children.push(separatorNode);
         }
@@ -310,26 +397,57 @@ export default defineComponent({
     /** The description: a highlighted builder, or a plain text node that keeps `margin-left: 0`. */
     function descriptionChildren(description: DescriptionState): VNode[] {
       if (props.supportDescriptionHighlights) {
-        return [h('span', { class: 'label-description' }, [h(HighlightedLabel, {
-          text: description.text, highlights: description.matches,
-          escapeNewLines: description.escapeNewLines, supportIcons: description.supportIcons,
-        })])];
+        return [
+          h('span', { class: 'label-description' }, [
+            h(HighlightedLabel, {
+              text: description.text,
+              highlights: description.matches,
+              escapeNewLines: description.escapeNewLines,
+              supportIcons: description.supportIcons,
+            }),
+          ]),
+        ];
       }
       // `FastLabelNode.empty` always writes `margin-left`: `''` for a description that has text,
       // `'0'` for an empty one. Writing `''` after `'0'` leaves the (empty) style attribute in place,
       // so the style object is never dropped.
-      return [h('span', {
-        class: 'label-description',
-        style: { marginLeft: description.empty ? '0' : '' },
-      }, description.text)];
+      return [
+        h(
+          'span',
+          {
+            class: 'label-description',
+            style: { marginLeft: description.empty ? '0' : '' },
+          },
+          description.text,
+        ),
+      ];
     }
 
-    watch(() => [
-      props.label, props.description, props.suffix, props.matches, props.descriptionMatches,
-      props.labelEscapeNewLines, props.bold, props.italic, props.strikethrough, props.disabledCommand,
-      props.extraClasses, props.iconPath, props.hideIcon, props.separator, props.domId, props.title,
-      props.supportHighlights, props.supportIcons, props.supportDescriptionHighlights,
-    ], setLabel, { immediate: true });
+    watch(
+      () => [
+        props.label,
+        props.description,
+        props.suffix,
+        props.matches,
+        props.descriptionMatches,
+        props.labelEscapeNewLines,
+        props.bold,
+        props.italic,
+        props.strikethrough,
+        props.disabledCommand,
+        props.extraClasses,
+        props.iconPath,
+        props.hideIcon,
+        props.separator,
+        props.domId,
+        props.title,
+        props.supportHighlights,
+        props.supportIcons,
+        props.supportDescriptionHighlights,
+      ],
+      setLabel,
+      { immediate: true },
+    );
 
     /** Original `get element`. */
     expose({ element: root });
@@ -339,31 +457,64 @@ export default defineComponent({
       const children: VNode[] = [];
       if (current.icon) {
         // The original prepends this node, so it always comes before the label container.
-        children.push(h('div', {
-          class: [...current.icon.classNames],
-          style: {
-            backgroundImage: current.icon.url,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-            backgroundSize: 'contain',
-          },
-          key: 'iconpath',
-        }));
+        children.push(
+          h('div', {
+            class: [...current.icon.classNames],
+            style: {
+              backgroundImage: current.icon.url,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              backgroundSize: 'contain',
+            },
+            key: 'iconpath',
+          }),
+        );
       }
-      const containerChildren: VNode[] = [h('span', {
-        class: ['monaco-icon-name-container', current.name.multiple ? 'multiple' : undefined],
-        key: 'name',
-      }, nameChildren(current.name))];
+      const containerChildren: VNode[] = [
+        h(
+          'span',
+          {
+            class: [
+              'monaco-icon-name-container',
+              current.name.multiple ? 'multiple' : undefined,
+            ],
+            key: 'name',
+          },
+          nameChildren(current.name),
+        ),
+      ];
       if (current.suffix) {
-        containerChildren.push(h('span', { class: 'monaco-icon-suffix-container', key: 'suffix' }, [
-          h('span', { class: 'label-suffix' }, current.suffix.text),
-        ]));
+        containerChildren.push(
+          h('span', { class: 'monaco-icon-suffix-container', key: 'suffix' }, [
+            h('span', { class: 'label-suffix' }, current.suffix.text),
+          ]),
+        );
       }
       if (current.description) {
-        containerChildren.push(h('span', { class: 'monaco-icon-description-container', key: 'description' }, descriptionChildren(current.description)));
+        containerChildren.push(
+          h(
+            'span',
+            { class: 'monaco-icon-description-container', key: 'description' },
+            descriptionChildren(current.description),
+          ),
+        );
       }
-      children.push(h('div', { class: [...current.containerClasses], key: 'container' }, containerChildren));
-      return h('div', { ref: root, class: [...current.rootClasses], 'aria-label': current.ariaLabel }, children);
+      children.push(
+        h(
+          'div',
+          { class: [...current.containerClasses], key: 'container' },
+          containerChildren,
+        ),
+      );
+      return h(
+        'div',
+        {
+          ref: root,
+          class: [...current.rootClasses],
+          'aria-label': current.ariaLabel,
+        },
+        children,
+      );
     };
   },
 });

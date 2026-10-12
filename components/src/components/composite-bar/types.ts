@@ -1,7 +1,7 @@
 export type CompositeBadge =
-  | { type: "number"; value: number; description?: string }
-  | { type: "icon"; icon: string; description?: string }
-  | { type: "progress"; description?: string };
+  | { type: 'number'; value: number; description?: string }
+  | { type: 'icon'; icon: string; description?: string }
+  | { type: 'progress'; description?: string };
 export interface CompositeItem {
   id: string;
   label: string;

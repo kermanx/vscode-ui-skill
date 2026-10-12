@@ -1,13 +1,13 @@
 <script setup lang="ts">
 /* Copyright (c) Microsoft Corporation. Licensed under the MIT License. */
-import { computed, ref } from "vue";
-import SplitView from "../split-view/SplitView.vue";
-import ListBase from "../list/ListBase.vue";
-import HighlightedLabel from "../highlighted-label/HighlightedLabel.vue";
-import KeybindingLabel from "../keybinding-label/KeybindingLabel.vue";
-import type { SplitViewHandle, SplitViewLayout } from "../split-view/types";
-import type { ContextMenuAnchor } from "../context-menu/types";
-import type { TableCell, TableColumn, TableRow } from "./types";
+import { computed, ref } from 'vue';
+import SplitView from '../split-view/SplitView.vue';
+import ListBase from '../list/ListBase.vue';
+import HighlightedLabel from '../highlighted-label/HighlightedLabel.vue';
+import KeybindingLabel from '../keybinding-label/KeybindingLabel.vue';
+import type { SplitViewHandle, SplitViewLayout } from '../split-view/types';
+import type { ContextMenuAnchor } from '../context-menu/types';
+import type { TableCell, TableColumn, TableRow } from './types';
 const props = withDefaults(
   defineProps<{
     columns: readonly TableColumn[];
@@ -16,9 +16,9 @@ const props = withDefaults(
     ariaLabel?: string;
     multiple?: boolean;
   }>(),
-  { height: 264, ariaLabel: "Table", multiple: true },
+  { height: 264, ariaLabel: 'Table', multiple: true },
 );
-const selected = defineModel<string[]>("selectedIds", { default: () => [] });
+const selected = defineModel<string[]>('selectedIds', { default: () => [] });
 const emit = defineEmits<{
   focusChange: [id: string | undefined];
   contextmenu: [
@@ -42,7 +42,7 @@ const views = computed(() =>
   })),
 );
 const cell = (value: string | TableCell | undefined): TableCell =>
-  typeof value === "string" ? { text: value } : (value ?? {});
+  typeof value === 'string' ? { text: value } : (value ?? {});
 const rowMap = computed(() => new Map(props.rows.map((row) => [row.id, row])));
 const items = computed(() =>
   props.rows.map((row) => ({
@@ -50,9 +50,9 @@ const items = computed(() =>
     label:
       row.label ??
       props.columns
-        .map((column) => cell(row.cells[column.id]).text ?? "")
+        .map((column) => cell(row.cells[column.id]).text ?? '')
         .filter(Boolean)
-        .join(", "),
+        .join(', '),
   })),
 );
 function layout(value: SplitViewLayout) {
@@ -70,7 +70,7 @@ function reset(index: number) {
   );
 }
 function columnResize(index: number) {
-  emit("columnResize", props.columns[index].id, widths.value[index], [
+  emit('columnResize', props.columns[index].id, widths.value[index], [
     ...widths.value,
   ]);
 }
@@ -175,10 +175,8 @@ defineExpose({
                     "
                     :highlights="
                       cell(rowMap.get(item.id)!.cells[column.id]).highlights
-                    "
-                  /></div></template
-            ></slot>
-          </div></div
+                    " /></div></template
+            ></slot> </div></div
       ></template>
     </ListBase>
   </div>
@@ -232,15 +230,15 @@ defineExpose({
   border-color: transparent;
 }
 .vc-table
-  .monaco-list-row[data-parity="odd"]:not(.focused):not(.selected):not(:hover)
+  .monaco-list-row[data-parity='odd']:not(.focused):not(.selected):not(:hover)
   .monaco-table-tr,
 .vc-table
   .monaco-list:not(:focus)
-  .monaco-list-row[data-parity="odd"].focused:not(.selected):not(:hover)
+  .monaco-list-row[data-parity='odd'].focused:not(.selected):not(:hover)
   .monaco-table-tr,
 .vc-table
   .monaco-list:not(.focused)
-  .monaco-list-row[data-parity="odd"].focused:not(.selected):not(:hover)
+  .monaco-list-row[data-parity='odd'].focused:not(.selected):not(:hover)
   .monaco-table-tr {
   background-color: var(--vscode-tree-tableOddRowsBackground);
 }

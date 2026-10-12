@@ -1,5 +1,5 @@
-import type { Highlight } from "../highlighted-label/HighlightedLabel.vue";
-import type { Chord, OperatingSystem } from "../keybinding-label/types";
+import type { Highlight } from '../highlighted-label/HighlightedLabel.vue';
+import type { Chord, OperatingSystem } from '../keybinding-label/types';
 export interface TableColumn {
   id: string;
   label: string;

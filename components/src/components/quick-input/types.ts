@@ -17,8 +17,11 @@ export interface QuickInputProps {
   prompt?: string;
   validationMessage?: string;
   severity?: QuickInputSeverity;
+  /** Makes the input read-only and disables shell actions without dismissing it. */
   enabled?: boolean;
+  /** Requests delayed progress feedback; does not disable or execute work. */
   busy?: boolean;
+  /** Keeps the surface open on blur; Escape and explicit hiding still work. */
   ignoreFocusOut?: boolean;
   backButton?: boolean;
   buttons?: readonly QuickInputButton[];

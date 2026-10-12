@@ -8,15 +8,15 @@ import {
   watch,
   onBeforeUnmount,
   onMounted,
-} from "vue";
-import { useList } from "./useList";
-import type { ListItem } from "./types";
-import { isContextMenuKey } from "../../internal/contextMenuKeyboard";
-import type { ContextMenuAnchor } from "../context-menu/types";
+} from 'vue';
+import { useList } from './useList';
+import type { ListItem } from './types';
+import { isContextMenuKey } from '../../internal/contextMenuKeyboard';
+import type { ContextMenuAnchor } from '../context-menu/types';
 import {
   StandardWheelEvent,
   type IMouseWheelEvent,
-} from "../../internal/standardWheelEvent";
+} from '../../internal/standardWheelEvent';
 
 const props = withDefaults(
   defineProps<{
@@ -27,9 +27,9 @@ const props = withDefaults(
     rowHeight?: number;
     multiple?: boolean;
   }>(),
-  { ariaLabel: "List", height: 264, rowHeight: 22, multiple: true },
+  { ariaLabel: 'List', height: 264, rowHeight: 22, multiple: true },
 );
-const selected = defineModel<string[]>("selectedIds", { default: () => [] });
+const selected = defineModel<string[]>('selectedIds', { default: () => [] });
 const emit = defineEmits<{
   focusChange: [id: string | undefined];
   contextmenu: [
@@ -64,7 +64,7 @@ const list = useList(
   props,
   selected,
   reveal,
-  (id) => emit("focusChange", id),
+  (id) => emit('focusChange', id),
   () => props.rowHeight,
 );
 const { focused } = list;
@@ -111,16 +111,16 @@ function keyup(event: KeyboardEvent) {
   const anchor = focused.value
     ? document.getElementById(rowId(focused.value)) || element.value
     : element.value;
-  emit("contextmenu", item, event, anchor);
+  emit('contextmenu', item, event, anchor);
 }
 function contextmenu(event: MouseEvent) {
   if (contextKeyDown) return;
   const id = (event.target as HTMLElement).closest<HTMLElement>(
-    ".monaco-list-row",
+    '.monaco-list-row',
   )?.dataset.id;
   list.focus(id);
   const item = rows.value.find((item) => item.id === focused.value);
-  emit("contextmenu", item, event, event);
+  emit('contextmenu', item, event, event);
 }
 function keydown(event: KeyboardEvent) {
   contextKeyDown = isContextMenuKey(event);
@@ -130,7 +130,7 @@ function keydown(event: KeyboardEvent) {
     return;
   }
   if (
-    event.key === "Tab" &&
+    event.key === 'Tab' &&
     event.target === element.value &&
     !event.shiftKey &&
     !event.altKey &&
@@ -139,12 +139,12 @@ function keydown(event: KeyboardEvent) {
     focused.value
   ) {
     const row = document.getElementById(rowId(focused.value));
-    const action = row?.querySelector<HTMLElement>("[tabindex]");
+    const action = row?.querySelector<HTMLElement>('[tabindex]');
     if (
       action &&
       action.tabIndex !== -1 &&
-      getComputedStyle(action).visibility !== "hidden" &&
-      getComputedStyle(action).display !== "none"
+      getComputedStyle(action).visibility !== 'hidden' &&
+      getComputedStyle(action).display !== 'none'
     ) {
       event.preventDefault();
       event.stopPropagation();
@@ -157,7 +157,7 @@ function keydown(event: KeyboardEvent) {
 
 function scroll() {
   scrollTop.value = viewport.value?.scrollTop ?? 0;
-  emit("scroll", scrollTop.value);
+  emit('scroll', scrollTop.value);
   showScrollbar();
 }
 function showScrollbar() {
@@ -173,7 +173,7 @@ function wheel(event: WheelEvent) {
   );
   let deltaY = normalized.deltaY;
   if (Math.abs(normalized.deltaX) > Math.abs(deltaY)) deltaY = 0;
-  if (!navigator.platform.includes("Mac") && event.shiftKey) deltaY = 0;
+  if (!navigator.platform.includes('Mac') && event.shiftKey) deltaY = 0;
   if (event.altKey) deltaY *= 5;
   const delta = 50 * deltaY;
   const previous = scrollTop.value;
@@ -188,7 +188,7 @@ function scrollbarDown(event: PointerEvent) {
   event.preventDefault();
   const track = event.currentTarget as HTMLElement;
   const onThumb = (event.target as HTMLElement).classList.contains(
-    "vc-list-thumb",
+    'vc-list-thumb',
   );
   if (!onThumb)
     setScroll(
@@ -207,13 +207,13 @@ function scrollbarDown(event: PointerEvent) {
     );
   const up = () => {
     dragging.value = false;
-    track.removeEventListener("pointermove", move);
-    track.removeEventListener("pointerup", up);
-    track.removeEventListener("lostpointercapture", up);
+    track.removeEventListener('pointermove', move);
+    track.removeEventListener('pointerup', up);
+    track.removeEventListener('lostpointercapture', up);
   };
-  track.addEventListener("pointermove", move);
-  track.addEventListener("pointerup", up);
-  track.addEventListener("lostpointercapture", up);
+  track.addEventListener('pointermove', move);
+  track.addEventListener('pointerup', up);
+  track.addEventListener('lostpointercapture', up);
 }
 defineExpose({
   focus: () => element.value?.focus(),

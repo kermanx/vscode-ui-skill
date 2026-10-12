@@ -8,4 +8,6 @@ export interface FindInputOptionsState {
   wholeWord: boolean;
   regex: boolean;
 }
-export interface FindInputEvent { fromCompositionEnd: boolean }
+export interface FindInputEvent {
+  fromCompositionEnd: boolean;
+}

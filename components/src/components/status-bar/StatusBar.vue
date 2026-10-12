@@ -7,14 +7,14 @@ import {
   onMounted,
   ref,
   watch,
-} from "vue";
-import ContextMenu from "../context-menu/ContextMenu.vue";
-import type { MenuEntry } from "../menu/types";
-import { provideInstantHoverDelegate } from "../tooltip/delegate";
-import StatusBarEntryView from "./StatusBarEntry.vue";
-import { compactGroups, orderEntries } from "./model";
-import type { StatusBarEntry, StatusBarCommand } from "./types";
-import "./statusbar.css";
+} from 'vue';
+import ContextMenu from '../context-menu/ContextMenu.vue';
+import type { MenuEntry } from '../menu/types';
+import { provideInstantHoverDelegate } from '../tooltip/delegate';
+import StatusBarEntryView from './StatusBarEntry.vue';
+import { compactGroups, orderEntries } from './model';
+import type { StatusBarEntry, StatusBarCommand } from './types';
+import './statusbar.css';
 const props = withDefaults(
   defineProps<{
     entries: readonly StatusBarEntry[];
@@ -22,20 +22,21 @@ const props = withDefaults(
     inactive?: boolean;
     ariaLabel?: string;
   }>(),
-  { hasFolder: true, inactive: false, ariaLabel: "Status Bar" },
+  { hasFolder: true, inactive: false, ariaLabel: 'Status Bar' },
 );
-const hiddenIds = defineModel<string[]>("hiddenIds", { default: () => [] });
+const hiddenIds = defineModel<string[]>('hiddenIds', { default: () => [] });
 const hiddenState = ref<string[]>([]);
 watch(
   hiddenIds,
   (value) => {
     hiddenState.value = [...value];
   },
-  { immediate: true, deep: true, flush: "sync" },
+  { immediate: true, deep: true, flush: 'sync' },
 );
 const emit = defineEmits<{
   command: [command: string | StatusBarCommand, entry: StatusBarEntry];
   visibility: [id: string, visible: boolean];
+  /** Escape from the bar itself; the host chooses where focus returns. */
   escape: [];
   hide: [];
 }>();
@@ -84,75 +85,75 @@ const entryKeys = computed(() => {
 const entries = computed(() => orderEntries(props.entries));
 const groups = computed(() => compactGroups(entries.value, hiddenState.value));
 const left = computed(() =>
-  entries.value.filter((entry) => entry.alignment !== "right"),
+  entries.value.filter((entry) => entry.alignment !== 'right'),
 );
 const right = computed(() =>
-  entries.value.filter((entry) => entry.alignment === "right").reverse(),
+  entries.value.filter((entry) => entry.alignment === 'right').reverse(),
 );
 const hovered = ref<string>();
 const colors = ref<Record<string, string>>({}),
   highContrast = ref(false);
 const platform =
-  typeof navigator !== "undefined" && /Mac/.test(navigator.platform)
-    ? "mac"
+  typeof navigator !== 'undefined' && /Mac/.test(navigator.platform)
+    ? 'mac'
     : undefined;
 let themeObserver: MutationObserver | undefined;
 function refreshTheme() {
   if (!element.value) return;
-  const theme = element.value.closest<HTMLElement>(".vc-theme"),
+  const theme = element.value.closest<HTMLElement>('.vc-theme'),
     style = getComputedStyle(element.value);
   const ids = [
-    "statusBar.background",
-    "statusBar.foreground",
-    "statusBar.inactiveBackground",
-    "statusBar.noFolderBackground",
-    "statusBar.noFolderForeground",
-    "statusBar.border",
-    "statusBar.noFolderBorder",
-    "statusBar.focusBorder",
-    "statusBarItem.focusBorder",
-    "statusBarItem.hoverBackground",
-    "statusBarItem.compactHoverBackground",
-    "contrastBorder",
-    "contrastActiveBorder",
+    'statusBar.background',
+    'statusBar.foreground',
+    'statusBar.inactiveBackground',
+    'statusBar.noFolderBackground',
+    'statusBar.noFolderForeground',
+    'statusBar.border',
+    'statusBar.noFolderBorder',
+    'statusBar.focusBorder',
+    'statusBarItem.focusBorder',
+    'statusBarItem.hoverBackground',
+    'statusBarItem.compactHoverBackground',
+    'contrastBorder',
+    'contrastActiveBorder',
   ];
   colors.value = Object.fromEntries(
     ids.map((id) => [
       id,
-      style.getPropertyValue(`--vscode-${id.replaceAll(".", "-")}`).trim(),
+      style.getPropertyValue(`--vscode-${id.replaceAll('.', '-')}`).trim(),
     ]),
   );
   highContrast.value =
-    theme?.dataset.theme === "hcDark" || theme?.dataset.theme === "hcLight";
+    theme?.dataset.theme === 'hcDark' || theme?.dataset.theme === 'hcLight';
 }
 const border = computed(
   () =>
     colors.value[
-      props.hasFolder ? "statusBar.border" : "statusBar.noFolderBorder"
+      props.hasFolder ? 'statusBar.border' : 'statusBar.noFolderBorder'
     ] || colors.value.contrastBorder,
 );
 const background = computed(
   () =>
     (props.hasFolder &&
       props.inactive &&
-      colors.value["statusBar.inactiveBackground"]) ||
+      colors.value['statusBar.inactiveBackground']) ||
     colors.value[
-      props.hasFolder ? "statusBar.background" : "statusBar.noFolderBackground"
+      props.hasFolder ? 'statusBar.background' : 'statusBar.noFolderBackground'
     ],
 );
 const style = computed(() => ({
   backgroundColor: background.value,
   color:
     colors.value[
-      props.hasFolder ? "statusBar.foreground" : "statusBar.noFolderForeground"
+      props.hasFolder ? 'statusBar.foreground' : 'statusBar.noFolderForeground'
     ],
-  "--status-border-top-color": border.value,
-  "--vc-statusbar-focus": colors.value["statusBar.focusBorder"],
-  "--vc-statusbar-entry-focus":
+  '--status-border-top-color': border.value,
+  '--vc-statusbar-focus': colors.value['statusBar.focusBorder'],
+  '--vc-statusbar-entry-focus':
     colors.value.contrastActiveBorder ||
-    colors.value["statusBarItem.focusBorder"],
-  "--vc-statusbar-focus-offset": border.value ? "-2px" : "-1px",
-  "--vc-statusbar-beak": border.value || background.value,
+    colors.value['statusBarItem.focusBorder'],
+  '--vc-statusbar-focus-offset': border.value ? '-2px' : '-1px',
+  '--vc-statusbar-beak': border.value || background.value,
 }));
 function hoverBackground(entry: StatusBarEntry) {
   if (!hovered.value || highContrast.value) return undefined;
@@ -160,8 +161,8 @@ function hoverBackground(entry: StatusBarEntry) {
   if (!group?.has(entry.id)) return undefined;
   return colors.value[
     hovered.value === entry.id
-      ? "statusBarItem.compactHoverBackground"
-      : "statusBarItem.hoverBackground"
+      ? 'statusBarItem.compactHoverBackground'
+      : 'statusBarItem.hoverBackground'
   ];
 }
 let lastFocused: StatusBarEntry | undefined,
@@ -213,17 +214,17 @@ function move(delta: number) {
 }
 function keyboard(event: KeyboardEvent) {
   if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-  if (["ArrowRight", "ArrowDown"].includes(event.key)) move(1);
-  else if (["ArrowLeft", "ArrowUp"].includes(event.key)) move(-1);
-  else if (event.key === "Home") {
+  if (['ArrowRight', 'ArrowDown'].includes(event.key)) move(1);
+  else if (['ArrowLeft', 'ArrowUp'].includes(event.key)) move(-1);
+  else if (event.key === 'Home') {
     focus(false);
     move(1);
-  } else if (event.key === "End") {
+  } else if (event.key === 'End') {
     focus(false);
     move(-1);
-  } else if (event.key === "Escape") {
+  } else if (event.key === 'Escape') {
     if (focusedEntry()) focus(false);
-    else emit("escape");
+    else emit('escape');
   } else return;
   event.preventDefault();
   event.stopPropagation();
@@ -235,7 +236,7 @@ function updateEntryVisibility(id: string, visible: boolean) {
     : [...hiddenState.value, id];
   hiddenIds.value = [...hiddenState.value];
   for (const entry of entries.value)
-    if (entry.id === id) emit("visibility", id, visible);
+    if (entry.id === id) emit('visibility', id, visible);
 }
 const menuActions = ref<MenuEntry[]>([]);
 const menuHandlers = new Map<string, () => void>();
@@ -253,7 +254,7 @@ async function showMenu(event: MouseEvent) {
     return { id, label, checked };
   }
   const items: MenuEntry[] = [
-      action("Hide Status Bar", () => emit("hide")),
+      action('Hide Status Bar', () => emit('hide')),
       { separator: true },
     ],
     handled = new Set<string>();
@@ -291,12 +292,12 @@ function menuAction(id: string) {
 }
 onMounted(() => {
   refreshTheme();
-  const theme = element.value?.closest(".vc-theme");
+  const theme = element.value?.closest('.vc-theme');
   if (theme) {
     themeObserver = new MutationObserver(refreshTheme);
     themeObserver.observe(theme, {
       attributes: true,
-      attributeFilter: ["data-theme", "style"],
+      attributeFilter: ['data-theme', 'style'],
     });
   }
 });

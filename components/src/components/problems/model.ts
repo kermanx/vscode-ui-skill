@@ -5,16 +5,16 @@ import {
   parse,
   splitGlobAware,
   type Match,
-} from "./matching.js";
+} from './matching.js';
 import type {
   ProblemItem,
   ProblemRelatedInformation,
   ProblemSeverity,
-} from "./types";
+} from './types';
 export interface ProblemNode {
   id: string;
   label: string;
-  kind: "resource" | "marker" | "related";
+  kind: 'resource' | 'marker' | 'related';
   resource: string;
   item?: ProblemItem;
   related?: ProblemRelatedInformation;
@@ -26,14 +26,14 @@ export interface ProblemNode {
   messageMatches?: Match[];
 }
 export const basename = (path: string) =>
-  path.substring(path.lastIndexOf("/") + 1);
+  path.substring(path.lastIndexOf('/') + 1);
 export const resourceId = (path: string) => `resource:${path}`;
 export const lines = (message: string) => message.split(/\r\n|\r|\n/);
 const ranks = { error: 8, warning: 4, info: 2 };
 export function problemTree(
   items: readonly ProblemItem[],
   filter: string,
-  severities: readonly ProblemSeverity[]
+  severities: readonly ProblemSeverity[],
 ): ProblemNode[] {
   const sources: string[] = [],
     excludes: string[] = [];
@@ -49,19 +49,19 @@ export function problemTree(
       text.slice(0, match.index) + text.slice(match.index + match[0].length)
     ).trim();
   }
-  const negate = text.startsWith("!"),
-    query = (negate ? text.replace(/^!+/, "") : text).trim();
+  const negate = text.startsWith('!'),
+    query = (negate ? text.replace(/^!+/, '') : text).trim();
   const includesExpression: Record<string, boolean> = {},
     excludesExpression: Record<string, boolean> = {};
-  for (let pattern of splitGlobAware(text, ",")
+  for (let pattern of splitGlobAware(text, ',')
     .map((s) => s.trim())
     .filter(Boolean)) {
-    const target = pattern.startsWith("!")
+    const target = pattern.startsWith('!')
       ? excludesExpression
       : includesExpression;
-    pattern = pattern.replace(/^!+/, "");
+    pattern = pattern.replace(/^!+/, '');
     if (!pattern) continue;
-    if (pattern[0] === ".") pattern = "*" + pattern;
+    if (pattern[0] === '.') pattern = '*' + pattern;
     target[`**/${pattern}/**`] = target[`**/${pattern}`] = true;
   }
   const include = parse(includesExpression),
@@ -80,14 +80,14 @@ export function problemTree(
           a.line - b.line ||
           a.column - b.column ||
           (a.endLine || a.line) - (b.endLine || b.line) ||
-          (a.endColumn || a.column) - (b.endColumn || b.column)
+          (a.endColumn || a.column) - (b.endColumn || b.column),
       );
       return { resource, entries };
     })
     .sort(
       (a, b) =>
         ranks[b.entries[0].severity] - ranks[a.entries[0].severity] ||
-        a.resource.localeCompare(b.resource)
+        a.resource.localeCompare(b.resource),
     )
     .flatMap(({ resource, entries }) => {
       if (exclude(resource)) return [];
@@ -106,7 +106,7 @@ export function problemTree(
         )
           return [];
         const lineMatches = lines(item.message).map(
-          (line) => matchesFuzzy(query, line) || []
+          (line) => matchesFuzzy(query, line) || [],
         );
         const sourceMatches = item.source
           ? matchesFuzzy2(query, item.source)
@@ -114,7 +114,7 @@ export function problemTree(
         const codeMatches = item.code
           ? matchesFuzzy2(
               query,
-              typeof item.code === "string" ? item.code : item.code.value
+              typeof item.code === 'string' ? item.code : item.code.value,
             )
           : null;
         const matched =
@@ -122,12 +122,12 @@ export function problemTree(
         const visibility = !query
           ? true
           : matched && !negate
-          ? true
-          : matched && negate && !parent
-          ? false
-          : !matched && negate && !parent
-          ? true
-          : parent;
+            ? true
+            : matched && negate && !parent
+              ? false
+              : !matched && negate && !parent
+                ? true
+                : parent;
         if (visibility === false) return [];
         const related = (item.relatedInformation || []).flatMap((info) => {
           const matches = query
@@ -140,18 +140,18 @@ export function problemTree(
           const visible = !query
             ? true
             : found && !negate
-            ? true
-            : found && negate && visibility === undefined
-            ? false
-            : !found && negate && visibility === undefined
-            ? true
-            : visibility;
+              ? true
+              : found && negate && visibility === undefined
+                ? false
+                : !found && negate && visibility === undefined
+                  ? true
+                  : visibility;
           return visible
             ? [
                 {
                   id: info.id,
                   label: info.message,
-                  kind: "related" as const,
+                  kind: 'related' as const,
                   resource: info.resource,
                   related: info,
                   item,
@@ -166,7 +166,7 @@ export function problemTree(
           {
             id: item.id,
             label: item.message,
-            kind: "marker" as const,
+            kind: 'marker' as const,
             resource,
             item,
             children: related,
@@ -181,7 +181,7 @@ export function problemTree(
             {
               id: resourceId(resource),
               label: basename(resource),
-              kind: "resource" as const,
+              kind: 'resource' as const,
               resource,
               children,
               matches: uriMatches || [],

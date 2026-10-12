@@ -8,28 +8,28 @@ export type OperatingSystem = 'macintosh' | 'windows' | 'linux';
 
 /** A modifier/key combination, i.e. one chord of a keybinding. */
 export interface Chord {
-	ctrlKey?: boolean;
-	shiftKey?: boolean;
-	altKey?: boolean;
-	metaKey?: boolean;
-	/** Key label for the active operating system, e.g. `K` or `F5`. */
-	key?: string;
-	/** Long key name used for the accessible name, e.g. `K` or `F5`. */
-	keyAriaLabel?: string;
+  ctrlKey?: boolean;
+  shiftKey?: boolean;
+  altKey?: boolean;
+  metaKey?: boolean;
+  /** Key label for the active operating system, e.g. `K` or `F5`. */
+  key?: string;
+  /** Long key name used for the accessible name, e.g. `K` or `F5`. */
+  keyAriaLabel?: string;
 }
 
 /** Which parts of a keybinding are currently matched by the user's input. */
 export interface ChordMatches {
-	ctrlKey?: boolean;
-	shiftKey?: boolean;
-	altKey?: boolean;
-	metaKey?: boolean;
-	keyCode?: boolean;
+  ctrlKey?: boolean;
+  shiftKey?: boolean;
+  altKey?: boolean;
+  metaKey?: boolean;
+  keyCode?: boolean;
 }
 
 export interface Matches {
-	/** Match state of the first chord. */
-	firstPart?: ChordMatches;
-	/** Match state of every following chord. */
-	chordPart?: ChordMatches;
+  /** Match state of the first chord. */
+  firstPart?: ChordMatches;
+  /** Match state of every following chord. */
+  chordPart?: ChordMatches;
 }

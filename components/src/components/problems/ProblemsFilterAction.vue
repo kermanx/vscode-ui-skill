@@ -1,10 +1,10 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
 <script setup lang="ts">
-import { ref } from "vue";
-import Tooltip from "../tooltip/Tooltip.vue";
-import Dropdown from "../dropdown/Dropdown.vue";
-import Menu from "../menu/Menu.vue";
-import type { MenuEntry } from "../menu/types";
+import { ref } from 'vue';
+import Tooltip from '../tooltip/Tooltip.vue';
+import Dropdown from '../dropdown/Dropdown.vue';
+import Menu from '../menu/Menu.vue';
+import type { MenuEntry } from '../menu/types';
 withDefaults(
   defineProps<{
     actions: readonly MenuEntry[];
@@ -14,7 +14,7 @@ withDefaults(
     icon?: string;
     checked?: boolean;
   }>(),
-  { label: "More Filters...", icon: "filter" }
+  { label: 'More Filters...', icon: 'filter' },
 );
 const emit = defineEmits<{ action: [id: string]; focus: [] }>();
 const anchor = ref<HTMLElement>(),
@@ -23,7 +23,7 @@ const anchor = ref<HTMLElement>(),
   open = ref(false);
 function keydown(event: KeyboardEvent) {
   if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-  if (event.key === "Enter" || event.key === " ") {
+  if (event.key === 'Enter' || event.key === ' ') {
     event.preventDefault();
     event.stopPropagation();
     open.value = !open.value;
@@ -31,7 +31,7 @@ function keydown(event: KeyboardEvent) {
 }
 function run(id: string) {
   popup.value?.close();
-  emit("action", id);
+  emit('action', id);
 }
 defineExpose({
   show: () => {

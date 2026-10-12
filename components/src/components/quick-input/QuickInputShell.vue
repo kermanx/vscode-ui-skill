@@ -18,13 +18,20 @@ import CountBadge from '../count-badge/CountBadge.vue';
 import Button from '../button/Button.vue';
 import type { QuickPickShellState } from './quickPickShell';
 import type { QuickInputHideReason, QuickInputProps } from './types';
-const props = withDefaults(defineProps<QuickInputProps & { picker?: QuickPickShellState }>(), {
-  enabled: true,
-  busy: false,
-  ignoreFocusOut: false,
-  severity: 'ignore',
-  buttons: () => [],
-});
+
+// Shared prompt/picker lifecycle. The caller owns acceptance and business actions;
+// this shell owns placement, dismissal, and returning focus to the opener.
+// quickInput.css also relies on theme/theme.css and the styles of child controls.
+const props = withDefaults(
+  defineProps<QuickInputProps & { picker?: QuickPickShellState }>(),
+  {
+    enabled: true,
+    busy: false,
+    ignoreFocusOut: false,
+    severity: 'ignore',
+    buttons: () => [],
+  },
+);
 const open = defineModel<boolean>('open', { default: false });
 const value = defineModel<string>('value', { default: '' });
 const emit = defineEmits<{
@@ -69,21 +76,31 @@ const showTitle = computed(
     props.backButton ||
     props.buttons.length > 0,
 );
-const showDescription = computed(() => !!props.description || (!props.picker && !!props.step));
-const descriptionBelow = computed(() => !props.picker || !props.picker.hideInput || (props.picker.canSelectMany && !props.picker.hideCheckAll));
+const showDescription = computed(
+  () => !!props.description || (!props.picker && !!props.step),
+);
+const descriptionBelow = computed(
+  () =>
+    !props.picker ||
+    !props.picker.hideInput ||
+    (props.picker.canSelectMany && !props.picker.hideCheckAll),
+);
 const inputLabel = computed(
   () =>
     props.ariaLabel ||
     (props.placeholder
       ? `${props.placeholder}${props.title ? ` - ${props.title}` : ''}`
-      : props.title || (props.picker ? 'Type to narrow down results.' : 'input')),
+      : props.title ||
+        (props.picker ? 'Type to narrow down results.' : 'input')),
 );
 const message = computed(
   () =>
     props.validationMessage ||
-    (props.picker ? props.prompt || '' : props.prompt
-      ? `${props.prompt} (Press 'Enter' to confirm or 'Escape' to cancel)`
-      : "Press 'Enter' to confirm your input or 'Escape' to cancel"),
+    (props.picker
+      ? props.prompt || ''
+      : props.prompt
+        ? `${props.prompt} (Press 'Enter' to confirm or 'Escape' to cancel)`
+        : "Press 'Enter' to confirm your input or 'Escape' to cancel"),
 );
 const inputMessage = computed(() =>
   props.severity === 'ignore'
@@ -119,7 +136,7 @@ function layout() {
   const parent = root.value?.parentElement;
   if (parent) {
     width.value = Math.min(parent.clientWidth * 0.62, 600);
-    maxListHeight.value = Math.floor(parent.clientHeight * 0.4 / 44) * 44 + 6;
+    maxListHeight.value = Math.floor((parent.clientHeight * 0.4) / 44) * 44 + 6;
     left.value = Math.round(parent.clientWidth * 0.5 - width.value / 2);
   }
 }
@@ -173,12 +190,17 @@ function hide(reason: QuickInputHideReason = 'other') {
   if (!active) return;
   const closingLifecycle = ++lifecycle;
   const returnFocus = previousFocus;
-  const restore = !!root.value?.contains(document.activeElement) && (reason !== 'blur' || document.hasFocus());
+  // Leaving the document (for example another iframe) must not steal focus back.
+  const restore =
+    !!root.value?.contains(document.activeElement) &&
+    (reason !== 'blur' || document.hasFocus());
   active = false;
   clearBusyTimer();
   window.removeEventListener('keydown', keydown);
   open.value = false;
   emit('hide', reason);
+  // Let the hidden DOM update first. A newer open/close cycle invalidates this
+  // callback so an old dismissal cannot focus over the newly opened picker.
   void nextTick(() => {
     if (closingLifecycle !== lifecycle) return;
     if (!disposed && open.value) {
@@ -230,6 +252,8 @@ function focusIn(event: FocusEvent) {
   )
     previousFocus = event.relatedTarget;
 }
+// A following focusIn cancels this timer when focus moves between child controls.
+// If focus leaves the entire surface, the timer performs the actual dismissal.
 function focusOut() {
   if (blurTimer !== undefined) clearTimeout(blurTimer);
   blurTimer = window.setTimeout(() => {
@@ -296,24 +320,49 @@ onBeforeUnmount(() => {
 function syncActiveDescendant() {
   const target = element();
   if (!target || document.activeElement !== target || !props.picker) return;
-  for (const [name, value] of Object.entries({ 'aria-activedescendant': props.picker.activeDescendant, 'aria-haspopup': props.picker.activeDescendant ? 'listbox' : undefined, 'aria-autocomplete': props.picker.activeDescendant ? 'list' : undefined })) {
-    if (value) target.setAttribute(name, value); else target.removeAttribute(name);
+  for (const [name, value] of Object.entries({
+    'aria-activedescendant': props.picker.activeDescendant,
+    'aria-haspopup': props.picker.activeDescendant ? 'listbox' : undefined,
+    'aria-autocomplete': props.picker.activeDescendant ? 'list' : undefined,
+  })) {
+    if (value) target.setAttribute(name, value);
+    else target.removeAttribute(name);
   }
 }
 function inputKeydown(event: KeyboardEvent) {
-  if (props.picker && !['Shift','Control','Alt','Meta'].includes(event.key)) {
-    for (const name of ['aria-activedescendant','aria-haspopup','aria-autocomplete']) element()?.removeAttribute(name);
+  if (
+    props.picker &&
+    !['Shift', 'Control', 'Alt', 'Meta'].includes(event.key)
+  ) {
+    for (const name of [
+      'aria-activedescendant',
+      'aria-haspopup',
+      'aria-autocomplete',
+    ])
+      element()?.removeAttribute(name);
   }
 }
-watch(() => props.picker?.activeDescendant, () => nextTick(syncActiveDescendant));
-defineExpose({ hide, accept, focus, getInput: element, getRoot: () => root.value });
+watch(
+  () => props.picker?.activeDescendant,
+  () => nextTick(syncActiveDescendant),
+);
+defineExpose({
+  hide,
+  accept,
+  focus,
+  getInput: element,
+  getRoot: () => root.value,
+});
 </script>
 <template>
   <div
     ref="root"
     v-show="open"
     class="quick-input-widget show-file-icons"
-    :class="{ 'show-checkboxes': picker?.canSelectMany, 'hidden-input': picker?.hideInput && !description }"
+    :class="{
+      'show-checkboxes': picker?.canSelectMany,
+      'hidden-input': picker?.hideInput && !description,
+    }"
     tabindex="-1"
     :style="{
       width: `${width}px`,
@@ -347,11 +396,31 @@ defineExpose({ hide, accept, focus, getInput: element, getRoot: () => root.value
       />
     </div>
     <div class="quick-input-header">
-      <CheckboxControl v-if="picker && picker.canSelectMany && !picker.hideCheckAll" compact :checked="picker.allVisibleChecked" :disabled="!enabled" aria-label="Toggle all checkboxes" @change="(checked, viaKeyboard) => { emit('toggleAll', checked); if (!viaKeyboard) input?.focus(); }" />
-      <div class="quick-input-description" :style="{ display: showDescription && !descriptionBelow ? undefined : 'none' }">
+      <CheckboxControl
+        v-if="picker && picker.canSelectMany && !picker.hideCheckAll"
+        compact
+        :checked="picker.allVisibleChecked"
+        :disabled="!enabled"
+        aria-label="Toggle all checkboxes"
+        @change="
+          (checked, viaKeyboard) => {
+            emit('toggleAll', checked);
+            if (!viaKeyboard) input?.focus();
+          }
+        "
+      />
+      <div
+        class="quick-input-description"
+        :style="{
+          display: showDescription && !descriptionBelow ? undefined : 'none',
+        }"
+      >
         {{ description }}
       </div>
-      <div class="quick-input-and-message" :style="{ display: picker?.hideInput ? 'none' : undefined }">
+      <div
+        class="quick-input-and-message"
+        :style="{ display: picker?.hideInput ? 'none' : undefined }"
+      >
         <div class="quick-input-filter">
           <div class="quick-input-box">
             <FindInput
@@ -367,25 +436,53 @@ defineExpose({ hide, accept, focus, getInput: element, getRoot: () => root.value
               @keydown="inputKeydown"
             />
           </div>
-          <div v-if="picker" class="quick-input-visible-count" aria-live="polite" aria-atomic="true"><CountBadge :count="picker.visibleCount" count-format="{0} Results" /></div>
-          <div v-if="picker?.canSelectMany && !picker.hideCountBadge" class="quick-input-count" aria-live="polite"><CountBadge :count="picker.selectedCount" count-format="{0} Selected" /></div>
+          <div
+            v-if="picker"
+            class="quick-input-visible-count"
+            aria-live="polite"
+            aria-atomic="true"
+            ><CountBadge
+              :count="picker.visibleCount"
+              count-format="{0} Results"
+          /></div>
+          <div
+            v-if="picker?.canSelectMany && !picker.hideCountBadge"
+            class="quick-input-count"
+            aria-live="polite"
+            ><CountBadge
+              :count="picker.selectedCount"
+              count-format="{0} Selected"
+          /></div>
         </div>
         <div
           :id="`${prefix}message`"
           class="quick-input-message"
-          :style="{ ...messageStyle, display: picker && !message ? 'none' : undefined }"
+          :style="{
+            ...messageStyle,
+            display: picker && !message ? 'none' : undefined,
+          }"
         >
           <QuickInputMessage :text="message" @link="emit('link', $event)" />
         </div>
       </div>
       <Toolbar class="quick-input-inline-action-bar" :primary="[]" />
-      <div v-if="picker?.showOk" class="quick-input-action"><Button :label="picker.okLabel" :disabled="!enabled" @click="accept" /></div>
+      <div v-if="picker?.showOk" class="quick-input-action"
+        ><Button :label="picker.okLabel" :disabled="!enabled" @click="accept"
+      /></div>
     </div>
-    <ProgressBar ref="progress" class="quick-input-progress" :style="{ display: picker?.hideInput && !description ? 'none' : undefined }" />
+    <ProgressBar
+      ref="progress"
+      class="quick-input-progress"
+      :style="{
+        display: picker?.hideInput && !description ? 'none' : undefined,
+      }"
+    />
     <div class="quick-input-html-widget" tabindex="-1" />
     <div
       class="quick-input-description"
-      :style="{ display: showDescription && descriptionBelow ? undefined : 'none' }"
+      :style="{
+        display: showDescription && descriptionBelow ? undefined : 'none',
+      }"
     >
       {{ description }}
     </div>

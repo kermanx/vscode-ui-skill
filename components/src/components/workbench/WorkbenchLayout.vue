@@ -1,33 +1,33 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import SplitView from "../split-view/SplitView.vue";
-import type { SplitViewItem, SplitViewLayout } from "../split-view/types";
+import { computed, ref, watch } from 'vue';
+import SplitView from '../split-view/SplitView.vue';
+import type { SplitViewItem, SplitViewLayout } from '../split-view/types';
 const props = withDefaults(
   defineProps<{
-    sidebarSide?: "left" | "right";
+    sidebarSide?: 'left' | 'right';
     preferredSidebarWidth?: number;
   }>(),
-  { sidebarSide: "left", preferredSidebarWidth: 300 },
+  { sidebarSide: 'left', preferredSidebarWidth: 300 },
 );
-const sidebarVisible = defineModel<boolean>("sidebarVisible", {
+const sidebarVisible = defineModel<boolean>('sidebarVisible', {
   default: true,
 });
-const panelVisible = defineModel<boolean>("panelVisible", { default: true });
-const activityBarVisible = defineModel<boolean>("activityBarVisible", {
+const panelVisible = defineModel<boolean>('panelVisible', { default: true });
+const activityBarVisible = defineModel<boolean>('activityBarVisible', {
   default: true,
 });
-const statusBarVisible = defineModel<boolean>("statusBarVisible", {
+const statusBarVisible = defineModel<boolean>('statusBarVisible', {
   default: true,
 });
-const sidebarWidth = defineModel<number>("sidebarWidth", { default: 300 });
-const panelHeight = defineModel<number>("panelHeight", { default: 300 });
+const sidebarWidth = defineModel<number>('sidebarWidth', { default: 300 });
+const panelHeight = defineModel<number>('panelHeight', { default: 300 });
 const root = ref<HTMLElement>(),
   horizontal = ref<InstanceType<typeof SplitView>>(),
   vertical = ref<InstanceType<typeof SplitView>>();
 const columns = computed<SplitViewItem[]>(() => {
   const activity: SplitViewItem = {
-    id: "activity",
+    id: 'activity',
     size: 48,
     minimumSize: 48,
     maximumSize: 48,
@@ -35,35 +35,35 @@ const columns = computed<SplitViewItem[]>(() => {
     visible: activityBarVisible.value,
   };
   const sidebar: SplitViewItem = {
-    id: "sidebar",
+    id: 'sidebar',
     size: sidebarWidth.value,
     minimumSize: 170,
-    priority: "low",
+    priority: 'low',
     proportionalLayout: false,
     snap: true,
     visible: sidebarVisible.value,
   };
   const center: SplitViewItem = {
-    id: "center",
+    id: 'center',
     size: 10000,
     minimumSize: panelVisible.value ? 300 : 220,
-    priority: "high",
+    priority: 'high',
     proportionalLayout: false,
   };
-  return props.sidebarSide === "left"
+  return props.sidebarSide === 'left'
     ? [activity, sidebar, center]
     : [center, sidebar, activity];
 });
 const frameRows = computed<SplitViewItem[]>(() => [
   {
-    id: "main",
+    id: 'main',
     size: 10000,
     minimumSize: panelVisible.value ? 147 : 70,
-    priority: "high",
+    priority: 'high',
     proportionalLayout: false,
   },
   {
-    id: "status",
+    id: 'status',
     size: 22,
     minimumSize: 22,
     maximumSize: 22,
@@ -73,14 +73,14 @@ const frameRows = computed<SplitViewItem[]>(() => [
 ]);
 const rows = computed<SplitViewItem[]>(() => [
   {
-    id: "editor",
+    id: 'editor',
     size: 10000,
     minimumSize: 70,
-    priority: "high",
+    priority: 'high',
     proportionalLayout: false,
   },
   {
-    id: "panel",
+    id: 'panel',
     size: panelHeight.value,
     minimumSize: 77,
     proportionalLayout: false,
@@ -89,7 +89,7 @@ const rows = computed<SplitViewItem[]>(() => [
   },
 ]);
 function horizontalLayout(layout: SplitViewLayout) {
-  const index = columns.value.findIndex((view) => view.id === "sidebar");
+  const index = columns.value.findIndex((view) => view.id === 'sidebar');
   sidebarVisible.value = layout.visible[index]!;
   if (layout.visible[index]) sidebarWidth.value = layout.sizes[index]!;
 }
@@ -98,7 +98,7 @@ function verticalLayout(layout: SplitViewLayout) {
   if (layout.visible[1]) panelHeight.value = layout.sizes[1]!;
 }
 watch(sidebarWidth, (value) => {
-  const index = columns.value.findIndex((view) => view.id === "sidebar");
+  const index = columns.value.findIndex((view) => view.id === 'sidebar');
   if (sidebarVisible.value) horizontal.value?.resizeView(index, value);
 });
 watch(panelHeight, (value) => {
@@ -110,7 +110,7 @@ function resetSidebar() {
 function resetPanel() {
   panelHeight.value = Math.round((root.value?.clientHeight || 750) * 0.4);
 }
-function focus(part: "activity" | "sidebar" | "editor" | "panel" | "status") {
+function focus(part: 'activity' | 'sidebar' | 'editor' | 'panel' | 'status') {
   root.value
     ?.querySelector<HTMLElement>(
       `[data-workbench-part="${part}"] [tabindex="0"], [data-workbench-part="${part}"] button, [data-workbench-part="${part}"] input`,

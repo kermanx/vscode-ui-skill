@@ -4,6 +4,7 @@
 @import '../components/codicon/glyphs.css';
 @import '../components/codicon/variables.css';
 
+/* Theme host: inherited typography, surface colors, and overlay containment. */
 .vc-theme {
   --monaco-monospace-font: var(--vc-platform-monospace-font, "SF Mono", Monaco, Menlo, Courier, monospace);
   --vscode-icon-chevron-down-content: "\eab4";
@@ -26,6 +27,7 @@
   color: var(--vscode-foreground);
   background: var(--vscode-sideBar-background);
 }
+/* Shared focus treatment. Composite controls use synthetic-focus on their root. */
 .vc-theme [tabindex="0"]:focus,
 .vc-theme [tabindex="-1"]:focus,
 .vc-theme .synthetic-focus,
@@ -45,6 +47,7 @@
 .vc-theme select:active,
 .vc-theme input[type="button"]:active,
 .vc-theme input[type="checkbox"]:active { outline: 0 !important; }
+/* Native inputs inherit the host font; validation controls own their outline. */
 .vc-theme input { color: inherit; font-family: inherit; font-size: 100%; }
 .vc-theme input::placeholder,
 .vc-theme textarea::placeholder { color: var(--vscode-input-placeholderForeground); }
@@ -59,6 +62,7 @@
 .vc-theme .monaco-inputbox.warning input[type="text"]:focus,
 .vc-theme .monaco-inputbox.error input[type="text"]:focus { outline: 0 !important; }
 .vc-theme a:active { color: inherit; background-color: inherit; }
+/* Icons and action feedback inherit semantic colors from the active theme. */
 .vc-theme .codicon { color: var(--vscode-icon-foreground); }
 .vc-theme .codicon[class*='codicon-'] { font-size: 16px; }
 .vc-theme .monaco-action-bar:not(.vertical) .action-label:not(.disabled):hover { background-color: var(--vscode-toolbar-hoverBackground); }

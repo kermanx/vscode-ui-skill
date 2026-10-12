@@ -4,4 +4,6 @@ export interface DropdownPopupHost {
   container: Ref<HTMLElement | undefined>;
   layer: number;
 }
-export const dropdownPopupHost: InjectionKey<DropdownPopupHost> = Symbol('dropdown-popup-host');
+export const dropdownPopupHost: InjectionKey<DropdownPopupHost> = Symbol(
+  'dropdown-popup-host',
+);

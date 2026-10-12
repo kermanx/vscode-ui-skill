@@ -17,17 +17,20 @@ import { pauseCSSAnimationsWhenHidden } from './animationSync';
  * Not ported: nothing else. The 6 dots, their order, the grid/ring class names, the
  * aria contract and the offscreen pause are the same as the pinned workbench.
  */
-const props = withDefaults(defineProps<{
-  /** `'grid'` (default) cascades six dots down a 2×3 grid; `'ring'` orbits a highlight around them. */
-  variant?: 'grid' | 'ring';
-  /**
-   * Accessible label. When set, the spinner is `role="status"` with this `aria-label`
-   * so screen readers announce a busy state; when omitted or an empty string it is purely
-   * decorative and gets `aria-hidden="true"` instead. Exactly like the original, the test is
-   * truthiness — a whitespace-only label is passed through as a (blank) status name.
-   */
-  ariaLabel?: string;
-}>(), { variant: 'grid' });
+const props = withDefaults(
+  defineProps<{
+    /** `'grid'` (default) cascades six dots down a 2×3 grid; `'ring'` orbits a highlight around them. */
+    variant?: 'grid' | 'ring';
+    /**
+     * Accessible label. When set, the spinner is `role="status"` with this `aria-label`
+     * so screen readers announce a busy state; when omitted or an empty string it is purely
+     * decorative and gets `aria-hidden="true"` instead. Exactly like the original, the test is
+     * truthiness — a whitespace-only label is passed through as a (blank) status name.
+     */
+    ariaLabel?: string;
+  }>(),
+  { variant: 'grid' },
+);
 
 const element = ref<HTMLElement>();
 
@@ -61,7 +64,9 @@ function track(): void {
     pausedClass: PAUSED_CLASS,
     subtree: true,
     animationNames: SPINNER_ANIMATION_NAMES,
-    onPausedChange: value => { paused.value = value; },
+    onPausedChange: (value) => {
+      paused.value = value;
+    },
   });
 }
 
@@ -86,9 +91,17 @@ defineExpose({ element });
 <template>
   <!-- `null` bindings remove the attribute, which is what the `role`/`aria-*` contract needs;
        the casts are only there because Vue's JSX types do not model attribute removal. -->
-  <span ref="element" class="monaco-pixel-spinner"
-    :class="{ 'monaco-pixel-spinner-ring': variant === 'ring', 'monaco-pixel-spinner-paused': paused }"
-    :role="(label ? 'status' : null) as any" :aria-label="(label as any)" :aria-hidden="(label ? null : 'true') as any">
+  <span
+    ref="element"
+    class="monaco-pixel-spinner"
+    :class="{
+      'monaco-pixel-spinner-ring': variant === 'ring',
+      'monaco-pixel-spinner-paused': paused,
+    }"
+    :role="(label ? 'status' : null) as any"
+    :aria-label="label as any"
+    :aria-hidden="(label ? null : 'true') as any"
+  >
     <span v-for="index in 6" :key="index" class="monaco-pixel-spinner-dot" />
   </span>
 </template>

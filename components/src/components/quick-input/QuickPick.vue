@@ -29,6 +29,8 @@ const props = withDefaults(defineProps<QuickPickProps>(), {
 });
 const open = defineModel<boolean>('open', { default: false });
 const value = defineModel<string>('value', { default: '' });
+// Active IDs track keyboard focus; selected IDs track the result/checkbox state.
+// Moving focus alone must not toggle a multi-select checkbox.
 const activeModel = defineModel<string[]>('activeIds', { default: () => [] });
 const selectedModel = defineModel<string[]>('selectedIds', {
   default: () => [],
@@ -37,7 +39,9 @@ const activeIds = ref(activeModel.value.slice());
 const selectedIds = ref(selectedModel.value.slice());
 const checkedIds = ref(selectedModel.value.slice());
 const emit = defineEmits<{
+  /** Does not close the picker; the caller decides whether to keep it open. */
   accept: [event: QuickPickAcceptEvent];
+  /** Synchronous hook: call veto() during this event to suppress accept. */
   willAccept: [event: QuickPickWillAcceptEvent];
   hide: [reason: QuickInputHideReason];
   button: [id: string];
@@ -111,8 +115,14 @@ function selection(ids: string[], force = false) {
   selectedModel.value = ids;
   emit('selectionChange', ids.slice());
 }
+// Filtering changes visible rows without discarding checked items outside the query.
 function filter() {
-  const result = filterQuickPick(model, props.items, props.filterValue?.(value.value) ?? value.value, props);
+  const result = filterQuickPick(
+    model,
+    props.items,
+    props.filterValue?.(value.value) ?? value.value,
+    props,
+  );
   rows.value = result.rows.map((row) => ({ ...row }));
   void nextTick(() => list.value?.layout());
   return result.didFilter;
@@ -154,6 +164,7 @@ async function initialize() {
   activation = 'first';
   initialized = true;
 }
+// Navigation changes the active row and reveals it after list layout.
 async function moveFocus(what: QuickPickFocus) {
   const items = itemRows.value;
   if (!items.length) {
@@ -296,6 +307,7 @@ async function focusItem(what: QuickPickFocus) {
   if (props.canSelectMany) list.value?.focus();
   await moving;
 }
+// Acceptance and checkbox selection share state but have separate event timing.
 function handleAccept(inBackground: boolean) {
   let veto = false;
   emit('willAccept', {
@@ -324,7 +336,8 @@ function uiAccept() {
 }
 function checked(id: string, check: boolean) {
   const item = model.items.find((row) => row.entry.id === id)?.entry as
-    QuickPickItem | undefined;
+    | QuickPickItem
+    | undefined;
   if (!item || item.disabled || item.pickable === false) return;
   const ids = new Set(checkedIds.value);
   if (check) ids.add(id);
@@ -373,7 +386,8 @@ function select(id: string, event: MouseEvent) {
     return;
   }
   const item = model.items.find((row) => row.entry.id === id)?.entry as
-    QuickPickItem | undefined;
+    | QuickPickItem
+    | undefined;
   keyMods = {
     ctrlCmd: event.ctrlKey || event.metaKey,
     alt: event.altKey,
@@ -441,6 +455,7 @@ function keydown(event: KeyboardEvent) {
     accept(true);
   }
 }
+// Reconcile caller-owned models and item updates with the visible list.
 watch(value, (next, previous) => {
   if (!initialized || !open.value || next === previous) return;
   if (filter()) {

@@ -10,18 +10,18 @@ import {
   ref,
   shallowRef,
   watch,
-} from "vue";
-import NotificationsList from "./NotificationsList.vue";
-import { ariaLabel, hasPrimaryActions, isSticky } from "./notificationState";
-import { notificationKeyboard } from "./notificationKeyboard";
-import { notificationFilters } from "./notificationFilters";
-import { dropdownPopupHost } from "../dropdown/popupHost";
+} from 'vue';
+import NotificationsList from './NotificationsList.vue';
+import { ariaLabel, hasPrimaryActions, isSticky } from './notificationState';
+import { notificationKeyboard } from './notificationKeyboard';
+import { notificationFilters } from './notificationFilters';
+import { dropdownPopupHost } from '../dropdown/popupHost';
 import type {
   NotificationItem,
   NotificationPosition,
   NotificationsListHandle,
-} from "./types";
-import "./notificationsToasts.css";
+} from './types';
+import './notificationsToasts.css';
 
 const props = withDefaults(
   defineProps<{
@@ -31,16 +31,16 @@ const props = withDefaults(
     centerVisible?: boolean;
   }>(),
   {
-    position: "bottom-right",
+    position: 'bottom-right',
     statusBarVisible: true,
     titleBarVisible: false,
     centerVisible: false,
   },
 );
-const items = defineModel<readonly NotificationItem[]>("items", {
+const items = defineModel<readonly NotificationItem[]>('items', {
   default: () => [],
 });
-const expandedIds = defineModel<readonly string[]>("expandedIds", {
+const expandedIds = defineModel<readonly string[]>('expandedIds', {
   default: () => [],
 });
 const emit = defineEmits<{
@@ -88,9 +88,9 @@ let observer: ResizeObserver | undefined,
   lastIncrementTime = 0,
   countInInterval = 0;
 const timeout = (item: NotificationItem) =>
-  item.severity === "error"
+  item.severity === 'error'
     ? 15000
-    : item.severity === "warning"
+    : item.severity === 'warning'
       ? 12000
       : 10000;
 const visible = computed(() => records.value.length > 0);
@@ -169,7 +169,7 @@ function optionalCoversInput() {
   const active = document.activeElement;
   if (
     !(active instanceof HTMLElement) ||
-    !(active.matches("input, textarea") || active.isContentEditable) ||
+    !(active.matches('input, textarea') || active.isContentEditable) ||
     !root.value
   )
     return false;
@@ -177,21 +177,21 @@ function optionalCoversInput() {
     area = root.value.getBoundingClientRect();
   const left = item.left - area.left,
     top = item.top - area.top;
-  return props.position === "bottom-left"
+  return props.position === 'bottom-left'
     ? left < area.width / 2 && top > area.height / 2
-    : props.position === "top-right"
+    : props.position === 'top-right'
       ? left > area.width / 2 && top < area.height / 2
       : left > area.width / 2 && top > area.height / 2;
 }
 function addToast(item: NotificationItem) {
   if (
     props.centerVisible ||
-    item.priority === "silent" ||
-    (typeof item.source === "object" &&
+    item.priority === 'silent' ||
+    (typeof item.source === 'object' &&
       filteredSources.value.has(item.source.id) &&
-      item.severity !== "error" &&
-      item.priority !== "urgent") ||
-    (item.priority === "optional" && optionalCoversInput()) ||
+      item.severity !== 'error' &&
+      item.priority !== 'urgent') ||
+    (item.priority === 'optional' && optionalCoversInput()) ||
     pending.has(item.id) ||
     records.value.includes(item.id)
   )
@@ -250,7 +250,7 @@ function removeToast(id: string) {
   records.value = records.value.filter((value) => value !== id);
   visibleIds.value = visibleIds.value.filter((value) => value !== id);
   if (records.value.length) requestLayout();
-  else if (restore) emit("restoreFocus");
+  else if (restore) emit('restoreFocus');
 }
 function hide(restoreFocus = true) {
   const focused = !!root.value?.contains(document.activeElement);
@@ -263,7 +263,7 @@ function hide(restoreFocus = true) {
   faded.value.clear();
   records.value = [];
   visibleIds.value = [];
-  if (restoreFocus && focused) emit("restoreFocus");
+  if (restoreFocus && focused) emit('restoreFocus');
 }
 function filterSource(sourceId: string, filtered: boolean) {
   if (filtered)
@@ -271,14 +271,14 @@ function filterSource(sourceId: string, filtered: boolean) {
       const item = itemMap.value.get(id);
       if (
         item &&
-        typeof item.source === "object" &&
+        typeof item.source === 'object' &&
         item.source.id === sourceId &&
-        item.severity !== "error" &&
-        item.priority !== "urgent"
+        item.severity !== 'error' &&
+        item.priority !== 'urgent'
       )
         removeToast(id);
     }
-  emit("filter", sourceId, filtered);
+  emit('filter', sourceId, filtered);
 }
 function updateItem(id: string, value: readonly NotificationItem[]) {
   if (!value.length) items.value = items.value.filter((item) => item.id !== id);
@@ -286,18 +286,18 @@ function updateItem(id: string, value: readonly NotificationItem[]) {
     items.value = items.value.map((item) => (item.id === id ? value[0] : item));
 }
 function surfaceKeydown(event: KeyboardEvent) {
-  if (event.key === "ArrowDown") focusNext();
-  else if (event.key === "ArrowUp") focusPrevious();
-  else if (event.key === "Home" || event.key === "PageUp") focusFirst();
-  else if (event.key === "End" || event.key === "PageDown") focusLast();
-  else if (event.key === "Escape") hide();
+  if (event.key === 'ArrowDown') focusNext();
+  else if (event.key === 'ArrowUp') focusPrevious();
+  else if (event.key === 'Home' || event.key === 'PageUp') focusFirst();
+  else if (event.key === 'End' || event.key === 'PageDown') focusLast();
+  else if (event.key === 'Escape') hide();
   else return false;
   return true;
 }
 function keydown(event: KeyboardEvent) {
   if (
     visible.value &&
-    event.key === "Escape" &&
+    event.key === 'Escape' &&
     !event.altKey &&
     !event.ctrlKey &&
     !event.metaKey &&
@@ -327,21 +327,21 @@ watch(
     if (value) hide(false);
   },
 );
-watch(visible, (value) => emit("visibilityChange", value));
+watch(visible, (value) => emit('visibilityChange', value));
 onMounted(() => {
   observer = new ResizeObserver(requestLayout);
   observer.observe(root.value!);
   for (const item of items.value) addToast(item);
   requestLayout();
-  window.addEventListener("keydown", keydown);
-  window.addEventListener("focus", windowFocused);
+  window.addEventListener('keydown', keydown);
+  window.addEventListener('focus', windowFocused);
 });
 onBeforeUnmount(() => {
   hide(false);
   observer?.disconnect();
   cancelAnimationFrame(layoutFrame);
-  window.removeEventListener("keydown", keydown);
-  window.removeEventListener("focus", windowFocused);
+  window.removeEventListener('keydown', keydown);
+  window.removeEventListener('focus', windowFocused);
 });
 defineExpose({
   hide,

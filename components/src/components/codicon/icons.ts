@@ -12,7 +12,9 @@ export interface ThemeIconLike {
 export const iconNameExpression = '[A-Za-z0-9-]+';
 export const iconModifierExpression = '~[A-Za-z]+';
 
-const themeIconIdRegex = new RegExp(`^(${iconNameExpression})(${iconModifierExpression})?$`);
+const themeIconIdRegex = new RegExp(
+  `^(${iconNameExpression})(${iconModifierExpression})?$`,
+);
 
 /** `codicon codicon-<id> [codicon-modifier-<modifier>]`, falling back to `error` like ThemeIcon. */
 export function asClassNameArray(icon: ThemeIconLike): string[] {
@@ -33,8 +35,13 @@ export function asClassName(icon: ThemeIconLike): string {
 }
 
 /** Class list of a codicon element: `spin` overrides a `~modifier` in `name`, `disabled` is added on top. */
-export function codiconClassNames(name: string, options: { spin?: boolean; disabled?: boolean } = {}): string[] {
-  const classNames = asClassNameArray(options.spin ? modify({ id: name }, 'spin') : { id: name });
+export function codiconClassNames(
+  name: string,
+  options: { spin?: boolean; disabled?: boolean } = {},
+): string[] {
+  const classNames = asClassNameArray(
+    options.spin ? modify({ id: name }, 'spin') : { id: name },
+  );
   if (options.disabled) {
     classNames.push('codicon-modifier-disabled');
   }
@@ -42,7 +49,10 @@ export function codiconClassNames(name: string, options: { spin?: boolean; disab
 }
 
 /** Replaces an existing `~modifier` with `modifier`, exactly like `ThemeIcon.modify`. */
-export function modify(icon: ThemeIconLike, modifier: 'disabled' | 'spin' | undefined): ThemeIconLike {
+export function modify(
+  icon: ThemeIconLike,
+  modifier: 'disabled' | 'spin' | undefined,
+): ThemeIconLike {
   let id = icon.id;
   const tildeIndex = id.lastIndexOf('~');
   if (tildeIndex !== -1) {
@@ -59,12 +69,17 @@ export function getCodiconAriaLabel(text: string | undefined): string {
   if (!text) {
     return '';
   }
-  return text.replace(/\$\((.*?)\)/g, (_match, codiconName) => ` ${codiconName} `).trim();
+  return text
+    .replace(/\$\((.*?)\)/g, (_match, codiconName) => ` ${codiconName} `)
+    .trim();
 }
 
 export type LabelWithIconsPart = { text: string } | { icon: string };
 
-const labelWithIconsRegex = new RegExp(`(\\\\)?\\$\\((${iconNameExpression}(?:${iconModifierExpression})?)\\)`, 'g');
+const labelWithIconsRegex = new RegExp(
+  `(\\\\)?\\$\\((${iconNameExpression}(?:${iconModifierExpression})?)\\)`,
+  'g',
+);
 
 /** Splits `abc $(iconId)xyz` into text and icon parts; `\$(iconId)` stays literal text. */
 export function splitLabelWithIcons(text: string): LabelWithIconsPart[] {

@@ -1,54 +1,54 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from "vue";
-import InputBox from "../input-box/InputBox.vue";
-import ActionBar from "../action-bar/ActionBar.vue";
-import ProblemsFilterAction from "./ProblemsFilterAction.vue";
-import type { ProblemSeverity } from "./types";
+import { computed, onBeforeUnmount, ref } from 'vue';
+import InputBox from '../input-box/InputBox.vue';
+import ActionBar from '../action-bar/ActionBar.vue';
+import ProblemsFilterAction from './ProblemsFilterAction.vue';
+import type { ProblemSeverity } from './types';
 const props = defineProps<{ total: number; filtered: number; width: number }>();
-const value = defineModel<string>({ default: "" });
-const severities = defineModel<ProblemSeverity[]>("severities", {
-  default: () => ["error", "warning", "info"],
+const value = defineModel<string>({ default: '' });
+const severities = defineModel<ProblemSeverity[]>('severities', {
+  default: () => ['error', 'warning', 'info'],
 });
 const emit = defineEmits<{ filter: [value: string]; accept: [] }>();
 const input = ref<InstanceType<typeof InputBox>>(),
   toolbar = ref<InstanceType<typeof ActionBar>>();
 const history: readonly string[] = [];
-const actions = [{ id: "filter", label: "More Filters...", icon: "filter" }];
+const actions = [{ id: 'filter', label: 'More Filters...', icon: 'filter' }];
 const menu = computed(() =>
   [
-    ["error", "Show Errors"],
-    ["warning", "Show Warnings"],
-    ["info", "Show Infos"],
+    ['error', 'Show Errors'],
+    ['warning', 'Show Warnings'],
+    ['info', 'Show Infos'],
   ].map(([id, label]) => ({
     id,
     label,
     checked: severities.value.includes(id as ProblemSeverity),
-  }))
+  })),
 );
 const badge = computed(() =>
   props.total && props.total !== props.filtered
     ? `Showing ${props.filtered} of ${props.total}`
-    : ""
+    : '',
 );
 let timeout: ReturnType<typeof setTimeout>;
 function change(text: string) {
   clearTimeout(timeout);
   timeout = setTimeout(() => {
     input.value?.addToHistory();
-    emit("filter", text);
+    emit('filter', text);
   }, 300);
 }
 function keydown(event: KeyboardEvent) {
-  if (event.key === "Tab" && !event.shiftKey) {
+  if (event.key === 'Tab' && !event.shiftKey) {
     event.preventDefault();
     event.stopPropagation();
     toolbar.value?.focus();
   }
-  if (event.key === "Enter") {
+  if (event.key === 'Enter') {
     event.preventDefault();
     event.stopPropagation();
-    emit("accept");
+    emit('accept');
   }
 }
 function toggle(id: string) {

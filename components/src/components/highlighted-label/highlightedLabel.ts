@@ -8,7 +8,10 @@
  * `didEverRender` short-circuit. Key order is irrelevant and `extraClasses` is compared
  * element-wise, exactly like the original's sorted-key walk.
  */
-export function equalsHighlights(one: readonly unknown[] | undefined, other: readonly unknown[] | undefined): boolean {
+export function equalsHighlights(
+  one: readonly unknown[] | undefined,
+  other: readonly unknown[] | undefined,
+): boolean {
   if (one === other) {
     return true;
   }
@@ -22,7 +25,14 @@ function equalsValue(one: unknown, other: unknown): boolean {
   if (one === other) {
     return true;
   }
-  if (one === null || one === undefined || other === null || other === undefined || typeof one !== typeof other || typeof one !== 'object') {
+  if (
+    one === null ||
+    one === undefined ||
+    other === null ||
+    other === undefined ||
+    typeof one !== typeof other ||
+    typeof one !== 'object'
+  ) {
     return false;
   }
   if (Array.isArray(one) !== Array.isArray(other)) {
@@ -33,6 +43,13 @@ function equalsValue(one: unknown, other: unknown): boolean {
   }
   const oneKeys = Object.keys(one as object).sort();
   const otherKeys = Object.keys(other as object).sort();
-  return equalsHighlights(oneKeys, otherKeys)
-    && oneKeys.every(key => equalsValue((one as Record<string, unknown>)[key], (other as Record<string, unknown>)[key]));
+  return (
+    equalsHighlights(oneKeys, otherKeys) &&
+    oneKeys.every((key) =>
+      equalsValue(
+        (one as Record<string, unknown>)[key],
+        (other as Record<string, unknown>)[key],
+      ),
+    )
+  );
 }
