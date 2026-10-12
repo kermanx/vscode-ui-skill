@@ -1,5 +1,9 @@
 # VS Code UI Skills
 
+[Browse the live Storybook](https://kermanx.github.io/vscode-ui-skill/) · [Open the workbench demo](https://kermanx.github.io/vscode-ui-skill/?path=/story/compositions-workbench--demo)
+
+The Storybook includes interactive Vue examples and original VS Code comparisons. GitHub Actions rebuilds and deploys it when component or reference code changes on `main`; the deployment can also be run manually.
+
 ## Repository layout
 
 - [`skills/`](skills/) — installable agent skills.

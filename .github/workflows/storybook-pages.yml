@@ -1,0 +1,61 @@
+name: Deploy Storybook to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/storybook-pages.yml'
+      - '.gitmodules'
+      - 'components/**'
+      - 'internal-docs/reference/**'
+      - 'vscode'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: components/package-lock.json
+      - uses: actions/configure-pages@v5
+      - name: Install dependencies
+        run: npm ci
+        working-directory: components
+      - name: Build original VS Code comparison fixtures
+        run: node internal-docs/reference/build.mjs
+      - name: Check component types
+        run: npm run check
+        working-directory: components
+      - name: Build Storybook
+        run: npm run storybook:build -- --disable-telemetry
+        working-directory: components
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: components/storybook-static
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Storybook
+        id: deployment
+        uses: actions/deploy-pages@v4
