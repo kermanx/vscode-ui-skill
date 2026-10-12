@@ -235,6 +235,7 @@ Floating text prompt with validation, title actions, and progress.
 Filterable single-select or multi-select picker.
 
 - **Source:** `components/src/components/quick-input/QuickPick.vue`
+- **Example:** `components/src/components/quick-input/CommandPicker.example.vue` — caller-owned closing, focus handoff, and command execution; not a library export.
 - **Supporting code:** `components/src/components/quick-input/quickPickModel.ts`, `components/src/components/quick-input/quickPickMatch.ts`, `components/src/components/quick-input/QuickPickList.vue`, `components/src/components/quick-input/QuickPickRow.vue`, `components/src/components/quick-input/quickPickTypes.ts`.
 - **Related components:** QuickInputShell, IconLabel, CheckboxControl, KeybindingLabel, Toolbar.
 - **Coverage:** filtering, selection, navigation, and acceptance; command, file, or line providers are caller-owned.
