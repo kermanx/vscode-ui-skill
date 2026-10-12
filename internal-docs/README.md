@@ -1,5 +1,7 @@
 # 组件开发（内部）
 
+skill 的必读指导集中在 [SKILL.md](../skills/vscode-ui/SKILL.md)，组件目录见 [component-index.md](../skills/vscode-ui/references/component-index.md)。新增、重命名组件或改变覆盖范围时，同步维护索引。原 skill 的详细规范与图示保留在 [classic-notes/](classic-notes/) 作为维护资料；不随 skill 安装，不作为使用者的必读内容。
+
 - 唯一依据是仓库根目录 `vscode/` 子模块固定的提交，Modern UI 关闭；不参考已有 vscode-ui skill。能够复制的源码、CSS、DOM 和算法优先直接复制，保留版权，仅改 Vue 接入所需部分。
 - 以下实现路径相对于 `components/`。组件源码必须自包含，不写外部源码路径或要求读者查阅外部实现；来源对应关系只记在 [sources.md](sources.md)。本目录不随组件发布。
 - `src/components/<name>/` 放 Vue 组件及必要的状态逻辑。原版 CSS 保留原 class 和选择器；UnoCSS 用于布局与范例组合，不引入 reset，不把精确数值替换成近似刻度。`src/theme/` 的 token 由原版注册表生成，不能凭印象手填。

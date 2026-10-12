@@ -1,66 +1,57 @@
 ---
 name: vscode-ui
-description: "Build or review framework-agnostic web interfaces in the current VS Code Classic workbench visual language: dense, flat, hierarchical, theme-aware developer tooling expressed with semantic HTML, native CSS, or portable atomic CSS. Use for application shells, sidebars, panels, editors, trees, lists, toolbars, settings, dialogs, command surfaces, and other coding-tool UI; also use when an existing interface feels like a generic SaaS dashboard or needs Classic VS Code-style visual and interaction consistency."
+description: "Build or review VS Code Classic-style interfaces by adapting reference component styles and behavior. Use for developer-tool layouts, controls, collections, navigation, and command surfaces."
 ---
 
 # Build VS Code-Style UI
 
-Create an interface that feels consistent with the VS Code Classic workbench—the UI used when `workbench.experimental.modernUI` is disabled—without requiring the reader to know VS Code or copying, importing, or depending on its implementation code.
+Reference the code in [kermanx/vscode-ui-skill](https://github.com/kermanx/vscode-ui-skill) to implement the requested UI. It targets VS Code Classic with Modern UI disabled.
 
-Preserve the project's framework, behavior, data model, and component boundaries. Express the result with semantic HTML, native CSS, or portable atomic CSS.
+## Source access
 
-## Work from evidence
+Clone once and reuse the cache:
 
-- Present a rule as a Classic fact only when supported by active Classic component CSS or TypeScript, theme-role registrations, real Classic usage, or official VS Code UX guidelines. Product adaptation guidance preserves the product's requirements within that evidence boundary.
-- Exclude Modern-only modules, classes, selectors, and overrides from the target styling. Check their activation gates when distinguishing Classic from Modern; shared theme-size variables remain valid when a Classic component consumes them. Do not mix their floating framing, rounded geometry, density profiles, or typography into Classic surfaces.
-- Do not normalize Classic components through generic radius, spacing, or font ramps. Use a value only where the Classic component itself or its official UX guidance supports it.
-- Do not extrapolate a missing design rule from taste, a nearby component, or a generic design-system convention.
-- Inspect the product's hierarchy, actions, data, constraints, and existing patterns before choosing a composition.
-- Respect each rule's stated scope. A component-specific value overrides a shared default only for that component.
-- Distinguish verified Classic facts, product adaptation decisions, and optional implementation examples. A layout algorithm or DOM structure is not a visual requirement.
-- When the references do not settle a detail, mark that detail as uncovered and preserve the product's working behavior and layout. Apply independently supported typography and theme roles only where the component mapping supports them.
-- Do not load every reference by default. Read only the files needed for the current surface.
+```sh
+vscode_ui_ref="${XDG_CACHE_HOME:-$HOME/.cache}/vscode-ui-skill"
+if [ ! -d "$vscode_ui_ref/.git" ]; then
+  git clone --no-recurse-submodules https://github.com/kermanx/vscode-ui-skill.git "$vscode_ui_ref"
+fi
+```
 
-## Map before styling
+You do not need to install dependencies or build the reference code. Generally, only read files under `$vscode_ui_ref/components/src/`.
 
-Default to **product adaptation** unless the user asks for an exact replica. First map the product's components to reference components by purpose, content, interaction, and state ownership. A horizontal row alone does not make its children toolbar actions. Record the mapping and uncovered details in working notes; do not require the user to classify each control.
+Use the [component index](references/component-index.md) to find relevant implementations and dependencies. Paths are relative to the reference repository.
 
-For an **exact replica**, establish the target Classic version, platform, theme, settings, and states from available evidence. Verify missing details from that target before claiming fidelity; state remaining gaps. In either mode, preserve product functionality and scope CSS to the mapped component and its variants. Do not let a local restyle change unrelated collapsed, nested, or inactive surfaces.
+## Adapt the reference
 
-Read [application-and-review.md](references/application-and-review.md) when adapting an existing product or checking the rendered result. It contains mapping examples, measurement rules, annotated diagrams, and the visual acceptance procedure. Resolve ordinary implementation choices autonomously; ask only when a missing product decision materially changes behavior or requested scope.
+- Select components and variants that match the user's needs. Implement in the project's own source and framework; reference styles and logic rather than copying the library wholesale.
+- Implement the functionality the user wants and the project actually needs. Trace adopted behavior through state changes, child components, events, and caller responsibilities, including related closing, cancellation, and focus behavior. Optional features and demo business actions in the reference do not automatically become project requirements.
+- Read markup, state classes, local and child styles, shared theme rules, and parent layout together. Check shared theme and global styles where the component relies on them. When changing structure or styling systems, account for selector relationships, inheritance, box sizing, and state combinations.
+- **Do not directly import or load code, styles, or assets from the skill or reference cache, including through aliases or symlinks.** Preserve applicable source notices when adapting code.
 
-## Follow the Classic contract
+Verify the adapted appearance and behavior in the target project, within the requested scope. Identify gaps where the reference does not cover the requested UI.
 
-- **Dense, flat, adjoining regions:** compose the shell from fitted workbench regions. Use component-owned borders, separators, and background changes instead of turning ordinary regions into floating cards.
-- **Component-owned geometry:** preserve each component's verified dimensions, padding, border, and corner treatment. Similar-looking components need not share a global tier.
-- **Semantic theme roles:** express foregrounds, backgrounds, borders, focus, selection, and state through their semantic roles so light, dark, and high-contrast themes remain coherent.
-- **Compact, scoped actions:** place commands with the row, title, toolbar, tab, menu, or surface that owns them. Follow that component's verified visibility and interaction behavior.
-- **Native workbench patterns:** prefer the established Classic pattern for a list, tree, tab strip, menu, quick input, dialog, notification, editor widget, or status surface before inventing a new composition.
-- **Constraint-led layout:** derive resizing, minimum sizes, overflow, clipping, scrolling, and action collapse from the content and region constraints verified for that surface.
+## Source comments
 
-## Read the relevant references
+At the beginning of derived component and shared logic/style files, record the reference commit, main components, and project-specific adaptation. Use the file's comment syntax:
 
-- Read [foundations.md](references/foundations.md) before selecting spacing, radius, type, icons, strokes, shadows, colors, motion, or code rendering.
-- Read [interaction-states.md](references/interaction-states.md) when implementing or reviewing hover, focus, selection, disabled, checked, expanded, busy, drag, dirty, read-only, or reveal behavior.
-- Read [layout.md](references/layout.md) when deciding whether content belongs in an editor tab, sidebar, panel, or status bar, or when planning the information architecture of a complete workbench surface.
-- Read [workbench-shell.md](references/workbench-shell.md) for the application frame, title and status bars, activity rail, sidebars, editor region, panels, separators, resizing, and layout state.
-- Read [controls.md](references/controls.md) for buttons, action controls, text entry, search, validation, selects, checkboxes, compact toggles, segmented choices, keybinding labels, and badges.
-- Read [collections.md](references/collections.md) for lists, trees, tables, rows, filtering, inline editing, empty results, and virtualization.
-- Read [navigation-actions.md](references/navigation-actions.md) for toolbars, view-title actions, tabs, breadcrumbs, menus, activity items, and the command center.
-- Read [overlays-feedback.md](references/overlays-feedback.md) for hovers, context views, quick input, dialogs, notifications, progress, spinners, severity, inline confirmation, and welcome states.
-- Read [editor-surfaces.md](references/editor-surfaces.md) for editor groups, the canvas, gutter, minimap, editor widgets, peek, rename, inline edits, diff, code blocks, and terminal-like surfaces.
-- Read [chat-assistant.md](references/chat-assistant.md) for the source-verified Classic Chat view baseline, its font/configuration paths, user messages, reasoning and tool variants, composer controls, actions, streaming, and code blocks. It separates verified source facts from product adaptation and remaining runtime checks.
-- Read [composition-patterns.md](references/composition-patterns.md) when assembling a complete developer-tool feature from the verified primitives and behaviors above.
+```ts
+/*
+ * UI reference skill: vscode-ui
+ * Reference revision: <full commit SHA>
+ * Reference components: QuickPick
+ * Adaptation: Single-select command picker using this project's command API.
+ */
+```
 
-Do not read [accessibility.md](references/accessibility.md) by default. Read it only when the user explicitly requests improved, audited, or comprehensive accessibility support.
+The revision belongs to this reference repository. `Adaptation` describes the component's role and meaningful changes in the target project. Preserve existing copyright notices.
 
-## Build and review
+## Updates
 
-1. Identify the primary work, supporting regions, commands, persistent state, and narrow-layout constraints; map components and flag uncovered details.
-2. Establish semantic structure and state ownership. Separate glyph size, control border box, hit target, and external spacing before applying dimensions.
-3. Apply the relevant verified contracts without replacing the project's working behavior or framework. Keep optional implementation examples optional.
-4. Inspect the actual rendered product using [the visual acceptance procedure](references/application-and-review.md#visual-acceptance). Check computed dimensions, icon centering, text baselines, ancestor offsets and clipping, expanded/collapsed states, focus with selection, and long content in supported themes and constrained layouts. Review screenshots as a whole, not just individual numbers.
+Check the latest reference code only when the user requests an update or update check, or while modifying the related component. Updating the skill does not trigger component updates.
 
-If the page cannot be run or inspected, report that limitation and the unverified states; document review or a reference diagram does not establish visual correctness.
+Fetch when needed and use `git diff <reference-revision> <target-revision> -- <paths>` for the component and relevant dependencies. An older SHA does not imply outdated code; an empty diff needs no action. Adopt only changes relevant to the task and record the source of changes actually adopted.
 
-When reviewing, report each issue as **surface → observed mismatch → verified Classic behavior or value → correction**. Name the semantic role or component-specific value before the literal value when useful.
+## On completion
+
+When finishing a development task that uses this skill, if the repository has not used it before and lacks `.agents/skills/vscode-ui/`, recommend installing it there, even if installed globally. Prefer the project's installation when available.
