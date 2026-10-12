@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="480" viewBox="0 0 1000 480" role="img" aria-labelledby="title desc">
+  <title id="title">Glyph, clickable button, and layout allocation</title>
+  <desc id="desc">Two enlarged diagrams compare a base 22 by 22 pixel action with a view-header 20 by 20 pixel action and its separate 4 pixel trailing margin. The 24 pixel responsive estimate is not a universal button width.</desc>
+  <rect width="1000" height="480" fill="#f8fafc"/>
+  <g font-family="Arial, sans-serif" fill="#172536">
+    <text x="32" y="38" font-size="22" font-weight="700">Measure three different things</text>
+    <text x="32" y="64" font-size="14" fill="#526274">Enlarged schematic · dimensions are CSS pixels · not a VS Code screenshot</text>
+    <rect x="32" y="90" width="448" height="298" rx="8" fill="white" stroke="#cdd6e0"/>
+    <rect x="500" y="90" width="468" height="298" rx="8" fill="white" stroke="#cdd6e0"/>
+    <text x="52" y="123" font-size="17" font-weight="700">Base icon action</text>
+    <text x="520" y="123" font-size="17" font-weight="700">View-header action</text>
+    <rect x="68" y="164" width="176" height="176" rx="48" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <rect x="92" y="188" width="128" height="128" fill="#b7e9e2" stroke="#087f73" stroke-width="2" stroke-dasharray="5 4"/>
+    <path d="M128 219 L178 219 L178 282 L128 282 Z M138 230 H168 M138 242 H168 M138 254 H160" fill="none" stroke="#174d48" stroke-width="3"/>
+    <path d="M220 198 H264" stroke="#087f73" stroke-width="2"/>
+    <text x="274" y="196" font-size="15" font-weight="700">16 × 16 glyph</text>
+    <text x="274" y="218" font-size="14">Viewport, not hit area</text>
+    <path d="M244 264 H264" stroke="#2563eb" stroke-width="2"/>
+    <text x="274" y="266" font-size="15" font-weight="700">22 × 22 button</text>
+    <text x="274" y="288" font-size="14">16 + 3 + 3</text>
+    <text x="274" y="310" font-size="14">No layout border</text>
+    <text x="68" y="368" font-size="14" fill="#526274">Host supplies external spacing.</text>
+    <rect x="536" y="164" width="192" height="176" fill="#fef3c7" stroke="#a66b00" stroke-dasharray="5 4"/>
+    <rect x="536" y="172" width="160" height="160" rx="48" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <rect x="552" y="188" width="128" height="128" fill="#b7e9e2" stroke="#087f73" stroke-width="2" stroke-dasharray="5 4"/>
+    <path d="M588 219 L638 219 L638 282 L588 282 Z M598 230 H628 M598 242 H628 M598 254 H620" fill="none" stroke="#174d48" stroke-width="3"/>
+    <path d="M680 198 H748" stroke="#087f73" stroke-width="2"/>
+    <text x="758" y="202" font-size="15" font-weight="700">16 × 16 glyph</text>
+    <path d="M696 250 H748" stroke="#2563eb" stroke-width="2"/>
+    <text x="758" y="252" font-size="15" font-weight="700">20 × 20 button</text>
+    <text x="758" y="274" font-size="14">16 + 2 + 2; no border</text>
+    <path d="M712 306 H748" stroke="#a66b00" stroke-width="2"/>
+    <text x="758" y="312" font-size="14">4 px outside button</text>
+    <text x="536" y="368" font-size="14" fill="#526274">24 px horizontal allocation in a 22 px row.</text>
+    <text x="32" y="424" font-size="15" font-weight="700">The responsive toolbar's 24 px estimate is a separate algorithmic budget.</text>
+    <text x="32" y="449" font-size="14" fill="#526274">Measure actual controls and host spacing. Do not resize every button to match the estimate.</text>
+  </g>
+</svg>

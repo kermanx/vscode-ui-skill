@@ -4,13 +4,13 @@ Use this reference for the current Classic desktop workbench: persistent navigat
 
 ## Composition
 
-Build the outer shell as a vertical grid:
+**Required composition:** arrange the outer shell in vertical bands:
 
 1. custom title bar and optional banner;
 2. one flexible middle row;
 3. optional status bar.
 
-The middle row is a nested grid. When the activity bar is a vertical rail, keep it adjacent to the primary sidebar. Place the primary and auxiliary sidebars on opposite sides of the editor. A vertical panel sits immediately beside the editor on its configured side. A horizontal panel sits above or below the editor branch.
+The middle band contains the adjoining work regions. When the activity bar is a vertical rail, keep it adjacent to the primary sidebar. Place the primary and auxiliary sidebars on opposite sides of the editor. A vertical panel sits immediately beside the editor on its configured side. A horizontal panel sits above or below the editor branch.
 
 The banner normally follows the title bar. In a web window without a window-controls overlay, it precedes the title bar. Treat native window chrome as platform-owned.
 
@@ -23,7 +23,9 @@ For a horizontal panel, make its span an explicit layout state:
 | Left | Editor and the physical left sidebar | Physical right |
 | Right | Editor and the physical right sidebar | Physical left |
 
-Represent editor groups as another nested split grid. Keep every flexible grid or flex descendant shrinkable with `min-width: 0` and `min-height: 0`; let the region constraints below supply the real minima.
+Editor groups split the available editor region. Flexible descendants must be able to shrink and scroll within their region constraints rather than pushing the shell offscreen.
+
+**Implementation reference (optional):** VS Code uses a nested split/grid layout model. CSS Grid, flexbox, an existing splitter, or managed positioning can reproduce the same bands, adjacency, constraints, and restoration behavior. A nested CSS grid is one possible translation, not a required DOM or layout engine. In CSS grid/flex implementations, `min-width: 0` and `min-height: 0` often allow the required shrinking.
 
 Keep top-level parts flush with no inter-region gap or outer padding. Use a region border where its role is visible; otherwise separate adjacent parts by their backgrounds. Retain the title-bar shadow and the activity-bar shadow when the sidebar is hidden or the activity bar is on the right. Structural regions remain rectangular; component-level controls such as the command center use their own geometry.
 
@@ -58,10 +60,12 @@ Anchor status items in leading and trailing groups. Let the leading group grow; 
 
 Use a fixed-width activity rail and independently resizable sidebars.
 
-| Activity rail size | Rail | Action box | Icon | Gap between actions |
+| Activity rail size | Rail width | Clickable action border box (W × H) | Glyph viewport (W × H) | External gap |
 | --- | ---: | ---: | ---: | ---: |
-| Default | 48px | 48px | 24px | 0 |
-| Compact | 36px | 28px | 16px | 0 |
+| Default | 48px | 48 × 48px | 24 × 24px | 0 |
+| Compact | 36px | 36 × 28px | 16 × 16px | 0 |
+
+These action boxes include any border; selection markers are internal overlays and add no layout extent. See the [measurement contract](application-and-review.md#measurement-contract) for glyph, hit-target, and spacing distinctions.
 
 The primary sidebar is the principal navigation/detail column. The auxiliary sidebar is an optional secondary column on the opposite side. Both have a 170px minimum width. Preserve their last visible widths across hide/show.
 
@@ -89,7 +93,7 @@ Use semantic theme roles rather than literal colors:
 
 ## Resize, collapse, and maximize
 
-Use nested resizable tracks rather than absolute positioning. Fixed bands keep their stated heights; each flexible region clamps at its minimum and maximum.
+Keep resizing local to the affected split, whichever layout implementation the product uses. Fixed bands keep their stated heights; each flexible region clamps at its minimum and maximum.
 
 Automatic container resize follows priority **within each split**: High children absorb size changes before Normal children, then Low children. The editor is High, the panel is Normal, and both sidebars are Low. Apply this per nested split, not as a global flat ordering.
 
@@ -110,9 +114,9 @@ Use automatic scrollbars inside independently scrolling regions. The default thi
 
 ## Implementation checklist
 
-- Region visibility, side, panel orientation, panel alignment, and maximize state drive the grid template.
+- Region visibility, side, panel orientation, panel alignment, and maximize state drive the layout.
 - Structural parts are flush, square, and separated by one owned boundary rather than gaps or outer frames.
 - Title and view actions stay at the trailing edge; labels shrink and ellipsize.
-- Every scroll owner has a bounded grid track and does not enlarge the shell.
+- Every scroll owner has a bounded region and does not enlarge the shell.
 - One boundary owns each seam.
 - Pointer, keyboard, and visible focus behavior remain available for view headers and commands.

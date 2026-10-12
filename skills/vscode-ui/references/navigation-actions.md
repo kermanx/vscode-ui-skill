@@ -24,8 +24,9 @@ focus. Always skip separators. Skip disabled items only when the toolbar is
 configured to focus enabled items exclusively; otherwise they remain
 arrow-focusable but cannot invoke.
 
-- Use a `16px × 16px` product-icon box. Text and keybinding labels are `11px`
-  with `3px` padding and a `6px` radius.
+- Base action labels use a `16px × 16px` glyph viewport or `11px` text,
+  with `3px` padding and a `6px` radius. A borderless icon button is therefore
+  `22px × 22px`; focus outlines do not add to its layout size.
 - A horizontal separator is `1px × 16px` with `5px 4px` margins. A vertical
   separator is a `1px` rule with `4px .8em` margins.
 - Disabled text uses the disabled-foreground role. An icon that cannot be
@@ -33,14 +34,27 @@ arrow-focusable but cannot invoke.
 - Expose a toggle as pressed. In a tablist, expose the same checked state as
   selected.
 
+The `11px` label rule belongs to the compact base action-bar component, not
+every child placed in a horizontal row. A labeled model picker is a choice
+control; a prose-adjacent action uses its text-button or content typography;
+a menu popup uses its own `13px` rows. Keep their component styles even when
+hosted in a toolbar. See [typography scopes](foundations.md#typography-scopes).
+
 Keep primary actions inline and put secondary actions under More. Menu-driven
 action bars normally treat the `navigation` group as primary; specialized title
 areas may define a different primary set. Responsive toolbars may shrink all
-actions or only the last action. Measure a default minimum of `20px` plus `4px`
-action padding, or `24px` per action, when deciding whether to overflow. Move
+actions or only the last action. VS Code's responsive overflow calculation uses
+a default `20px` minimum plus a `4px` allocation allowance, or `24px` per action.
+This is an algorithmic estimate, not a declaration of glyph size, button width,
+or a universal `2px` gap around a `22px` button. For a product adaptation,
+measure actual border boxes plus host margins/gaps, including labeled controls,
+separators, and the overflow trigger; do not count padding twice. Move
 trailing actions into More, retain the configured minimum visible count, reserve
-the same `24px` for More, and remove More when it is empty. Join overflowed and
+the same `24px` estimate for More when using that algorithm (otherwise its
+measured allocation), and remove More when it is empty. Join overflowed and
 pre-existing secondary actions with one separator.
+
+Source for the estimate: [responsive toolbar implementation](https://github.com/microsoft/vscode/blob/114d61e889475758fd1c3b3fcbdd04e9717940c4/src/vs/base/browser/ui/toolbar/toolbar.ts).
 
 A select inside an action bar may flex between `60px` and `170px`; clip its
 container and leave `10px` after it. These bounds do not apply to ordinary text
@@ -52,6 +66,11 @@ Use `header → title → toolbar`. A pane header is `22px` high. Its title is
 `11px`, bold, uppercase, ellipsized, and has `min-width: 3ch`. Place the toolbar
 after the title with automatic leading space. Give the action area `8px` trailing
 space, each item `4px` trailing space, and each label `2px` padding.
+
+Here the glyph is `16px × 16px`, the borderless clickable label is
+`20px × 20px`, and the item's `4px` external trailing space makes a `24px`
+horizontal allocation. It is centered in the `22px` header; neither that row
+height nor the trailing space changes the glyph size.
 
 Actions may be quiet at rest, but reveal them when an expanded pane is hovered,
 when the header or a descendant has focus, or when always-visible actions are
@@ -213,6 +232,10 @@ in the rail.
 The default rail is `48px` wide. Items are `48px × 48px` with a `24px` icon.
 The independent compact Activity Bar setting uses a `36px` rail,
 `36px × 28px` items, and `16px` icons. Do not separate items with gaps.
+
+Item dimensions are clickable outer width × height, including any border;
+icons are glyph viewports. The selection marker is drawn inside the item and
+does not widen it. External inter-item spacing is zero.
 
 Checked items keep a full-height `2px` marker on the edge adjoining the window
 edge: left for a left rail, right for a right rail. Focus reuses this marker with

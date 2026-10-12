@@ -255,14 +255,30 @@ Use `pre > code` for a simple read-only snippet and apply the syntax-color rule
 from foundations. Preserve whitespace and make the block, not the `code` child,
 own clipping and overflow.
 
-For an editor-backed interactive code block, use a `1px` semantic border, `6px`
-radius, and `16px` space below it. Change the border to the focus role when its
-editor owns focus.
+This ordinary Markdown component does not inherit the editor-backed geometry
+below, even when it has syntax highlighting or a copy action. Preserve its
+Markdown renderer's padding, corner treatment, and action placement. See
+[chat-assistant.md](chat-assistant.md) for source-scoped Chat observations and
+product adaptation guidance. A Markdown fence may be rendered by an editor;
+classify the actual renderer, not the input syntax alone.
 
-An actionable block may overlay a toolbar on its top edge. Use a `26px` toolbar
-offset `-15px`, cap it at `70%` of the block width, and use `24px` actions. Keep
-it hidden and non-interactive until the block is hovered, focused, or contains
-focus.
+The [Chat editor-backed variant's source](https://github.com/microsoft/vscode/blob/114d61e889475758fd1c3b3fcbdd04e9717940c4/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/media/codeBlockPart.css#L7-L84)
+uses a `1px` border, a component radius variable
+(`--vscode-cornerRadius-medium`), and `16px` bottom margin on its `[data-code]`
+wrapper. Request blocks use `chat.requestCodeBorder`; response blocks use
+`input.border` with a transparent fallback. Editor focus changes the border to
+the focus role. The medium radius has a registered **6px** default and is injected
+into the Classic workbench too; see the
+[Classic theme-variable path](chat-assistant.md#establish-the-classic-baseline).
+
+Its overlay toolbar declares CSS `height: 26px`, `top: -15px`, a `1px` border,
+and `max-width: 70%`. Action items declare `24px × 24px` plus `1px 2px` margins;
+the `24px` width excludes external spacing and is not a generic overflow budget.
+These are source CSS declarations, not verified final border-box measurements;
+inspect the host's box model and overrides before translating them. The toolbar
+is hidden and non-interactive until hover, focus-within, the block's focused
+class, or its explicit force-visibility class reveals it. These facts belong to
+this renderer variant, not all editor-backed code surfaces.
 
 ## Terminal-like surface
 

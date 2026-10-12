@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="530" viewBox="0 0 1000 530" role="img" aria-labelledby="title desc">
+  <title id="title">Inspect nesting, focus, and collapse in the real product</title>
+  <desc id="desc">A schematic dark tool-history pane shows a selected and focused nested row, a visible indentation guide, and header actions. Numbered annotations identify baseline, focus, painting, ancestor clipping, and collapse checks.</desc>
+  <rect width="1000" height="530" fill="#f8fafc"/>
+  <g font-family="Arial, sans-serif" fill="#172536">
+    <text x="32" y="38" font-size="22" font-weight="700">Review the whole rendered state</text>
+    <text x="32" y="64" font-size="14" fill="#526274">Inspection schematic · illustrative dimensions · not an authoritative screenshot</text>
+    <rect x="32" y="96" width="480" height="330" fill="#181818" stroke="#566171"/>
+    <path d="M32 146 H512" stroke="#555"/>
+    <g fill="#ccc" font-size="16">
+      <text x="52" y="127">⌄</text><text x="78" y="127">TOOL HISTORY</text>
+      <rect x="424" y="108" width="26" height="26" rx="5" fill="#353535"/>
+      <path d="M430 121 H444 M437 114 V128" stroke="#ccc" stroke-width="1.5"/>
+      <text x="475" y="125" font-size="18">···</text>
+      <text x="54" y="182">⌄</text><text x="80" y="182">Inspect workspace</text>
+      <rect x="77" y="201" width="413" height="40" fill="#04395e"/>
+      <rect x="78" y="202" width="411" height="38" fill="none" stroke="#0078d4" stroke-width="2"/>
+      <text x="101" y="227">⌄</text><text x="128" y="227" fill="#fff">Read configuration</text>
+      <text x="130" y="268">package.json</text>
+      <text x="130" y="299">Nested output remains readable</text>
+      <text x="101" y="342">›</text><text x="128" y="342">Run checks</text>
+    </g>
+    <path d="M66 195 V356 M115 246 V307" fill="none" stroke="#a9a9a9" stroke-width="1.5"/>
+    <path d="M78 129 H450" stroke="#68bcb4" stroke-dasharray="4 4"/>
+    <g fill="none" stroke="#b97717" stroke-width="1.5">
+      <path d="M453 122 H551"/>
+      <path d="M490 221 H551"/>
+      <path d="M67 309 H42 V361 H551"/>
+      <path d="M505 410 H551"/>
+    </g>
+    <g fill="#b97717">
+      <circle cx="566" cy="122" r="13"/><circle cx="566" cy="221" r="13"/>
+      <circle cx="566" cy="361" r="13"/><circle cx="566" cy="410" r="13"/>
+    </g>
+    <g fill="white" text-anchor="middle" font-size="14" font-weight="700">
+      <text x="566" y="127">1</text><text x="566" y="226">2</text>
+      <text x="566" y="366">3</text><text x="566" y="415">4</text>
+    </g>
+    <text x="591" y="118" font-size="16" font-weight="700">Alignment and ownership</text>
+    <text x="591" y="141" font-size="14">Inspect glyph centers and label baselines.</text>
+    <text x="591" y="163" font-size="14">Header styles must stay local.</text>
+    <text x="591" y="217" font-size="16" font-weight="700">Selection + keyboard focus</text>
+    <text x="591" y="240" font-size="14">Keep the focus outline visible over the fill.</text>
+    <text x="591" y="262" font-size="14">Move focus away: check inactive selection.</text>
+    <text x="591" y="357" font-size="16" font-weight="700">Guide paint order</text>
+    <text x="591" y="380" font-size="14">Nested backgrounds must not hide the guide.</text>
+    <text x="591" y="413" font-size="16" font-weight="700">Ancestor bounds</text>
+    <text x="591" y="436" font-size="14">Check negative margins, offsets, and clipping.</text>
+    <text x="32" y="473" font-size="15" font-weight="700">Then collapse and reopen the pane; expand nested rows; try long text and narrow widths.</text>
+    <text x="32" y="499" font-size="14" fill="#526274">Use the actual product for acceptance. A schematic or a matching size list cannot verify interaction.</text>
+  </g>
+</svg>

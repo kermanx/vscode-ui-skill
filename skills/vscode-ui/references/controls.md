@@ -2,6 +2,8 @@
 
 Start with the native semantic control: a button for an action, `input` or `textarea` for text entry, `select` for an ordinary option list, and checkbox or radio semantics for choices. Add custom presentation only for the compact workbench behaviors below. Use semantic theme roles for colors; do not hard-code theme-derived foregrounds, fills, borders, or focus colors.
 
+Use the [measurement contract](application-and-review.md#measurement-contract): dimensions describe the control's border box unless labeled as glyph, content, minimum, or layout allocation. Padding and borders are inside that box; external margins and gaps are separate. Content-sized controls grow with their labels. Outlines do not consume layout space.
+
 ## Buttons and action controls
 
 ### Primary and secondary buttons
@@ -14,9 +16,10 @@ In a workbench button bar, render the first primary action as primary and later 
 | Padding | 4 px 8 px | 3 px 6 px |
 | Border | 1 px | 1 px |
 | Radius | 4 px | 4 px |
-| Natural height | 26 px | 22 px |
+| Natural border-box height (including border) | 26 px | 22 px |
 
 - Center the label in a flex row. Keep a leading Codicon in the same row with `0 0.2em` horizontal margins.
+- Width is label content plus inline padding and the two 1 px borders; the owning button bar supplies external spacing. The table does not impose a fixed width or a universal gap.
 - Primary buttons use `--vscode-button-background`, `--vscode-button-foreground`, `--vscode-button-hoverBackground`, and the optional `--vscode-button-border`. Secondary buttons use `--vscode-button-secondaryBackground`, `--vscode-button-secondaryForeground`, `--vscode-button-secondaryHoverBackground`, and the optional `--vscode-button-secondaryBorder`.
 - Hover changes the fill. Keyboard focus uses a 1 px focus outline with a 2 px outer offset; focused text buttons retain the hover fill.
 - Disabled buttons keep their geometry, block activation, use the default cursor, and render at 40% opacity.
@@ -27,7 +30,7 @@ In a workbench button bar, render the first primary action as primary and later 
 
 Use icon-only actions in compact toolbars when the glyph and its local context identify a familiar action. Otherwise show a label.
 
-- Use a button or equivalent button semantics containing one 16 px icon. The base action label uses 3 px padding and a 6 px radius, producing a 22 × 22 px footprint before surface-specific row sizing.
+- Use a button or equivalent button semantics containing a 16 × 16 px glyph viewport. With 3 px padding per side and no layout border, the base clickable button is 22 × 22 px, with a 6 px radius. Reset native button padding/borders when necessary to achieve that measured result. External spacing belongs to the host. A toolbar's 24 px overflow estimate is a separate allocation, not this button's width; see [navigation-actions.md](navigation-actions.md#action-bars-and-toolbars).
 - Use `--vscode-icon-foreground` at rest, `--vscode-toolbar-hoverBackground` on hover, and `--vscode-toolbar-activeBackground` for the active action state.
 - Use a 1 px focus outline inset by 1 px. High-contrast hover may add a 1 px dashed inset outline.
 - Disabled icon actions stay in place and render at 60% opacity.
@@ -59,8 +62,9 @@ Use a single-line input for a short value and a textarea for wrapping or multi-l
 
 - Inherit the local typeface, size, and line height. Single-line text ellipsizes; textarea content wraps.
 - Use `--vscode-input-background`, `--vscode-input-foreground`, `--vscode-input-border`, and `--vscode-input-placeholderForeground`. Keep the editable element borderless inside the 1 px outer control.
-- A flexible textarea mirrors its wrapping content to calculate height. Hide its native scrollbar below the configured cap; after the cap, let the containing scrollable element handle vertical scrolling. Disable manual resize when automatic sizing owns the height.
-- Put input actions on the trailing edge with 2 px between actions. The containing composite must measure that strip and set the input's trailing reservation so text never sits beneath the icons.
+- **Required result for auto-growth:** wrap and grow without clipping up to the feature's height cap, then keep all content reachable through one intended vertical scroll owner. Avoid competing manual and automatic sizing. Preserve a working existing auto-grow implementation.
+- **VS Code implementation example (optional):** mirror wrapping content to measure height, hide the textarea scrollbar below the cap, and scroll the containing element beyond it. Native sizing, `scrollHeight`, or a framework primitive is also suitable when it produces the required result.
+- Put input actions on the trailing edge with 2 px between actions and reserve enough trailing space so text never sits beneath them. Measuring the strip is one implementation option; a separate layout track is another.
 - Disabled input uses the native disabled state and dismisses any open validation message.
 
 ### Search and find controls
@@ -80,8 +84,8 @@ Validation is a state of its field. Show one current information, warning, or er
 - Replace the ordinary 1 px input border with the matching validation border. Use the corresponding semantic foreground, background, and border triplet rather than deriving a severity tint.
 - The severity border takes precedence over the ordinary focus outline.
 - Anchor the explanation to the field's outer width. Use 0.4 em padding, 12 px / 17 px text, wrapping content, and a −1 px top margin so the message meets the field without a double seam.
-- Show the explanation while the invalid field is focused or while its flow explicitly forces the message open. Blur hides the explanation but preserves the severity border; refocus restores it. Clearing validation restores the ordinary input border.
-- Set `aria-invalid="true"` while validation is active.
+- Show the explanation while the field with a validation message is focused or while its flow explicitly forces the message open. Blur hides the explanation but preserves the severity border; refocus restores it. Clearing validation restores the ordinary input border.
+- Set `aria-invalid="true"` only when the field's value is actually invalid under the product's validation rules. An informational message or a non-blocking warning does not itself make the value invalid; omit the attribute or set it to `false` for a valid value. Associate explanatory text with the field, for example through `aria-describedby`. Message visibility and severity are independent of validity. See the [WAI-ARIA definition](https://www.w3.org/TR/wai-aria-1.2/#aria-invalid).
 
 ## Choice controls
 
@@ -90,6 +94,7 @@ Validation is a state of its field. Show one current information, warning, or er
 Use a native `select` for an ordinary labeled list. Use the custom popup when options require detail text, a trailing decorator, separators, hidden disabled placeholders, or the managed keyboard behavior below.
 
 - The closed select uses a 4 px radius. In an action row it has a 100 px minimum width, 18 px minimum height, and `2px 23px 2px 8px` padding. On macOS, the compact action-row select uses 11 px text and a 24 px minimum height.
+- These compact action-row values do not classify every labeled dropdown. Model pickers and selectors beside prose keep their mapped component typography; use the workbench UI default when no compact variant is established. The arrow's reserved space is internal; the host supplies external gaps. Minimum dimensions are not guaranteed rendered dimensions: check native platform metrics and the resulting border box.
 - Theme the closed field with `--vscode-dropdown-background`, `--vscode-dropdown-foreground`, and `--vscode-dropdown-border`. The custom popup uses the dropdown-list background, an 8 px radius, and `0 0 12px rgba(0, 0, 0, 0.14)` shadow.
 - Popup rows are 22 px high. Keep primary text, detail, and trailing decorators on one line and ellipsize them. Use 2 px row padding plus 6 px text padding for an 8 px visual leading inset; keep a right decorator 10 px from the edge. Render detail at 70% opacity.
 - Make the popup at least as wide as the closed field and wide enough for the longest option that fits the available viewport. Open below by default. If the list cannot fit there, fewer than three complete rows fit below, and more fit above, open above. Clip to complete 22 px rows.
