@@ -7,10 +7,21 @@
 - [`internal-docs/`](internal-docs/) — development notes, source mappings, and the original-component comparison fixture; excluded from the component package.
 - [`vscode/`](vscode/) — pinned source reference.
 
+## VS Code source reference
+
+[`vscode/`](vscode) is a shallow Git submodule of [microsoft/vscode](https://github.com/microsoft/vscode), pinned to a specific commit for checking component implementations, styles, and theme roles. It is reference material for maintaining the skills and is not required to install or use them.
+
+Initialize it after cloning this repository:
+
+```bash
+git submodule update --init --depth 1 vscode
+```
+
+The submodule also declares `shallow = true` in `.gitmodules` so new submodule clones default to shallow history.
 
 ## vscode-ui
 
-A framework-agnostic agent skill for building developer interfaces in the current VS Code Classic workbench visual language: the default UI with `workbench.experimental.modernUI` disabled. It covers design foundations, workbench structure, controls, collections, navigation, overlays, editor surfaces, interaction states, and representative compositions.
+A framework-agnostic agent skill for building developer interfaces in the current VS Code Classic workbench visual language: the UI with `workbench.experimental.modernUI` explicitly disabled. It covers design foundations, workbench structure, controls, collections, navigation, overlays, editor surfaces, interaction states, and representative compositions.
 
 ### Install
 

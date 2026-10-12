@@ -1,0 +1,4 @@
+[submodule "vscode"]
+	shallow = true
+	path = vscode
+	url = https://github.com/microsoft/vscode.git
