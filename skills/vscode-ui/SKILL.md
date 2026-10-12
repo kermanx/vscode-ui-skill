@@ -22,6 +22,8 @@ You do not need to install dependencies or build the reference code. Generally, 
 
 Use the [component index](references/component-index.md) to find relevant implementations and dependencies. Paths are relative to the reference repository.
 
+See [product guidance](references/product-guidance.md) for highlighting, icons, typography, and composition choices beyond individual components.
+
 ## Adapt the reference
 
 - Select components and variants that match the user's needs. Implement in the project's own source and framework; reference styles and logic rather than copying the library wholesale.
